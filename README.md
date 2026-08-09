@@ -281,8 +281,8 @@ Changes pushed to the connected branch synchronize with Lovable. Avoid force-pus
 ## Documentation
 
 - [Amazon Appstore submission notes](docs/amazon-appstore.md)
-- [Privacy information](/privacy) — available when the application is running
-- [Pre-submission self-test](/selftest) — available when the application is running
+- [Privacy Policy](https://kbyunghak.github.io/JOYgleStudio/privacy/speakfall/en)
+- [Pre-submission self-test source](src/routes/selftest.tsx) — run the application and open `/selftest` to use the interactive checks
 - [Shared README standard](https://github.com/kbyunghak/Portfolio/blob/master/docs/README_STANDARD.md)
 - [Shared commit standard](https://github.com/kbyunghak/Portfolio/blob/master/docs/COMMIT_STANDARD.md)
 
