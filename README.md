@@ -144,7 +144,6 @@ Implemented in the current codebase:
 
 Still requiring release-device verification:
 
-- Android Gradle packaging: `assembleDebug` currently fails before compilation when `android/keystore.properties` is absent because the release signing configuration evaluates a null `storeFile`
 - Clean installation and launch of the release build
 - Microphone permission allow, deny, and re-enable flows
 - Recognition quality across representative Android and Fire OS devices
@@ -197,7 +196,11 @@ cd android
 
 On Windows PowerShell, run the Gradle wrapper as `./gradlew.bat assembleDebug`.
 
-`bun run build:android` currently completes the mobile web build and Capacitor synchronization. However, the Gradle configuration also evaluates the release signing block for a debug build. Until that configuration is made conditional, `android/keystore.properties` and its referenced keystore must exist before `assembleDebug` can run.
+The debug build does not require a release keystore. If Gradle cannot locate the Android SDK, create the ignored `android/local.properties` file with your local SDK path:
+
+```properties
+sdk.dir=/path/to/Android/Sdk
+```
 
 ### Android release build
 
@@ -240,9 +243,9 @@ Validation baseline recorded on August 9, 2026:
 | `bun run build`                     | Pass with warnings | Web production build completed; Vite reported a deprecated path-resolution plugin configuration and chunks over 500 kB |
 | `bun run build:android`             | Pass with warnings | Mobile web build and Capacitor Android synchronization completed; chunk-size warning remains                           |
 | `bun run lint`                      | Fail               | 6,085 existing issues, primarily Prettier violations and explicit `any` usage                                          |
-| `android/gradlew.bat assembleDebug` | Fail               | Gradle cannot convert the missing release-signing `storeFile` value to a file                                          |
+| `android/gradlew.bat assembleDebug` | Pass               | Debug APK generated without a release keystore                                                                         |
 
-Treat the lint and Gradle failures as release blockers. Re-run the full baseline after correcting them and update this table with the new results.
+Treat the lint failure as a release blocker. Re-run the full baseline after correcting it and update this table with the new results.
 
 ### Installed-app self-test
 

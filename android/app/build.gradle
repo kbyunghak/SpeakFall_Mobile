@@ -6,6 +6,15 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def releaseSigningKeys = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword']
+def hasReleaseSigning = keystorePropertiesFile.exists() && releaseSigningKeys.every {
+    keystoreProperties[it]?.toString()?.trim()
+}
+
+if (keystorePropertiesFile.exists() && !hasReleaseSigning) {
+    logger.warn("keystore.properties is incomplete; release signing will not be configured.")
+}
+
 android {
     namespace = "com.speakfall.game"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -23,16 +32,20 @@ android {
         }
     }
     signingConfigs {
-        release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
         }
     }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
