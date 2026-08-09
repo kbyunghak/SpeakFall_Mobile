@@ -808,7 +808,15 @@ export function SpeakFallGame() {
   }, [addPenaltyWords, showToast, queueNext, resetSpeech]);
 
   const handleTranscript = useCallback(
-    ({ transcript, isFinal }: { transcript: string; isFinal: boolean }) => {
+    ({
+      transcript,
+      alternatives,
+      isFinal,
+    }: {
+      transcript: string;
+      alternatives: string[];
+      isFinal: boolean;
+    }) => {
       if (phaseRef.current !== "playing") return;
       // 초기화 직후 도착한 이전 세션의 잔여 결과는 버립니다.
       if (Date.now() < muteUntilRef.current) return;
@@ -821,7 +829,10 @@ export function SpeakFallGame() {
       voiceTimer.current = window.setTimeout(() => setVoiceLevel(0), 700);
       if (!cur || cur.state !== "falling") return;
 
-      const s = scoreTranscript(cur, transcript);
+      // 화면에는 가장 가능성이 높은 첫 결과만 보여주되, 정답 판정에는
+      // Android/브라우저가 제공한 여러 후보를 사용해 발음 인식 누락을 줄입니다.
+      const candidates = alternatives.length > 0 ? alternatives : [transcript];
+      const s = Math.max(...candidates.map((candidate) => scoreTranscript(cur, candidate)));
       const threshold = Math.max(
         0.45,
         STRICTNESS[strictRef.current].threshold - getTrack(trackRef.current).leniency,

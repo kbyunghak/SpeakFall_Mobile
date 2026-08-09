@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { SpeechRecognitionPlugin } from "@capacitor-community/speech-recognition";
 import type { PluginListenerHandle } from "@capacitor/core";
 
-type Result = { transcript: string; isFinal: boolean };
+type Result = { transcript: string; alternatives: string[]; isFinal: boolean };
 
 type SpeechRecognitionLike = {
   lang: string;
@@ -78,10 +78,11 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
           nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
-              const primaryMatch = data?.matches?.[0];
+              const alternatives = data?.matches?.filter(Boolean) ?? [];
+              const primaryMatch = alternatives[0];
               if (!primaryMatch) return;
               markSpeaking();
-              cbRef.current({ transcript: primaryMatch, isFinal: false });
+              cbRef.current({ transcript: primaryMatch, alternatives, isFinal: false });
             },
           );
           nativeStateListenerRef.current = await SpeechRecognition.addListener(
@@ -140,14 +141,21 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     rec.lang = "en-US";
     rec.continuous = true;
     rec.interimResults = true;
-    rec.maxAlternatives = 3;
+    rec.maxAlternatives = 5;
     rec.onresult = (e: any) => {
       markSpeaking();
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i];
         const primaryResult = res[0];
         if (primaryResult) {
-          cbRef.current({ transcript: primaryResult.transcript as string, isFinal: res.isFinal });
+          const alternatives = Array.from({ length: res.length }, (_, index) =>
+            String(res[index]?.transcript ?? ""),
+          ).filter(Boolean);
+          cbRef.current({
+            transcript: primaryResult.transcript as string,
+            alternatives,
+            isFinal: res.isFinal,
+          });
         }
       }
     };
@@ -191,7 +199,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     try {
       await SR.start({
         language: "en-US",
-        maxResults: 3,
+        maxResults: 5,
         partialResults: true,
         popup: false,
       });
