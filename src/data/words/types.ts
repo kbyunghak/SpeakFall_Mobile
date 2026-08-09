@@ -19,4 +19,14 @@ export interface WordItem {
   meaning?: string;
   /** ASR이 자주 혼동하는 발음 후보 */
   accepts?: string[];
+  /** 어려움 모드에서 집중 연습할 최소대립 발음쌍 */
+  pronunciationFocus?: PronunciationFocus;
 }
+
+export type PronunciationFocus =
+  | "r / l"
+  | "f / p"
+  | "v / b"
+  | "θ / s"
+  | "ɪ / iː"
+  | "æ / ɛ";

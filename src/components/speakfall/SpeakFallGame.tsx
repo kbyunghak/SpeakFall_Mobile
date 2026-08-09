@@ -28,6 +28,7 @@ import {
   WORDS_PER_LEVEL,
   getWordsByLevel,
   getPronunciationFocus,
+  PRONUNCIATION_FOCUSES,
   randomWord,
   scoreTranscript,
   STRICTNESS,
@@ -558,7 +559,9 @@ export function SpeakFallGame() {
           [...existing, ...added, ...cleared, ...usedRef.current],
           recentRef.current,
           track,
-          strictRef.current === "hard",
+          strictRef.current === "hard"
+            ? PRONUNCIATION_FOCUSES[result.length % PRONUNCIATION_FOCUSES.length]!
+            : null,
         );
         if (!added.has(w.word) && !existing.has(w.word) && !usedRef.current.has(w.word)) {
           added.add(w.word);

@@ -3,7 +3,7 @@
  * 단어 데이터 자체는 `src/data/words/*` 로 트랙별 분리되어 있습니다.
  */
 import { WORDS, getWordsByTrackLevel } from "@/data/words";
-import type { TrackType, WordItem } from "@/data/words";
+import type { PronunciationFocus, TrackType, WordItem } from "@/data/words";
 
 export * from "@/data/words";
 
@@ -35,12 +35,30 @@ export function getWordsByLevel(level: number, track: TrackType = "basic"): Word
   return getWordsByTrackLevel(level, track);
 }
 
-/** 한국어 화자가 자주 혼동하는 자음 대비를 포함한 단어인지 확인합니다. */
-export function getPronunciationFocus(item: WordItem): "p / f" | "b / v" | null {
+export const PRONUNCIATION_FOCUSES: PronunciationFocus[] = [
+  "r / l",
+  "f / p",
+  "v / b",
+  "θ / s",
+  "ɪ / iː",
+  "æ / ɛ",
+];
+
+/** 한국어 화자가 자주 혼동하는 최소대립 발음쌍을 반환합니다. */
+export function getPronunciationFocuses(item: WordItem): PronunciationFocus[] {
   const pronunciation = item.ipa.toLowerCase();
-  if (/[pf]/.test(pronunciation)) return "p / f";
-  if (/[bv]/.test(pronunciation)) return "b / v";
-  return null;
+  const focuses: PronunciationFocus[] = [];
+  if (/[ɹrɫl]/.test(pronunciation)) focuses.push("r / l");
+  if (/[fp]/.test(pronunciation)) focuses.push("f / p");
+  if (/[vb]/.test(pronunciation)) focuses.push("v / b");
+  if (/[θs]/.test(pronunciation)) focuses.push("θ / s");
+  if (pronunciation.includes("ɪ") || pronunciation.includes("i")) focuses.push("ɪ / iː");
+  if (/[æɛ]/.test(pronunciation)) focuses.push("æ / ɛ");
+  return focuses;
+}
+
+export function getPronunciationFocus(item: WordItem): PronunciationFocus | null {
+  return item.pronunciationFocus ?? getPronunciationFocuses(item)[0] ?? null;
 }
 
 /**
@@ -54,7 +72,7 @@ export function randomWord(
   exclude: string[] = [],
   recent: string[] = [],
   track: TrackType = "basic",
-  preferPronunciationFocus = false,
+  pronunciationFocus: PronunciationFocus | null = null,
 ): WordItem {
   const pool = getWordsByLevel(level, track);
   const available = pool.filter((w) => !exclude.includes(w.word));
@@ -62,11 +80,12 @@ export function randomWord(
   // 우선: exclude에 없고 recent에도 없는 단어
   const fresh = available.filter((w) => !recent.includes(w.word));
   const baseList = fresh.length ? fresh : available.length ? available : pool.length ? pool : WORDS;
-  const focused = preferPronunciationFocus
-    ? baseList.filter((word) => getPronunciationFocus(word) !== null)
+  const focused = pronunciationFocus
+    ? baseList.filter((word) => getPronunciationFocuses(word).includes(pronunciationFocus))
     : [];
   const list = focused.length > 0 ? focused : baseList;
-  return list[Math.floor(Math.random() * list.length)]!;
+  const selected = list[Math.floor(Math.random() * list.length)]!;
+  return pronunciationFocus ? { ...selected, pronunciationFocus } : selected;
 }
 
 const normalize = (s: string) =>
