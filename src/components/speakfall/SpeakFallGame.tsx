@@ -888,32 +888,60 @@ export function SpeakFallGame() {
   const playTargetPronunciation = useCallback(() => {
     const target = activeRef.current;
     if (!target || target.state !== "falling") return;
-    if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
-      showToast("이 기기에서는 발음 재생을 지원하지 않아요");
-      return;
-    }
 
     resumeAudio();
     speechRef.current.stop();
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(target.word);
-    utterance.lang = "en-US";
-    utterance.rate = 0.82;
-    utterance.pitch = 1;
-    const englishVoice = window.speechSynthesis
-      .getVoices()
-      .find((voice) => voice.lang.toLowerCase().startsWith("en-us"));
-    if (englishVoice) utterance.voice = englishVoice;
 
     const resumeRecognition = () => {
       window.setTimeout(() => {
         if (phaseRef.current === "playing") speechRef.current.start();
       }, 250);
     };
-    utterance.onend = resumeRecognition;
-    utterance.onerror = resumeRecognition;
-    window.setTimeout(() => window.speechSynthesis.speak(utterance), 150);
+
+    const play = async () => {
+      const isNative = !!(window as typeof window & {
+        Capacitor?: { isNativePlatform?: () => boolean };
+      }).Capacitor?.isNativePlatform?.();
+
+      try {
+        if (isNative) {
+          const { TextToSpeech } = await import("@capacitor-community/text-to-speech");
+          await TextToSpeech.stop();
+          await TextToSpeech.speak({
+            text: target.word,
+            lang: "en-US",
+            rate: 0.82,
+            pitch: 1,
+            volume: 1,
+          });
+          return;
+        }
+
+        if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+          throw new Error("Speech synthesis is unavailable");
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(target.word);
+        utterance.lang = "en-US";
+        utterance.rate = 0.82;
+        utterance.pitch = 1;
+        const englishVoice = window.speechSynthesis
+          .getVoices()
+          .find((voice) => voice.lang.toLowerCase().startsWith("en-us"));
+        if (englishVoice) utterance.voice = englishVoice;
+        await new Promise<void>((resolve, reject) => {
+          utterance.onend = () => resolve();
+          utterance.onerror = () => reject(new Error("Speech playback failed"));
+          window.speechSynthesis.speak(utterance);
+        });
+      } catch {
+        showToast("발음을 재생할 수 없어요. 기기의 TTS 설정을 확인해 주세요");
+      } finally {
+        resumeRecognition();
+      }
+    };
+
+    window.setTimeout(() => void play(), 150);
   }, [showToast]);
 
   /** 앱 실행 시 마이크 권한 상태를 확인하고, 처음이면 안내 시트를 띄웁니다. */
