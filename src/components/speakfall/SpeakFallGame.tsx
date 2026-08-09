@@ -105,7 +105,6 @@ type Phase =
   | "playing"
   | "over";
 
-
 const HUES = [10, 45, 145, 200, 255, 300];
 const MAX_HP = 5;
 /** 실패로 감속되더라도 젤리가 멈추지 않도록 하는 최소 낙하 속도 */
@@ -145,16 +144,28 @@ function ParachuteJelly({ className }: { className?: string }) {
       </defs>
 
       {/* canopy — concentric blue/white bands */}
-      <path d="M65 6C33 6 9 26 5 52c16-12 36-18 60-18s44 6 60 18C121 26 97 6 65 6Z" fill="url(#pjCanopy)" />
+      <path
+        d="M65 6C33 6 9 26 5 52c16-12 36-18 60-18s44 6 60 18C121 26 97 6 65 6Z"
+        fill="url(#pjCanopy)"
+      />
       <path d="M65 6c-16 0-30 8-40 20 12-6 25-9 40-9s28 3 40 9C95 14 81 6 65 6Z" fill="#3d8ef0" />
-      <path d="M65 17c-9 0-17 3-24 8 7-2 15-3 24-3s17 1 24 3c-7-5-15-8-24-8Z" fill="#ffffff" opacity="0.95" />
+      <path
+        d="M65 17c-9 0-17 3-24 8 7-2 15-3 24-3s17 1 24 3c-7-5-15-8-24-8Z"
+        fill="#ffffff"
+        opacity="0.95"
+      />
       <path d="M65 22c-6 0-11 1-16 3 5-1 10-2 16-2s11 1 16 2c-5-2-10-3-16-3Z" fill="#1e64c8" />
       <path d="M18 34c-5 5-9 11-11 18 5-4 11-7 17-10l-6-8Z" fill="#3d8ef0" />
       <path d="M112 34c5 5 9 11 11 18-5-4-11-7-17-10l6-8Z" fill="#3d8ef0" />
       <path d="M5 52c16-12 36-18 60-18s44 6 60 18" stroke="#c9e0fb" strokeWidth="2" />
 
       {/* lines */}
-      <path d="M8 50 46 86M122 50 84 86M40 36l8 50M90 36l-8 50" stroke="#7fa8d8" strokeWidth="1.6" strokeLinecap="round" />
+      <path
+        d="M8 50 46 86M122 50 84 86M40 36l8 50M90 36l-8 50"
+        stroke="#7fa8d8"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
 
       {/* backpack + harness */}
       <rect x="48" y="80" width="34" height="18" rx="7" fill="#2a6fd0" />
@@ -212,8 +223,6 @@ function DifficultyIcon({
   );
 }
 
-
-
 /** 음성 입력 대기/수신 상태를 보여주는 동적 음파 바. */
 function Soundwave({ active }: { active: boolean }) {
   const bars = [0.45, 0.8, 1, 0.65, 0.9, 0.5, 0.75];
@@ -227,9 +236,7 @@ function Soundwave({ active }: { active: boolean }) {
           }`}
           style={{
             height: `${h * 100}%`,
-            animation: active
-              ? `wave-bar 0.85s ease-in-out ${i * 0.08}s infinite`
-              : undefined,
+            animation: active ? `wave-bar 0.85s ease-in-out ${i * 0.08}s infinite` : undefined,
             transformOrigin: "center",
           }}
         />
@@ -297,7 +304,6 @@ function SkyClouds() {
   );
 }
 
-
 function RibbonBanner({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative w-fit" style={{ animation: "sway 5s ease-in-out infinite" }}>
@@ -306,7 +312,13 @@ function RibbonBanner({ children }: { children: React.ReactNode }) {
         <path d="M252 18 216 8v58l36 8-14-28 14-28Z" fill="#154da0" />
         <path d="M38 6h184l-8 32 8 32H38l8-32-8-32Z" fill="#2a74d8" />
         <path d="M38 6h184l-8 32H46L38 6Z" fill="#3d8ef0" opacity="0.55" />
-        <path d="M38 6h184l-8 32 8 32H38l8-32-8-32Z" fill="none" stroke="#ffffff" strokeWidth="3" opacity="0.35" />
+        <path
+          d="M38 6h184l-8 32 8 32H38l8-32-8-32Z"
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth="3"
+          opacity="0.35"
+        />
       </svg>
       <span className="ribbon-title absolute inset-0 flex items-center justify-center pb-1 text-[1.6rem]">
         {children}
@@ -318,7 +330,10 @@ function RibbonBanner({ children }: { children: React.ReactNode }) {
 /** 상점에서 선택한 스킨을 젤리 친구에게 미리 입혀보는 무대 */
 function ShopSkinPreview({ skin }: { skin: Skin }) {
   return (
-    <div className="relative flex min-h-[210px] w-full flex-col items-center justify-center py-5" aria-hidden>
+    <div
+      className="relative flex min-h-[210px] w-full flex-col items-center justify-center py-5"
+      aria-hidden
+    >
       <div className="relative mx-auto flex flex-col items-center">
         <SkinEffects skin={skin} />
         <div className="relative -mb-2 flex flex-col items-center">
@@ -348,8 +363,12 @@ function ShopSkinPreview({ skin }: { skin: Skin }) {
           <span className="absolute bottom-3 h-2 w-3.5 rounded-b-full bg-foreground/70" />
         </div>
       </div>
-      <p className="ribbon-title mx-auto mt-3 w-full text-center text-lg text-[#173f78]">{skin.name}</p>
-      <p className="mx-auto w-full text-center font-ui text-xs text-[#173f78]/60">{skin.effectLabel}</p>
+      <p className="ribbon-title mx-auto mt-3 w-full text-center text-lg text-[#173f78]">
+        {skin.name}
+      </p>
+      <p className="mx-auto w-full text-center font-ui text-xs text-[#173f78]/60">
+        {skin.effectLabel}
+      </p>
     </div>
   );
 }
@@ -393,7 +412,9 @@ export function SpeakFallGame() {
   const [progress, setProgress] = useState<Progress>(emptyProgress());
   const [result, setResult] = useState<RoundResult | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number; hue: number; tx: number; ty: number }[]>([]);
+  const [particles, setParticles] = useState<
+    { id: number; x: number; y: number; hue: number; tx: number; ty: number }[]
+  >([]);
   const [shopToast, setShopToast] = useState<string | null>(null);
   /** 상점에서 미리보기 중인 스킨 ID */
   const [shopPreviewId, setShopPreviewId] = useState<string | null>(null);
@@ -448,8 +469,8 @@ export function SpeakFallGame() {
   const equippedSkin = useMemo(() => getSkin(progress.equippedSkin), [progress.equippedSkin]);
 
   /** 레벨이 낮을수록 좌우로 크게 흔들리고, 레벨 10은 일자로 내려옵니다. */
-  const swayAmp = useMemo(() => Math.max(0, (10 - level)) * 5, [level]);
-  const swayTilt = useMemo(() => Math.max(0, (10 - level)) * 1.2, [level]);
+  const swayAmp = useMemo(() => Math.max(0, 10 - level) * 5, [level]);
+  const swayTilt = useMemo(() => Math.max(0, 10 - level) * 1.2, [level]);
   const swayDur = useMemo(() => 3.4 - Math.min(level, 10) * 0.12, [level]);
 
   const showShopToast = useCallback((msg: string) => {
@@ -515,7 +536,6 @@ export function SpeakFallGame() {
     window.setTimeout(() => setParticles([]), 700);
   }, []);
 
-
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     window.setTimeout(() => setToast((t) => (t === msg ? null : t)), 1200);
@@ -548,19 +568,22 @@ export function SpeakFallGame() {
     [level, track],
   );
 
-  const makeFaller = useCallback((item: WordItem): Faller => {
-    return {
-      ...item,
-      id: ++idRef.current,
-      x: 0.5,
-      y: 0,
-      speed: 0.055 + Math.min(level, 10) * 0.004,
-      hue: HUES[Math.floor(Math.random() * HUES.length)]!,
-      state: "falling",
-      retried: false,
-      missCount: 0,
-    };
-  }, [level]);
+  const makeFaller = useCallback(
+    (item: WordItem): Faller => {
+      return {
+        ...item,
+        id: ++idRef.current,
+        x: 0.5,
+        y: 0,
+        speed: 0.055 + Math.min(level, 10) * 0.004,
+        hue: HUES[Math.floor(Math.random() * HUES.length)]!,
+        state: "falling",
+        retried: false,
+        missCount: 0,
+      };
+    },
+    [level],
+  );
 
   const peekNext = useCallback(() => {
     const q = wordQueueRef.current;
@@ -574,9 +597,6 @@ export function SpeakFallGame() {
     setNextWord(q[0] ?? null);
     return next;
   }, []);
-
-
-
 
   const addPenaltyWords = useCallback(
     (count: number) => {
@@ -631,7 +651,6 @@ export function SpeakFallGame() {
     showToast("레벨 클리어!");
     window.setTimeout(() => finishRound(true), 900);
   }, [finishRound, showToast]);
-
 
   // ---- STT 초기화 ----
   /** 초기화 직후 흘러들어오는 이전 세션 결과를 무시할 시각 */
@@ -689,10 +708,19 @@ export function SpeakFallGame() {
       setAttempts((a) => a + 1);
       clearedRef.current.add(target.word);
       if (!roundWordsRef.current.some((w) => w.word === target.word)) {
-        const { id: _id, x: _x, y: _y, speed: _s, hue: _h, state: _st, retried: _r, missCount: _m, ...item } = target;
+        const {
+          id: _id,
+          x: _x,
+          y: _y,
+          speed: _s,
+          hue: _h,
+          state: _st,
+          retried: _r,
+          missCount: _m,
+          ...item
+        } = target;
         roundWordsRef.current.push(item);
       }
-
 
       setWordsRemaining((n) => Math.max(0, n - 1));
       setCombo((c) => {
@@ -749,7 +777,9 @@ export function SpeakFallGame() {
 
     if (nextMissCount === 2) {
       // 두 번째 실패: 조금 더 늦추기
-      setActive((a) => (a && a.id === cur.id ? { ...a, missCount: 2, speed: slow(a.speed, 0.85) } : a));
+      setActive((a) =>
+        a && a.id === cur.id ? { ...a, missCount: 2, speed: slow(a.speed, 0.85) } : a,
+      );
       showToast("다시 한 번!");
       return;
     }
@@ -840,85 +870,78 @@ export function SpeakFallGame() {
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, []);
 
-
-
   /**
    * 버튼 하나로 "다시 확인 → 필요하면 다시 요청"을 반복 실행합니다.
    * 상태는 매 단계마다 즉시 화면에 반영됩니다.
    */
-  const retryMic = useCallback(
-    async (proceed = true) => {
-      setMicBusy(true);
-      setMicTries((n) => n + 1);
-      // 1) 현재 상태 즉시 갱신
-      const current = await checkMicPermission();
-      setMicStatus(current);
-      if (current === "granted") {
-        setPermissionDenied(false);
-        setShowMicOnboard(false);
-        setMicBusy(false);
-        if (proceed) setPhase("countdown");
-        return true;
-      }
-      if (current === "unsupported") {
-        setMicBusy(false);
-        return false;
-      }
-      // 2) 아직이면 곧바로 재요청 (거부 상태여도 한 번 더 시도)
-      const asked = await requestMicPermission();
-      markMicOnboarded();
-      setMicStatus(asked);
+  const retryMic = useCallback(async (proceed = true) => {
+    setMicBusy(true);
+    setMicTries((n) => n + 1);
+    // 1) 현재 상태 즉시 갱신
+    const current = await checkMicPermission();
+    setMicStatus(current);
+    if (current === "granted") {
+      setPermissionDenied(false);
+      setShowMicOnboard(false);
       setMicBusy(false);
-      if (asked === "granted") {
-        setPermissionDenied(false);
-        setShowMicOnboard(false);
-        if (proceed) setPhase("countdown");
-        return true;
-      }
-      setPermissionDenied(asked === "denied");
+      if (proceed) setPhase("countdown");
+      return true;
+    }
+    if (current === "unsupported") {
+      setMicBusy(false);
       return false;
+    }
+    // 2) 아직이면 곧바로 재요청 (거부 상태여도 한 번 더 시도)
+    const asked = await requestMicPermission();
+    markMicOnboarded();
+    setMicStatus(asked);
+    setMicBusy(false);
+    if (asked === "granted") {
+      setPermissionDenied(false);
+      setShowMicOnboard(false);
+      if (proceed) setPhase("countdown");
+      return true;
+    }
+    setPermissionDenied(asked === "denied");
+    return false;
+  }, []);
+
+  const beginRound = useCallback(
+    (startLevel = 1, startTrack: TrackType = "basic") => {
+      idRef.current = 0;
+      elapsed.current = 0;
+      setScore(0);
+      setRescued(0);
+      setAttempts(0);
+      setCombo(0);
+      setBestCombo(0);
+      setHeard("");
+      setToast(null);
+      setResult(null);
+      setPermissionDenied(false);
+      setLevel(startLevel);
+      setTrack(startTrack);
+      trackRef.current = startTrack;
+      setLevelRescued(0);
+      setWordsRemaining(WORDS_PER_LEVEL);
+      setHp(MAX_HP);
+      clearedRef.current.clear();
+      usedRef.current.clear();
+      setPlusOne(null);
+      recentRef.current = [];
+      roundWordsRef.current = [];
+      wordQueueRef.current = [];
+      statsRef.current = { score: 0, rescued: 0, attempts: 0, bestCombo: 0, hp: MAX_HP };
+      // 권한이 이미 허용됐거나 마이크를 쓸 수 없는 기기면 바로 시작,
+      // 그 외에는 권한 안내 화면을 먼저 보여줍니다.
+      setPhase(micStatus === "granted" || micStatus === "unsupported" ? "countdown" : "permission");
     },
-    [],
+    [micStatus],
   );
-
-
-
-  const beginRound = useCallback((startLevel = 1, startTrack: TrackType = "basic") => {
-    idRef.current = 0;
-    elapsed.current = 0;
-    setScore(0);
-    setRescued(0);
-    setAttempts(0);
-    setCombo(0);
-    setBestCombo(0);
-    setHeard("");
-    setToast(null);
-    setResult(null);
-    setPermissionDenied(false);
-    setLevel(startLevel);
-    setTrack(startTrack);
-    trackRef.current = startTrack;
-    setLevelRescued(0);
-    setWordsRemaining(WORDS_PER_LEVEL);
-    setHp(MAX_HP);
-    clearedRef.current.clear();
-    usedRef.current.clear();
-    setPlusOne(null);
-    recentRef.current = [];
-    roundWordsRef.current = [];
-    wordQueueRef.current = [];
-    statsRef.current = { score: 0, rescued: 0, attempts: 0, bestCombo: 0, hp: MAX_HP };
-    // 권한이 이미 허용됐거나 마이크를 쓸 수 없는 기기면 바로 시작,
-    // 그 외에는 권한 안내 화면을 먼저 보여줍니다.
-    setPhase(
-      micStatus === "granted" || micStatus === "unsupported" ? "countdown" : "permission",
-    );
-  }, [micStatus]);
 
   const stopGame = useCallback(() => {
     finishRound(false);
   }, [finishRound]);
-
 
   /** Countdown 3·2·1 — initialize queue here so level is known. */
   useEffect(() => {
@@ -1038,12 +1061,11 @@ export function SpeakFallGame() {
     [],
   );
 
-
   const inPlay = phase === "playing" || phase === "countdown";
 
   return (
     <div
-      className={`relative mx-auto flex h-[100dvh] w-full max-w-md flex-col ${
+      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md flex-col ${
         phase === "idle" ? "overflow-visible" : "overflow-hidden"
       } text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
     >
@@ -1075,7 +1097,7 @@ export function SpeakFallGame() {
       {inPlay && (
         <>
           {/* HUD — 하트 / 레벨 / 남은 단어 (타이틀 제거, 정보 단일화) */}
-          <header className="relative z-10 grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-5 pt-6">
+          <header className="relative z-10 grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-5 pt-[clamp(0.75rem,2.5dvh,1.5rem)]">
             <span className="flex min-w-0 items-center gap-1" aria-label={`남은 하트 ${hp}개`}>
               {Array.from({ length: MAX_HP }).map((_, i) => (
                 <Heart
@@ -1117,254 +1139,276 @@ export function SpeakFallGame() {
             </button>
           </header>
 
-      {/* Level progress — 레벨 표기는 여기 한 곳에만 */}
-      <div className="relative z-10 px-5 pt-2.5">
-        <div className="flex items-center justify-between font-display text-sm text-[#173f78]">
-          <span>{track !== "basic" ? `${getTrack(track).emoji} ` : ""}Lv.{level}</span>
-          <span className="font-ui text-xs text-muted-foreground">
-            남은 단어 {wordsRemaining}/{MAX_WORDS_PER_LEVEL}
-          </span>
-        </div>
-        <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-foreground/10">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-300"
-            style={{ width: `${(levelRescued / RESCUES_PER_LEVEL_UP) * 100}%` }}
-          />
-        </div>
-      </div>
-
-
-      {/* Sky field */}
-      <div className="relative z-10 flex-1">
-        {active && (
-          <div
-            className="absolute flex w-full flex-col items-center px-6"
-            style={{
-              left: "50%",
-              top: `${active.y * 82}%`,
-              transform: "translateX(-50%)",
-              ["--sway" as string]: `${swayAmp}px`,
-              ["--tilt" as string]: `${swayTilt}deg`,
-              animation:
-                swayAmp > 0 && active.state === "falling"
-                  ? `parachute-sway ${swayDur}s ease-in-out infinite`
-                  : undefined,
-            }}
-          >
-            {/* 스킨별 특수 효과 */}
-            {active.state === "falling" && <SkinEffects skin={equippedSkin} />}
-
-            {/* parachute — 스킨 모양(낙하산/우산/꽃/풍선), 구조되면 활짝 펼쳐짐 */}
-            {active.state !== "crying" && (
-              <div
-                className={`relative -mb-2 flex flex-col items-center transition-all duration-500 ${
-                  active.state === "saved" ? "animate-vanish-pop" : ""
-                }`}
-                aria-hidden
-              >
-                <SkinCanopy skin={equippedSkin} saved={active.state === "saved"} />
-              </div>
-            )}
-
-
-
-
-            {/* "야호! +1" 팝업 on rescue */}
-            {plusOne === active.id && (
-              <span
-                className="ribbon-title animate-score-pop pointer-events-none absolute left-1/2 top-1/2 z-20 whitespace-nowrap text-xl text-emerald-500"
-                aria-hidden
-              >
-                {plusOneMsg} +1
+          {/* Level progress — 레벨 표기는 여기 한 곳에만 */}
+          <div className="relative z-10 px-5 pt-[clamp(0.35rem,1.2dvh,0.625rem)]">
+            <div className="flex items-center justify-between font-display text-sm text-[#173f78]">
+              <span>
+                {track !== "basic" ? `${getTrack(track).emoji} ` : ""}Lv.{level}
               </span>
-            )}
+              <span className="font-ui text-xs text-muted-foreground">
+                남은 단어 {wordsRemaining}/{MAX_WORDS_PER_LEVEL}
+              </span>
+            </div>
+            <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-foreground/10">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${(levelRescued / RESCUES_PER_LEVEL_UP) * 100}%` }}
+              />
+            </div>
+          </div>
 
-            {/* particle burst on rescue */}
-            {active.state === "saved" && particles.length > 0 && (
-              <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden>
-                {particles.map((p) => (
+          {/* Sky field */}
+          <div className="relative z-10 min-h-0 flex-1">
+            {active && (
+              <div
+                className="absolute flex w-full flex-col items-center px-6"
+                style={{
+                  left: "50%",
+                  top: `${active.y * 82}%`,
+                  transform: "translateX(-50%)",
+                  ["--sway" as string]: `${swayAmp}px`,
+                  ["--tilt" as string]: `${swayTilt}deg`,
+                  animation:
+                    swayAmp > 0 && active.state === "falling"
+                      ? `parachute-sway ${swayDur}s ease-in-out infinite`
+                      : undefined,
+                }}
+              >
+                {/* 스킨별 특수 효과 */}
+                {active.state === "falling" && <SkinEffects skin={equippedSkin} />}
+
+                {/* parachute — 스킨 모양(낙하산/우산/꽃/풍선), 구조되면 활짝 펼쳐짐 */}
+                {active.state !== "crying" && (
+                  <div
+                    className={`relative -mb-2 flex flex-col items-center transition-all duration-500 ${
+                      active.state === "saved" ? "animate-vanish-pop" : ""
+                    }`}
+                    aria-hidden
+                  >
+                    <SkinCanopy skin={equippedSkin} saved={active.state === "saved"} />
+                  </div>
+                )}
+
+                {/* "야호! +1" 팝업 on rescue */}
+                {plusOne === active.id && (
                   <span
-                    key={p.id}
-                    className="absolute left-0 top-0 size-2 rounded-full"
-                    style={{
-                      background: `oklch(0.85 0.16 ${p.hue})`,
-                      boxShadow: `0 0 6px oklch(0.8 0.14 ${p.hue})`,
-                      ["--tx" as string]: `${p.tx}px`,
-                      ["--ty" as string]: `${p.ty}px`,
-                      animation: "particle-fade 0.7s ease-out forwards",
-                    }}
+                    className="ribbon-title animate-score-pop pointer-events-none absolute left-1/2 top-1/2 z-20 whitespace-nowrap text-xl text-emerald-500"
+                    aria-hidden
+                  >
+                    {plusOneMsg} +1
+                  </span>
+                )}
+
+                {/* particle burst on rescue */}
+                {active.state === "saved" && particles.length > 0 && (
+                  <div
+                    className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                    aria-hidden
+                  >
+                    {particles.map((p) => (
+                      <span
+                        key={p.id}
+                        className="absolute left-0 top-0 size-2 rounded-full"
+                        style={{
+                          background: `oklch(0.85 0.16 ${p.hue})`,
+                          boxShadow: `0 0 6px oklch(0.8 0.14 ${p.hue})`,
+                          ["--tx" as string]: `${p.tx}px`,
+                          ["--ty" as string]: `${p.ty}px`,
+                          animation: "particle-fade 0.7s ease-out forwards",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* jelly friend */}
+                <div
+                  className={`relative flex size-14 items-center justify-center rounded-[45%] shadow-soft ${
+                    active.state === "falling" && !near ? "animate-bob" : ""
+                  } ${active.state === "falling" && near ? "animate-scared-shake" : ""} ${
+                    active.state === "saved" ? "animate-vanish-pop" : ""
+                  } ${active.state === "crying" ? "animate-cry" : ""}`}
+                  style={{
+                    background: `radial-gradient(circle at 35% 30%, oklch(0.95 0.09 ${active.hue}), oklch(0.72 0.17 ${active.hue}))`,
+                  }}
+                >
+                  <span
+                    className="absolute -top-1.5 left-2.5 size-3 rounded-full"
+                    style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
                   />
-                ))}
+                  <span
+                    className="absolute -top-1.5 right-2.5 size-3 rounded-full"
+                    style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
+                  />
+                  {active.state === "crying" && (
+                    <>
+                      <span className="absolute left-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
+                      <span className="absolute right-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
+                    </>
+                  )}
+                  {/* scared sweat drops when near hazard */}
+                  {active.state === "falling" && near && (
+                    <>
+                      <span className="absolute -right-1 top-2 size-1.5 rounded-full bg-sky-300/80" />
+                      <span className="absolute -left-0.5 top-3 size-1 rounded-full bg-sky-300/80" />
+                    </>
+                  )}
+                  {active.state === "saved" ? (
+                    <>
+                      {/* 행복한 ^ ^ 눈 */}
+                      <span className="absolute left-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
+                      <span className="absolute right-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
+                      <span className="absolute bottom-4 left-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
+                      <span className="absolute bottom-4 right-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
+                      {/* 활짝 웃는 입 */}
+                      <span className="absolute bottom-2.5 h-2.5 w-4 rounded-b-full bg-foreground/70" />
+                    </>
+                  ) : (
+                    <>
+                      <span className="absolute left-3.5 top-5 size-2 rounded-full bg-foreground/70">
+                        <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
+                      </span>
+                      <span className="absolute right-3.5 top-5 size-2 rounded-full bg-foreground/70">
+                        <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
+                      </span>
+                      <span className="absolute bottom-4 left-2 h-1 w-2 rounded-full bg-destructive/30" />
+                      <span className="absolute bottom-4 right-2 h-1 w-2 rounded-full bg-destructive/30" />
+                      <span
+                        className={`absolute bottom-3 rounded-full ${
+                          active.state === "crying"
+                            ? "h-1.5 w-3 rounded-t-full bg-foreground/40"
+                            : active.state === "falling" && near
+                              ? "h-0.5 w-3 bg-foreground/60"
+                              : "h-1.5 w-3 rounded-b-full bg-foreground/60"
+                        }`}
+                      />
+                    </>
+                  )}
+                </div>
+
+                {/* active word card — word first, IPA secondary */}
+                <div className="relative -mt-0.5 flex flex-col items-center">
+                  <span
+                    className={`size-2 rotate-45 rounded-[2px] border-l border-t ${
+                      active.state === "crying"
+                        ? "border-destructive/30 bg-destructive/10 opacity-60"
+                        : active.retried
+                          ? "border-accent bg-accent/30"
+                          : "border-border bg-card/90"
+                    }`}
+                    aria-hidden
+                  />
+                  <div
+                    className={`-mt-1 flex items-baseline gap-2 whitespace-nowrap rounded-full border-2 px-5 py-2 shadow-soft backdrop-blur-sm ${
+                      active.state === "crying"
+                        ? "border-destructive/30 bg-destructive/10 opacity-60"
+                        : active.retried
+                          ? "animate-quake border-accent bg-accent/30"
+                          : "border-border bg-card/95"
+                    }`}
+                  >
+                    <span className="font-display text-2xl leading-none">{active.word}</span>
+                    <span className="font-ui text-sm leading-none text-muted-foreground">
+                      {active.ipa}
+                    </span>
+                  </div>
+                  <span className="mt-1 font-ui text-sm text-muted-foreground">
+                    {active.meaning}
+                  </span>
+                </div>
               </div>
             )}
 
-            {/* jelly friend */}
+            {toast && (
+              <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
+                <span className="animate-pop rounded-full bg-card px-4 py-2 font-display text-base shadow-soft">
+                  {toast}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Hazard line — 텍스트 영역 위쪽에 분리 배치 */}
+          <div className="relative z-10 shrink-0 px-4 pb-1" aria-hidden>
             <div
-              className={`relative flex size-14 items-center justify-center rounded-[45%] shadow-soft ${
-                active.state === "falling" && !near ? "animate-bob" : ""
-              } ${active.state === "falling" && near ? "animate-scared-shake" : ""} ${
-                active.state === "saved" ? "animate-vanish-pop" : ""
-              } ${active.state === "crying" ? "animate-cry" : ""}`}
-              style={{
-                background: `radial-gradient(circle at 35% 30%, oklch(0.95 0.09 ${active.hue}), oklch(0.72 0.17 ${active.hue}))`,
-              }}
+              className={`h-0 w-full border-t-[3px] border-dashed transition-colors duration-300 ${
+                near ? "border-destructive" : "border-destructive/30"
+              }`}
+            />
+            <span
+              className={`absolute -top-2 right-5 rounded-full px-2 py-0.5 font-display text-[0.65rem] tracking-wide transition-colors duration-300 ${
+                near ? "bg-destructive text-white" : "bg-destructive/15 text-destructive/70"
+              }`}
             >
-              <span
-                className="absolute -top-1.5 left-2.5 size-3 rounded-full"
-                style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
-              />
-              <span
-                className="absolute -top-1.5 right-2.5 size-3 rounded-full"
-                style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
-              />
-              {active.state === "crying" && (
-                <>
-                  <span className="absolute left-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
-                  <span className="absolute right-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
-                </>
-              )}
-              {/* scared sweat drops when near hazard */}
-              {active.state === "falling" && near && (
-                <>
-                  <span className="absolute -right-1 top-2 size-1.5 rounded-full bg-sky-300/80" />
-                  <span className="absolute -left-0.5 top-3 size-1 rounded-full bg-sky-300/80" />
-                </>
-              )}
-              {active.state === "saved" ? (
-                <>
-                  {/* 행복한 ^ ^ 눈 */}
-                  <span className="absolute left-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
-                  <span className="absolute right-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
-                  <span className="absolute bottom-4 left-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
-                  <span className="absolute bottom-4 right-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
-                  {/* 활짝 웃는 입 */}
-                  <span className="absolute bottom-2.5 h-2.5 w-4 rounded-b-full bg-foreground/70" />
-                </>
-              ) : (
-                <>
-                  <span className="absolute left-3.5 top-5 size-2 rounded-full bg-foreground/70">
-                    <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-                  </span>
-                  <span className="absolute right-3.5 top-5 size-2 rounded-full bg-foreground/70">
-                    <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-                  </span>
-                  <span className="absolute bottom-4 left-2 h-1 w-2 rounded-full bg-destructive/30" />
-                  <span className="absolute bottom-4 right-2 h-1 w-2 rounded-full bg-destructive/30" />
-                  <span
-                    className={`absolute bottom-3 rounded-full ${
-                      active.state === "crying"
-                        ? "h-1.5 w-3 rounded-t-full bg-foreground/40"
-                        : active.state === "falling" && near
-                          ? "h-0.5 w-3 bg-foreground/60"
-                          : "h-1.5 w-3 rounded-b-full bg-foreground/60"
+              위험
+            </span>
+          </div>
+
+          {/* Bottom bar — 하나의 음성 입력 바로 통합 */}
+          <footer className="relative z-10 space-y-1.5 px-5 pb-[clamp(0.75rem,3dvh,2rem)] pt-2">
+            {phase === "playing" && (
+              <div className="flex items-center gap-3 rounded-3xl bg-card/95 px-4 py-2.5 shadow-soft backdrop-blur-sm">
+                <span
+                  className={`relative grid size-11 shrink-0 place-items-center rounded-full transition-colors ${
+                    speech.speaking ? "bg-destructive/15" : "bg-primary/10"
+                  }`}
+                  aria-label={speech.speaking ? "말하는 중" : "음성 입력 대기 중"}
+                >
+                  {speech.speaking && (
+                    <span className="absolute inset-0 animate-ping rounded-full border-2 border-destructive/60" />
+                  )}
+                  <Mic
+                    className={`size-5 transition-colors ${
+                      speech.speaking
+                        ? "text-destructive"
+                        : speech.listening
+                          ? "text-primary"
+                          : "text-muted-foreground"
                     }`}
                   />
-                </>
-              )}
-            </div>
+                </span>
 
-            {/* active word card — word first, IPA secondary */}
-            <div className="relative -mt-0.5 flex flex-col items-center">
-              <span
-                className={`size-2 rotate-45 rounded-[2px] border-l border-t ${
-                  active.state === "crying"
-                    ? "border-destructive/30 bg-destructive/10 opacity-60"
-                    : active.retried
-                      ? "border-accent bg-accent/30"
-                      : "border-border bg-card/90"
-                }`}
-                aria-hidden
-              />
-              <div
-                className={`-mt-1 flex items-baseline gap-2 whitespace-nowrap rounded-full border-2 px-5 py-2 shadow-soft backdrop-blur-sm ${
-                  active.state === "crying"
-                    ? "border-destructive/30 bg-destructive/10 opacity-60"
-                    : active.retried
-                      ? "animate-quake border-accent bg-accent/30"
-                      : "border-border bg-card/95"
-                }`}
-              >
-                <span className="font-display text-2xl leading-none">{active.word}</span>
-                <span className="font-ui text-sm leading-none text-muted-foreground">{active.ipa}</span>
-              </div>
-              <span className="mt-1 font-ui text-sm text-muted-foreground">{active.meaning}</span>
-            </div>
-          </div>
-        )}
-
-        {toast && (
-          <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
-            <span className="animate-pop rounded-full bg-card px-4 py-2 font-display text-base shadow-soft">
-              {toast}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Hazard line — 텍스트 영역 위쪽에 분리 배치 */}
-      <div className="relative z-10 shrink-0 px-4 pb-1" aria-hidden>
-        <div
-          className={`h-0 w-full border-t-[3px] border-dashed transition-colors duration-300 ${
-            near ? "border-destructive" : "border-destructive/30"
-          }`}
-        />
-        <span
-          className={`absolute -top-2 right-5 rounded-full px-2 py-0.5 font-display text-[0.65rem] tracking-wide transition-colors duration-300 ${
-            near ? "bg-destructive text-white" : "bg-destructive/15 text-destructive/70"
-          }`}
-        >
-          위험
-        </span>
-      </div>
-
-      {/* Bottom bar — 하나의 음성 입력 바로 통합 */}
-      <footer className="relative z-10 space-y-2.5 px-5 pb-8 pt-3">
-        {phase === "playing" && (
-          <div className="flex items-center gap-3 rounded-3xl bg-card/95 px-4 py-3 shadow-soft backdrop-blur-sm">
-            <span className="relative grid size-11 shrink-0 place-items-center rounded-full bg-primary/10">
-              {speech.listening && (
-                <span className="absolute inset-0 animate-ping rounded-full border-2 border-primary/50" />
-              )}
-              <Mic
-                className={`size-5 ${speech.listening ? "text-primary" : "text-muted-foreground"}`}
-              />
-            </span>
-
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-base text-[#173f78]">
-                {!speech.supported
-                  ? "이 브라우저는 음성 인식을 지원하지 않아요"
-                  : heard ? (
-                      containsProfanity(heard)
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-display text-base text-[#173f78]">
+                    {!speech.supported ? (
+                      "이 브라우저는 음성 인식을 지원하지 않아요"
+                    ) : active?.state === "falling" ? (
+                      <>
+                        <b className="text-primary">{active.word}</b>
+                        <span> 을(를) 말해보세요!</span>
+                      </>
+                    ) : (
+                      "다음 친구를 준비하는 중…"
+                    )}
+                  </p>
+                  {heard && speech.supported && (
+                    <p
+                      className={`truncate text-xs ${
+                        containsProfanity(heard) ? "text-destructive" : "text-muted-foreground"
+                      }`}
+                    >
+                      {containsProfanity(heard)
                         ? "앗! 다시 또박또박 말해볼까요?"
-                        : `“${heard}”`
-                    )
-                    : active?.state === "falling" ? (
-                        <>
-                          <b className="text-primary">{active.word}</b>
-                          <span> 을(를) 말해보세요!</span>
-                        </>
-                      )
-                      : "다음 친구를 준비하는 중…"}
-              </p>
-              <Soundwave active={voiceLevel > 0} />
-            </div>
-          </div>
-        )}
+                        : `“${heard}”으로 들었어요`}
+                    </p>
+                  )}
+                  <Soundwave active={speech.speaking || voiceLevel > 0} />
+                </div>
+              </div>
+            )}
 
-        {phase === "playing" && active?.state === "falling" && active.missCount >= 3 && (
-          <button
-            onClick={() => {
-              resumeAudio();
-              passCurrent();
-            }}
-            className="mx-auto flex items-center gap-2 rounded-full bg-[#f0f6ff] px-6 py-2.5 font-display text-lg text-[#2a74d8] shadow-[0_6px_0_#c9e0fb,0_10px_18px_-6px_rgba(23,63,120,0.35)] transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-1 active:scale-[0.98]"
-          >
-            Pass
-          </button>
-        )}
-      </footer>
-
+            {phase === "playing" && active?.state === "falling" && active.missCount >= 3 && (
+              <button
+                onClick={() => {
+                  resumeAudio();
+                  passCurrent();
+                }}
+                className="mx-auto flex items-center gap-2 rounded-full bg-[#f0f6ff] px-6 py-2.5 font-display text-lg text-[#2a74d8] shadow-[0_6px_0_#c9e0fb,0_10px_18px_-6px_rgba(23,63,120,0.35)] transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-1 active:scale-[0.98]"
+              >
+                Pass
+              </button>
+            )}
+          </footer>
         </>
       )}
 
@@ -1402,7 +1446,11 @@ export function SpeakFallGame() {
                         <rect x="18" y="32" width="46" height="18" rx="9" fill="#ffffff" />
                       </g>
                     </svg>
-                    <svg viewBox="0 0 44 44" fill="none" className="absolute -top-2 left-1/2 w-10 -translate-x-1/2 short-screen:w-8">
+                    <svg
+                      viewBox="0 0 44 44"
+                      fill="none"
+                      className="absolute -top-2 left-1/2 w-10 -translate-x-1/2 short-screen:w-8"
+                    >
                       <rect x="10" y="14" width="24" height="20" rx="10" fill="url(#cjBody)" />
                       <ellipse cx="6" cy="22" rx="4" ry="6" fill="#8fd95f" />
                       <ellipse cx="38" cy="22" rx="4" ry="6" fill="#8fd95f" />
@@ -1412,7 +1460,12 @@ export function SpeakFallGame() {
                       <circle cx="27" cy="21" r="2.2" fill="#22364f" />
                       <circle cx="17.7" cy="20.2" r="0.8" fill="#ffffff" />
                       <circle cx="27.7" cy="20.2" r="0.8" fill="#ffffff" />
-                      <path d="M18 26c2 1.5 5 1.5 7 0" stroke="#22364f" strokeWidth="1.6" strokeLinecap="round" />
+                      <path
+                        d="M18 26c2 1.5 5 1.5 7 0"
+                        stroke="#22364f"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                      />
                       <defs>
                         <linearGradient id="cjBody" x1="10" y1="14" x2="10" y2="34">
                           <stop offset="0%" stopColor="#9ede6d" />
@@ -1527,14 +1580,14 @@ export function SpeakFallGame() {
                       <Play className="size-7 fill-white short-screen:size-6" />
                       모험 시작
                     </button>
-                   </div>
-                 </div>
-               </div>
+                  </div>
+                </div>
+              </div>
 
-               {/* 홈 하단 광고 배너 */}
-               <AdSenseBanner className="safe-bottom shrink-0" />
-             </div>
-           )}
+              {/* 홈 하단 광고 배너 */}
+              <AdSenseBanner className="safe-bottom shrink-0" />
+            </div>
+          )}
 
           {phase === "permission" && (
             <div className="absolute inset-0 z-[70] flex flex-col items-center justify-center gap-4 bg-sky-start px-6 text-center">
@@ -1596,7 +1649,6 @@ export function SpeakFallGame() {
                 </>
               )}
 
-
               <button
                 onClick={() => {
                   resumeAudio();
@@ -1629,7 +1681,8 @@ export function SpeakFallGame() {
                 </div>
                 <h2 className="font-display text-xl text-[#173f78]">마이크 준비하기</h2>
                 <p className="mt-2 font-ui text-sm text-[#3f6699]">
-                  영어 발음을 듣고 친구를 구하는 게임이에요. 마이크 권한을 허용하면 바로 놀 수 있어요.
+                  영어 발음을 듣고 친구를 구하는 게임이에요. 마이크 권한을 허용하면 바로 놀 수
+                  있어요.
                   <br />
                   목소리는 기기 안에서만 판정에 사용되고 저장되지 않아요.
                 </p>
@@ -1662,7 +1715,6 @@ export function SpeakFallGame() {
               </div>
             </div>
           )}
-
 
           {/* ---------- 단어 섬 고르기 ---------- */}
           {phase === "island" && (
@@ -1815,12 +1867,10 @@ export function SpeakFallGame() {
 
               {/* 탭 전환 */}
               <div className="mb-4 grid grid-cols-2 gap-1 rounded-full bg-white/70 p-1">
-                {(
-                  [
-                    { id: "basic" as const, label: "🌱 기초 지도" },
-                    { id: "world" as const, label: "🗺️ 전문 월드" },
-                  ]
-                ).map((tab) => {
+                {[
+                  { id: "basic" as const, label: "🌱 기초 지도" },
+                  { id: "world" as const, label: "🗺️ 전문 월드" },
+                ].map((tab) => {
                   const locked = tab.id === "world" && !worldUnlocked;
                   return (
                     <button
@@ -1949,7 +1999,6 @@ export function SpeakFallGame() {
               )}
             </div>
           )}
-
 
           {/* ---------- 단어 도감 ---------- */}
           {phase === "collection" && (
@@ -2101,7 +2150,11 @@ export function SpeakFallGame() {
                         setShopPreviewId(skin.id);
                       }}
                       className={`flex w-full items-center gap-4 rounded-3xl bg-white/95 p-4 text-left shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] backdrop-blur-sm transition-all ${
-                        equipped ? "ring-2 ring-[#3d8ef0]" : isPreview ? "ring-2 ring-[#f0a323]" : ""
+                        equipped
+                          ? "ring-2 ring-[#3d8ef0]"
+                          : isPreview
+                            ? "ring-2 ring-[#f0a323]"
+                            : ""
                       }`}
                     >
                       <div className="shrink-0 rounded-2xl bg-[#eaf3ff] p-2">
@@ -2175,7 +2228,6 @@ export function SpeakFallGame() {
               <p className="mt-1 text-center font-ui text-xs text-[#173f78]/60">
                 {getTrack(result.track).emoji} {getTrack(result.track).island}
               </p>
-
 
               <div className="mt-4 flex justify-center gap-2">
                 {[1, 2, 3].map((s) => (
@@ -2288,10 +2340,8 @@ export function SpeakFallGame() {
               <p className="mt-3 text-center font-ui text-xs text-[#173f78]/60">
                 {title.emoji} {title.label} · Best {best}
               </p>
-
             </div>
           )}
-
         </div>
       )}
 
@@ -2304,7 +2354,6 @@ export function SpeakFallGame() {
           style={{ animation: "float-y 4.5s ease-in-out infinite" }}
         />
       )}
-
     </div>
   );
 }

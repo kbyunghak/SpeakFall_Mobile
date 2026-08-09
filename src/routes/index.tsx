@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="min-h-[100dvh] bg-background">
+    <main className="bg-background">
       <SpeakFallGame />
     </main>
   );

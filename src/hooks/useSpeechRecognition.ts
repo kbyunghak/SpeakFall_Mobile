@@ -33,6 +33,7 @@ function isNativeRuntime() {
 export function useSpeechRecognition(onResult: (r: Result) => void) {
   const [supported, setSupported] = useState(true);
   const [listening, setListening] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   const wantRef = useRef(false);
@@ -45,7 +46,19 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
   const nativeStateListenerRef = useRef<PluginListenerHandle | null>(null);
   const nativeRestartTimerRef = useRef<number | null>(null);
   const nativeListenRef = useRef<() => Promise<void>>(async () => {});
+  const speakingTimerRef = useRef<number | null>(null);
   const isNative = useRef(false);
+
+  const markSpeaking = useCallback(() => {
+    setSpeaking(true);
+    if (speakingTimerRef.current !== null) {
+      window.clearTimeout(speakingTimerRef.current);
+    }
+    speakingTimerRef.current = window.setTimeout(() => {
+      speakingTimerRef.current = null;
+      setSpeaking(false);
+    }, 700);
+  }, []);
 
   useEffect(() => {
     isNative.current = isNativeRuntime();
@@ -65,9 +78,10 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
           nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
-              for (const m of data?.matches ?? []) {
-                cbRef.current({ transcript: m, isFinal: false });
-              }
+              const primaryMatch = data?.matches?.[0];
+              if (!primaryMatch) return;
+              markSpeaking();
+              cbRef.current({ transcript: primaryMatch, isFinal: false });
             },
           );
           nativeStateListenerRef.current = await SpeechRecognition.addListener(
@@ -79,6 +93,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
               }
 
               setListening(false);
+              setSpeaking(false);
               if (!wantRef.current) return;
               if (nativeRestartTimerRef.current !== null) {
                 window.clearTimeout(nativeRestartTimerRef.current);
@@ -100,6 +115,11 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
           window.clearTimeout(nativeRestartTimerRef.current);
           nativeRestartTimerRef.current = null;
         }
+        if (speakingTimerRef.current !== null) {
+          window.clearTimeout(speakingTimerRef.current);
+          speakingTimerRef.current = null;
+        }
+        setSpeaking(false);
         try {
           nativePartialListenerRef.current?.remove?.();
           nativeStateListenerRef.current?.remove?.();
@@ -122,10 +142,12 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     rec.interimResults = true;
     rec.maxAlternatives = 3;
     rec.onresult = (e: any) => {
+      markSpeaking();
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i];
-        for (let a = 0; a < res.length; a++) {
-          cbRef.current({ transcript: res[a].transcript as string, isFinal: res.isFinal });
+        const primaryResult = res[0];
+        if (primaryResult) {
+          cbRef.current({ transcript: primaryResult.transcript as string, isFinal: res.isFinal });
         }
       }
     };
@@ -139,6 +161,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
       }
     };
     rec.onend = () => {
+      setSpeaking(false);
       if (wantRef.current) {
         try {
           rec.start();
@@ -159,7 +182,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
       }
       recRef.current = null;
     };
-  }, []);
+  }, [markSpeaking]);
 
   /** 네이티브 인식 세션 시작(세션이 끝나면 원할 때 자동 재시작) */
   const nativeListen = useCallback(async () => {
@@ -177,6 +200,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
       const message = cause instanceof Error ? cause.message : String(cause);
       setError(`음성 인식을 시작할 수 없습니다: ${message}`);
       setListening(false);
+      setSpeaking(false);
     }
   }, []);
   nativeListenRef.current = nativeListen;
@@ -249,6 +273,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
 
   const stop = useCallback(() => {
     wantRef.current = false;
+    setSpeaking(false);
     if (isNative.current) {
       if (nativeRestartTimerRef.current !== null) {
         window.clearTimeout(nativeRestartTimerRef.current);
@@ -270,5 +295,5 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     setListening(false);
   }, []);
 
-  return { supported, listening, error, start, stop, reset };
+  return { supported, listening, speaking, error, start, stop, reset };
 }
