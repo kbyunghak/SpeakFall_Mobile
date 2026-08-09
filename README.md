@@ -16,6 +16,16 @@ A public production demo is not currently documented. The project can be run loc
 
 The project is connected to [Lovable](https://lovable.dev/projects/d755d12c-b330-40c7-838d-8112ce3deb2f) for synchronized development.
 
+### Screenshots
+
+<p align="center">
+  <a href="docs/screenshots/home.png"><img src="docs/screenshots/home.png" width="250" alt="SpeakFall home screen with speech recognition difficulty selection"></a>
+  <a href="docs/screenshots/gameplay.png"><img src="docs/screenshots/gameplay.png" width="250" alt="Pronunciation rescue gameplay showing the target word walk"></a>
+  <a href="docs/screenshots/round-result.png"><img src="docs/screenshots/round-result.png" width="250" alt="Round result with accuracy, combo, rescued friends, and coin reward"></a>
+</p>
+
+Additional screens are available in the [screenshot gallery](docs/screenshots/).
+
 ## Problem
 
 Vocabulary study often emphasizes recognition and memorization while giving learners too few low-pressure opportunities to speak. Conventional pronunciation drills can also feel repetitive, making it difficult to sustain practice and observe progress.
