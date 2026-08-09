@@ -1,0 +1,233 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+
+type Result = { transcript: string; isFinal: boolean };
+
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+  onresult: ((e: any) => void) | null;
+  onerror: ((e: any) => void) | null;
+  onend: (() => void) | null;
+};
+
+function getCtor(): (new () => SpeechRecognitionLike) | null {
+  if (typeof window === "undefined") return null;
+  const w = window as any;
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+}
+
+/** Capacitor(Android/iOS) 네이티브 런타임인지 확인 */
+function isNativeRuntime() {
+  if (typeof window === "undefined") return false;
+  const cap = (window as any).Capacitor;
+  return !!cap?.isNativePlatform?.();
+}
+
+export function useSpeechRecognition(onResult: (r: Result) => void) {
+  const [supported, setSupported] = useState(true);
+  const [listening, setListening] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const recRef = useRef<SpeechRecognitionLike | null>(null);
+  const wantRef = useRef(false);
+  const cbRef = useRef(onResult);
+  cbRef.current = onResult;
+
+  // 네이티브(Android WebView는 Web Speech API 미지원) 경로용 레퍼런스
+  const nativeRef = useRef<any>(null);
+  const nativeListenerRef = useRef<any>(null);
+  const isNative = useRef(false);
+
+  useEffect(() => {
+    isNative.current = isNativeRuntime();
+
+    if (isNative.current) {
+      let cancelled = false;
+      (async () => {
+        try {
+          const { SpeechRecognition } = await import("@capacitor-community/speech-recognition");
+          if (cancelled) return;
+          nativeRef.current = SpeechRecognition;
+          const avail = await SpeechRecognition.available();
+          if (!avail?.available) {
+            setSupported(false);
+            return;
+          }
+          nativeListenerRef.current = await SpeechRecognition.addListener(
+            "partialResults",
+            (data: { matches?: string[] }) => {
+              for (const m of data?.matches ?? []) {
+                cbRef.current({ transcript: m, isFinal: false });
+              }
+            },
+          );
+        } catch {
+          setSupported(false);
+        }
+      })();
+      return () => {
+        cancelled = true;
+        wantRef.current = false;
+        try {
+          nativeListenerRef.current?.remove?.();
+          nativeRef.current?.stop?.();
+        } catch {
+          /* noop */
+        }
+        nativeRef.current = null;
+      };
+    }
+
+    const Ctor = getCtor();
+    if (!Ctor) {
+      setSupported(false);
+      return;
+    }
+    const rec = new Ctor();
+    rec.lang = "en-US";
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.maxAlternatives = 3;
+    rec.onresult = (e: any) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const res = e.results[i];
+        for (let a = 0; a < res.length; a++) {
+          cbRef.current({ transcript: res[a].transcript as string, isFinal: res.isFinal });
+        }
+      }
+    };
+    rec.onerror = (e: any) => {
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        setError("마이크 권한이 필요합니다.");
+        wantRef.current = false;
+        setListening(false);
+      } else if (e.error === "no-speech") {
+        setError(null);
+      }
+    };
+    rec.onend = () => {
+      if (wantRef.current) {
+        try {
+          rec.start();
+        } catch {
+          /* restart race */
+        }
+      } else {
+        setListening(false);
+      }
+    };
+    recRef.current = rec;
+    return () => {
+      wantRef.current = false;
+      try {
+        rec.abort();
+      } catch {
+        /* noop */
+      }
+      recRef.current = null;
+    };
+  }, []);
+
+  /** 네이티브 인식 세션 시작(세션이 끝나면 원할 때 자동 재시작) */
+  const nativeListen = useCallback(async () => {
+    const SR = nativeRef.current;
+    if (!SR) return;
+    try {
+      await SR.start({
+        language: "en-US",
+        maxResults: 3,
+        partialResults: true,
+        popup: false,
+      });
+    } catch {
+      /* 세션 종료/중복 시작 */
+    }
+    if (wantRef.current) {
+      // 안드로이드는 한 세션이 짧게 끝나므로 계속 이어서 듣기
+      setTimeout(() => {
+        if (wantRef.current) void nativeListen();
+      }, 150);
+    }
+  }, []);
+
+  const start = useCallback(() => {
+    if (isNative.current) {
+      const SR = nativeRef.current;
+      if (!SR) return;
+      wantRef.current = true;
+      setError(null);
+      setListening(true);
+      void (async () => {
+        try {
+          const perm = await SR.requestPermissions();
+          if (perm?.speechRecognition && perm.speechRecognition !== "granted") {
+            setError("마이크 권한이 필요합니다.");
+            wantRef.current = false;
+            setListening(false);
+            return;
+          }
+        } catch {
+          /* 권한 API 미지원 시 그대로 진행 */
+        }
+        void nativeListen();
+      })();
+      return;
+    }
+
+    const rec = recRef.current;
+    if (!rec) return;
+    wantRef.current = true;
+    setError(null);
+    try {
+      rec.start();
+      setListening(true);
+    } catch {
+      setListening(true);
+    }
+  }, [nativeListen]);
+
+  /** Restart the engine so the accumulated transcript buffer is cleared. */
+  const reset = useCallback(() => {
+    if (isNative.current) {
+      if (!wantRef.current) return;
+      try {
+        void nativeRef.current?.stop?.();
+      } catch {
+        /* noop */
+      }
+      return;
+    }
+    const rec = recRef.current;
+    if (!rec || !wantRef.current) return;
+    try {
+      rec.abort(); // onend restarts it because wantRef is still true
+    } catch {
+      /* noop */
+    }
+  }, []);
+
+  const stop = useCallback(() => {
+    wantRef.current = false;
+    if (isNative.current) {
+      try {
+        void nativeRef.current?.stop?.();
+      } catch {
+        /* noop */
+      }
+      setListening(false);
+      return;
+    }
+    try {
+      recRef.current?.stop();
+    } catch {
+      /* noop */
+    }
+    setListening(false);
+  }, []);
+
+  return { supported, listening, error, start, stop, reset };
+}
