@@ -8,7 +8,7 @@ import {
   type CheckResult,
 } from "@/lib/speakfall/selftest";
 
-const title = "사전 설치 테스트 — 말해봐! 영단어 구조대";
+const title = "사전 설치 테스트 — 말해봐!영단어 구조대";
 const description =
   "릴리즈 APK 설치 후 마이크, 음성 인식, 권한, 광고 영역, 저장소를 자동으로 점검하는 테스트 페이지입니다.";
 

@@ -72,7 +72,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const title = "말해봐! 영단어 구조대";
+const title = "말해봐!영단어 구조대";
 const description =
   "단어를 말하면 낙하산이 펼쳐져요! 하늘에서 떨어지는 젤리 친구들의 영어 단어를 정확히 발음해 구조하세요.";
 

@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-const title = "개인정보처리방침 — 말해봐! 영단어 구조대";
+const title = "개인정보처리방침 — 말해봐!영단어 구조대";
 const description =
-  "말해봐! 영단어 구조대는 음성 인식과 기기 내 저장소를 사용하며, 개인정보를 최소로 수집합니다.";
+  "말해봐!영단어 구조대는 음성 인식과 기기 내 저장소를 사용하며, 개인정보를 최소로 수집합니다.";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -34,7 +34,7 @@ function PrivacyPage() {
         </h1>
 
         <p className="mb-10 text-slate-400">
-          <span className="font-semibold text-sky-300">말해봐! 영단어 구조대</span>는
+          <span className="font-semibold text-sky-300">말해봐!영단어 구조대</span>는
           어린이를 포함한 모든 사용자가 안심하고 즐길 수 있는 영어 학습 게임입니다.
           본 방침은 어떤 정보를 어떻게 사용하는지 설명합니다.
         </p>

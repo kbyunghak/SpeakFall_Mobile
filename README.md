@@ -6,7 +6,7 @@ Pronounce English words to rescue falling friends in a playful, level-based lang
 
 ## Overview
 
-SpeakFall (말해봐! 영단어 구조대) turns English pronunciation practice into short rescue missions. Learners select a vocabulary track and level, speak the displayed word, and receive immediate game feedback while building a personal word collection and progression record.
+SpeakFall (말해봐!영단어 구조대) turns English pronunciation practice into short rescue missions. Learners select a vocabulary track and level, speak the displayed word, and receive immediate game feedback while building a personal word collection and progression record.
 
 **Project Type:** Language Learning Web Application
 
@@ -138,7 +138,7 @@ Implemented in the current codebase:
 - Core pronunciation rescue loop and three difficulty settings
 - Vocabulary tracks, level progression, word collection, scoring, rewards, and skins
 - Browser and Android speech-recognition paths
-- Android package configuration for `com.speakfall.game`, version `1.0.0` (`versionCode 1`)
+- Android package configuration for `com.joggle.speakfall`, version `1.0.0` (`versionCode 1`)
 - Microphone, storage, audio, safe-area, network, and advertising-area checks on `/selftest`
 - Store-submission notes for Amazon Appstore
 

@@ -1648,7 +1648,7 @@ export function SpeakFallGame() {
 
                     <img
                       src={titleLockup}
-                      alt="말해봐! 영단어 구조대"
+                      alt="말해봐!영단어 구조대"
                       className="relative z-10 mx-auto w-full max-w-[21.6rem] short-screen:max-w-52 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)]"
                       style={{ animation: "breathe 6s ease-in-out infinite" }}
                     />

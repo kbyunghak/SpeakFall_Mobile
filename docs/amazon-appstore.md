@@ -1,4 +1,4 @@
-# Amazon Appstore 출시 가이드 — 말해봐! 영단어 구조대
+# Amazon Appstore 출시 가이드 — 말해봐!영단어 구조대
 
 이 저장소에는 Capacitor 기반 안드로이드 프로젝트(`android/`)가 포함되어 있습니다.
 Amazon Appstore는 **APK**(또는 AAB) 업로드를 받습니다. 아래 순서대로 진행하세요.
@@ -64,7 +64,7 @@ Android Studio를 쓰면 `npx cap open android` → Build > Generate Signed Bund
 1. https://developer.amazon.com 계정 생성 (무료)
 2. Apps & Games > Add New App > Android
 3. 필수 입력
-   - 앱 이름: 말해봐! 영단어 구조대
+   - 앱 이름: 말해봐!영단어 구조대
    - 카테고리: Education (또는 Educational Games)
    - 연령 등급: Everyone / 어린이 대상 → **COPPA 관련 문항 정확히 응답**
    - 개인정보처리방침 URL (필수)

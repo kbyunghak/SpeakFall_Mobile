@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">말해봐! 영단어 구조대</string>
-    <string name="title_activity_main">말해봐! 영단어 구조대</string>
-    <string name="package_name">com.speakfall.game</string>
-    <string name="custom_url_scheme">com.speakfall.game</string>
+    <string name="app_name">말해봐!영단어 구조대</string>
+    <string name="title_activity_main">말해봐!영단어 구조대</string>
+    <string name="package_name">com.joggle.speakfall</string>
+    <string name="custom_url_scheme">com.joggle.speakfall</string>
 </resources>

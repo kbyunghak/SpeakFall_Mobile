@@ -1,4 +1,4 @@
-package com.speakfall.game;
+package com.joggle.speakfall;
 
 import android.os.Build;
 import android.os.Bundle;

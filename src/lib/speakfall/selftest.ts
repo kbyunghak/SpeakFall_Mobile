@@ -251,7 +251,7 @@ export function buildReport(results: CheckResult[]): string {
   const info = runtimeInfo();
   const s = summarize(results);
   const lines = [
-    "말해봐! 영단어 구조대 — 사전 설치 테스트 리포트",
+    "말해봐!영단어 구조대 — 사전 설치 테스트 리포트",
     `일시: ${new Date().toISOString()}`,
     `환경: ${info.native ? "네이티브" : "웹"} / ${info.platform} / ${info.viewport} / DPR ${info.dpr}`,
     `UA: ${info.userAgent}`,

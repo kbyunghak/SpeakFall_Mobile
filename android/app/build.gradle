@@ -16,10 +16,10 @@ if (keystorePropertiesFile.exists() && !hasReleaseSigning) {
 }
 
 android {
-    namespace = "com.speakfall.game"
+    namespace = "com.joggle.speakfall"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.speakfall.game"
+        applicationId "com.joggle.speakfall"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
