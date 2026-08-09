@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { SpeechRecognitionPlugin } from "@capacitor-community/speech-recognition";
+import type { PluginListenerHandle } from "@capacitor/core";
 
 type Result = { transcript: string; isFinal: boolean };
 
@@ -38,8 +40,11 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
   cbRef.current = onResult;
 
   // 네이티브(Android WebView는 Web Speech API 미지원) 경로용 레퍼런스
-  const nativeRef = useRef<any>(null);
-  const nativeListenerRef = useRef<any>(null);
+  const nativeRef = useRef<SpeechRecognitionPlugin | null>(null);
+  const nativePartialListenerRef = useRef<PluginListenerHandle | null>(null);
+  const nativeStateListenerRef = useRef<PluginListenerHandle | null>(null);
+  const nativeRestartTimerRef = useRef<number | null>(null);
+  const nativeListenRef = useRef<() => Promise<void>>(async () => {});
   const isNative = useRef(false);
 
   useEffect(() => {
@@ -57,12 +62,31 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
             setSupported(false);
             return;
           }
-          nativeListenerRef.current = await SpeechRecognition.addListener(
+          nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
               for (const m of data?.matches ?? []) {
                 cbRef.current({ transcript: m, isFinal: false });
               }
+            },
+          );
+          nativeStateListenerRef.current = await SpeechRecognition.addListener(
+            "listeningState",
+            (data: { status: "started" | "stopped" }) => {
+              if (data.status === "started") {
+                setListening(true);
+                return;
+              }
+
+              setListening(false);
+              if (!wantRef.current) return;
+              if (nativeRestartTimerRef.current !== null) {
+                window.clearTimeout(nativeRestartTimerRef.current);
+              }
+              nativeRestartTimerRef.current = window.setTimeout(() => {
+                nativeRestartTimerRef.current = null;
+                if (wantRef.current) void nativeListenRef.current();
+              }, 250);
             },
           );
         } catch {
@@ -72,8 +96,13 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
       return () => {
         cancelled = true;
         wantRef.current = false;
+        if (nativeRestartTimerRef.current !== null) {
+          window.clearTimeout(nativeRestartTimerRef.current);
+          nativeRestartTimerRef.current = null;
+        }
         try {
-          nativeListenerRef.current?.remove?.();
+          nativePartialListenerRef.current?.remove?.();
+          nativeStateListenerRef.current?.remove?.();
           nativeRef.current?.stop?.();
         } catch {
           /* noop */
@@ -143,16 +172,14 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
         partialResults: true,
         popup: false,
       });
-    } catch {
-      /* 세션 종료/중복 시작 */
-    }
-    if (wantRef.current) {
-      // 안드로이드는 한 세션이 짧게 끝나므로 계속 이어서 듣기
-      setTimeout(() => {
-        if (wantRef.current) void nativeListen();
-      }, 150);
+      setListening(true);
+    } catch (cause) {
+      const message = cause instanceof Error ? cause.message : String(cause);
+      setError(`음성 인식을 시작할 수 없습니다: ${message}`);
+      setListening(false);
     }
   }, []);
+  nativeListenRef.current = nativeListen;
 
   const start = useCallback(() => {
     if (isNative.current) {
@@ -213,6 +240,10 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
   const stop = useCallback(() => {
     wantRef.current = false;
     if (isNative.current) {
+      if (nativeRestartTimerRef.current !== null) {
+        window.clearTimeout(nativeRestartTimerRef.current);
+        nativeRestartTimerRef.current = null;
+      }
       try {
         void nativeRef.current?.stop?.();
       } catch {
