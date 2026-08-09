@@ -221,11 +221,21 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
   const reset = useCallback(() => {
     if (isNative.current) {
       if (!wantRef.current) return;
+      if (nativeRestartTimerRef.current !== null) {
+        window.clearTimeout(nativeRestartTimerRef.current);
+      }
       try {
         void nativeRef.current?.stop?.();
       } catch {
         /* noop */
       }
+      setListening(false);
+      // The Android plugin does not consistently emit listeningState=stopped
+      // when stop() is called directly, so reset must guarantee the next session.
+      nativeRestartTimerRef.current = window.setTimeout(() => {
+        nativeRestartTimerRef.current = null;
+        if (wantRef.current) void nativeListenRef.current();
+      }, 350);
       return;
     }
     const rec = recRef.current;
