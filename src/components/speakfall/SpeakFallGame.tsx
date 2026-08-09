@@ -832,7 +832,12 @@ export function SpeakFallGame() {
       // 화면에는 가장 가능성이 높은 첫 결과만 보여주되, 정답 판정에는
       // Android/브라우저가 제공한 여러 후보를 사용해 발음 인식 누락을 줄입니다.
       const candidates = alternatives.length > 0 ? alternatives : [transcript];
-      const s = Math.max(...candidates.map((candidate) => scoreTranscript(cur, candidate)));
+      const forgiveSingleSoundDifference = strictRef.current !== "hard";
+      const s = Math.max(
+        ...candidates.map((candidate) =>
+          scoreTranscript(cur, candidate, forgiveSingleSoundDifference),
+        ),
+      );
       const threshold = Math.max(
         0.45,
         STRICTNESS[strictRef.current].threshold - getTrack(trackRef.current).leniency,

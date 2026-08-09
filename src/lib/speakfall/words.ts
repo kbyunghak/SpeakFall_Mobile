@@ -59,12 +59,9 @@ export function randomWord(
 const normalize = (s: string) =>
   s.toLowerCase().replace(/[^a-z\s]/g, "").replace(/\s+/g, " ").trim();
 
-/** Levenshtein-based similarity, 0..1 */
-export function similarity(a: string, b: string): number {
+function editDistance(a: string, b: string): number {
   const s = normalize(a);
   const t = normalize(b);
-  if (!s || !t) return 0;
-  if (s === t) return 1;
   const d: number[][] = Array.from({ length: s.length + 1 }, (_, i) =>
     Array.from({ length: t.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)),
   );
@@ -77,17 +74,38 @@ export function similarity(a: string, b: string): number {
       );
     }
   }
-  return 1 - d[s.length]![t.length]! / Math.max(s.length, t.length);
+  return d[s.length]![t.length]!;
+}
+
+/** Levenshtein-based similarity, 0..1 */
+export function similarity(a: string, b: string): number {
+  const s = normalize(a);
+  const t = normalize(b);
+  if (!s || !t) return 0;
+  if (s === t) return 1;
+  return 1 - editDistance(s, t) / Math.max(s.length, t.length);
 }
 
 /** Best match score of a spoken transcript against a target word. */
-export function scoreTranscript(item: WordItem, transcript: string): number {
+export function scoreTranscript(
+  item: WordItem,
+  transcript: string,
+  forgiveSingleSoundDifference = false,
+): number {
   const spokenTokens = normalize(transcript).split(" ").filter(Boolean);
   const candidates = [item.word, ...(item.accepts ?? [])];
   let best = 0;
   for (const c of candidates) {
     best = Math.max(best, similarity(c, transcript));
-    for (const tok of spokenTokens) best = Math.max(best, similarity(c, tok));
+    if (forgiveSingleSoundDifference && editDistance(c, transcript) === 1) {
+      best = Math.max(best, 0.75);
+    }
+    for (const tok of spokenTokens) {
+      best = Math.max(best, similarity(c, tok));
+      if (forgiveSingleSoundDifference && editDistance(c, tok) === 1) {
+        best = Math.max(best, 0.75);
+      }
+    }
   }
   return best;
 }
