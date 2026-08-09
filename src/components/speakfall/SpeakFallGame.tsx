@@ -27,6 +27,7 @@ import {
   RESCUES_PER_LEVEL_UP,
   WORDS_PER_LEVEL,
   getWordsByLevel,
+  getPronunciationFocus,
   randomWord,
   scoreTranscript,
   STRICTNESS,
@@ -557,6 +558,7 @@ export function SpeakFallGame() {
           [...existing, ...added, ...cleared, ...usedRef.current],
           recentRef.current,
           track,
+          strictRef.current === "hard",
         );
         if (!added.has(w.word) && !existing.has(w.word) && !usedRef.current.has(w.word)) {
           added.add(w.word);
@@ -1355,6 +1357,11 @@ export function SpeakFallGame() {
                   <span className="mt-1 font-ui text-sm text-muted-foreground">
                     {active.meaning}
                   </span>
+                  {strictness === "hard" && getPronunciationFocus(active) && (
+                    <span className="mt-1 rounded-full bg-destructive/10 px-2.5 py-0.5 font-display text-xs text-destructive">
+                      발음 집중 · {getPronunciationFocus(active)} 구별
+                    </span>
+                  )}
                 </div>
               </div>
             )}

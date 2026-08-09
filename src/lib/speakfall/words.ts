@@ -35,6 +35,14 @@ export function getWordsByLevel(level: number, track: TrackType = "basic"): Word
   return getWordsByTrackLevel(level, track);
 }
 
+/** 한국어 화자가 자주 혼동하는 자음 대비를 포함한 단어인지 확인합니다. */
+export function getPronunciationFocus(item: WordItem): "p / f" | "b / v" | null {
+  const pronunciation = item.ipa.toLowerCase();
+  if (/[pf]/.test(pronunciation)) return "p / f";
+  if (/[bv]/.test(pronunciation)) return "b / v";
+  return null;
+}
+
 /**
  * Pick a word for the current stage.
  * @param level - current game level (1~10)
@@ -46,13 +54,18 @@ export function randomWord(
   exclude: string[] = [],
   recent: string[] = [],
   track: TrackType = "basic",
+  preferPronunciationFocus = false,
 ): WordItem {
   const pool = getWordsByLevel(level, track);
   const available = pool.filter((w) => !exclude.includes(w.word));
 
   // 우선: exclude에 없고 recent에도 없는 단어
   const fresh = available.filter((w) => !recent.includes(w.word));
-  const list = fresh.length ? fresh : available.length ? available : pool.length ? pool : WORDS;
+  const baseList = fresh.length ? fresh : available.length ? available : pool.length ? pool : WORDS;
+  const focused = preferPronunciationFocus
+    ? baseList.filter((word) => getPronunciationFocus(word) !== null)
+    : [];
+  const list = focused.length > 0 ? focused : baseList;
   return list[Math.floor(Math.random() * list.length)]!;
 }
 
