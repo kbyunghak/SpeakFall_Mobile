@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.joggle.speakfall",
+  appId: "com.joygle.speakfall",
   appName: "말해봐!영단어 구조대",
   webDir: "dist/client",
   server: {

@@ -138,7 +138,7 @@ Implemented in the current codebase:
 - Core pronunciation rescue loop and three difficulty settings
 - Vocabulary tracks, level progression, word collection, scoring, rewards, and skins
 - Browser and Android speech-recognition paths
-- Android package configuration for `com.joggle.speakfall`, version `1.0.0` (`versionCode 1`)
+- Android package configuration for `com.joygle.speakfall`, version `1.0.0` (`versionCode 1`)
 - Microphone, storage, audio, safe-area, network, and advertising-area checks on `/selftest`
 - Store-submission notes for Amazon Appstore
 
