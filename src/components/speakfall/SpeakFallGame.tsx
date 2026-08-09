@@ -963,6 +963,9 @@ export function SpeakFallGame() {
       setHeard("");
       setToast(null);
       setResult(null);
+      setActive(null);
+      setNextWord(null);
+      setParticles([]);
       setPermissionDenied(false);
       setLevel(startLevel);
       setTrack(startTrack);
@@ -976,6 +979,8 @@ export function SpeakFallGame() {
       recentRef.current = [];
       roundWordsRef.current = [];
       wordQueueRef.current = [];
+      gapRef.current = 0;
+      missGuard.current = null;
       statsRef.current = { score: 0, rescued: 0, attempts: 0, bestCombo: 0, hp: MAX_HP };
       // 권한이 이미 허용됐거나 마이크를 쓸 수 없는 기기면 바로 시작,
       // 그 외에는 권한 안내 화면을 먼저 보여줍니다.
@@ -1191,7 +1196,7 @@ export function SpeakFallGame() {
                 {track !== "basic" ? `${getTrack(track).emoji} ` : ""}Lv.{level}
               </span>
               <span className="font-ui text-xs text-muted-foreground">
-                남은 단어 {wordsRemaining}/{MAX_WORDS_PER_LEVEL}
+                남은 단어 {wordsRemaining}
               </span>
             </div>
             <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-foreground/10">
@@ -1400,20 +1405,16 @@ export function SpeakFallGame() {
               <div className="flex items-center gap-3 rounded-3xl bg-card/95 px-4 py-2.5 shadow-soft backdrop-blur-sm">
                 <span
                   className={`relative grid size-11 shrink-0 place-items-center rounded-full transition-colors ${
-                    speech.speaking ? "bg-destructive/15" : "bg-primary/10"
+                    speech.listening ? "bg-destructive/15" : "bg-primary/10"
                   }`}
-                  aria-label={speech.speaking ? "말하는 중" : "음성 입력 대기 중"}
+                  aria-label={speech.listening ? "음성 인식 중" : "음성 입력 대기 중"}
                 >
-                  {speech.speaking && (
+                  {speech.listening && (
                     <span className="absolute inset-0 animate-ping rounded-full border-2 border-destructive/60" />
                   )}
                   <Mic
                     className={`size-5 transition-colors ${
-                      speech.speaking
-                        ? "text-destructive"
-                        : speech.listening
-                          ? "text-primary"
-                          : "text-muted-foreground"
+                      speech.listening ? "text-destructive" : "text-muted-foreground"
                     }`}
                   />
                 </span>

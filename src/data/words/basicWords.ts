@@ -67,7 +67,15 @@ export const BASIC_WORDS = [
   { word: "night", ipa: "/ˈnaɪt/", level: 1, stars: 1, meaning: "밤" },
   { word: "park", ipa: "/ˈpɑɹk/", level: 1, stars: 1, meaning: "공원" },
   { word: "pear", ipa: "/ˈpɛɹ/", level: 1, stars: 1, meaning: "배" },
-  { word: "pig", ipa: "/ˈpɪɡ/", level: 1, stars: 1, meaning: "돼지" },
+  {
+    word: "pig",
+    ipa: "/ˈpɪɡ/",
+    level: 1,
+    stars: 1,
+    meaning: "돼지",
+    // 일부 Android 영어 STT가 짧은 /pɪɡ/을 "pick"으로 반환하는 오류를 보정합니다.
+    accepts: ["pick"],
+  },
   { word: "pink", ipa: "/ˈpɪŋk/", level: 1, stars: 1, meaning: "분홍색" },
   { word: "rain", ipa: "/ˈɹeɪn/", level: 1, stars: 1, meaning: "비" },
   { word: "ring", ipa: "/ˈɹɪŋ/", level: 1, stars: 1, meaning: "반지" },
