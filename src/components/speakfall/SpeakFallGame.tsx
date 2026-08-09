@@ -657,12 +657,18 @@ export function SpeakFallGame() {
   const muteUntilRef = useRef(0);
   /** 같은 시도에서 동일한 최종 결과가 중복 처리되는 것을 막는 값 */
   const lastFinalRef = useRef("");
+  /** 틀린 발음 뒤 인식기를 새 세션으로 전환하기 위한 지연 타이머 */
+  const retrySpeechTimerRef = useRef<number | null>(null);
 
   /**
    * 모든 시도 전에 음성 인식 결과를 완전히 초기화합니다.
    * 화면 표시 문구, 중복 판정 기록, 엔진 내부 누적 버퍼까지 함께 비웁니다.
    */
   const resetSpeech = useCallback(() => {
+    if (retrySpeechTimerRef.current !== null) {
+      window.clearTimeout(retrySpeechTimerRef.current);
+      retrySpeechTimerRef.current = null;
+    }
     setHeard("");
     lastFinalRef.current = "";
     muteUntilRef.current = Date.now() + 400;
@@ -821,9 +827,27 @@ export function SpeakFallGame() {
         STRICTNESS[strictRef.current].threshold - getTrack(trackRef.current).leniency,
       );
       if (s >= threshold) {
+        if (retrySpeechTimerRef.current !== null) {
+          window.clearTimeout(retrySpeechTimerRef.current);
+          retrySpeechTimerRef.current = null;
+        }
         rescue(cur);
         return;
       }
+
+      // Android에서는 틀린 결과가 중간 결과로만 끝나는 경우가 있습니다.
+      // 사용자가 계속 말하는 동안에는 기다리고, 결과가 잠잠해지면 새 세션으로
+      // 전환해 이전 단어의 인식 버퍼가 다음 시도를 방해하지 않게 합니다.
+      if (retrySpeechTimerRef.current !== null) {
+        window.clearTimeout(retrySpeechTimerRef.current);
+      }
+      retrySpeechTimerRef.current = window.setTimeout(() => {
+        retrySpeechTimerRef.current = null;
+        lastFinalRef.current = "";
+        muteUntilRef.current = Date.now() + 400;
+        speechRef.current?.reset();
+      }, 800);
+
       if (isFinal) {
         // 같은 최종 결과가 두 번 들어오면 판정/토스트를 중복 처리하지 않습니다.
         if (lastFinalRef.current === text) return;
@@ -1387,9 +1411,9 @@ export function SpeakFallGame() {
                         containsProfanity(heard) ? "text-destructive" : "text-muted-foreground"
                       }`}
                     >
-                      {containsProfanity(heard)
-                        ? "앗! 다시 또박또박 말해볼까요?"
-                        : `“${heard}”으로 들었어요`}
+                  {containsProfanity(heard)
+                    ? "앗! 다시 또박또박 말해볼까요?"
+                    : `“${heard}”으로 들었어요 · 다시 말해보세요`}
                     </p>
                   )}
                   <Soundwave active={speech.speaking || voiceLevel > 0} />
