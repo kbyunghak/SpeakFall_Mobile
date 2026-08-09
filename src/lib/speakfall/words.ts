@@ -91,6 +91,42 @@ export function randomWord(
 const normalize = (s: string) =>
   s.toLowerCase().replace(/[^a-z\s]/g, "").replace(/\s+/g, " ").trim();
 
+/** 음성 인식 결과와 일치하는 단어의 IPA를 찾아 피드백에 사용합니다. */
+export function findTranscriptIpa(transcript: string): string | null {
+  const normalized = normalize(transcript);
+  const tokens = normalized.split(" ").filter(Boolean);
+  const exactMatch = WORDS.find((item) => {
+    const word = normalize(item.word);
+    return word === normalized || tokens.includes(word);
+  });
+  if (exactMatch) return exactMatch.ipa;
+
+  const commonRecognitionIpa: Record<string, string> = {
+    put: "/pʊt/",
+    pick: "/pɪk/",
+    matt: "/mæt/",
+    mac: "/mæk/",
+    mop: "/mɑp/",
+    past: "/pæst/",
+    pan: "/pæn/",
+    vest: "/vɛst/",
+    best: "/bɛst/",
+    sink: "/sɪŋk/",
+    sheep: "/ʃiːp/",
+  };
+  for (const token of [normalized, ...tokens]) {
+    if (commonRecognitionIpa[token]) return commonRecognitionIpa[token];
+  }
+
+  const acceptedMatch = WORDS.find((item) =>
+    (item.accepts ?? []).some((accepted) => {
+      const form = normalize(accepted);
+      return form === normalized || tokens.includes(form);
+    }),
+  );
+  return acceptedMatch?.ipa ?? null;
+}
+
 function editDistance(a: string, b: string): number {
   const s = normalize(a);
   const t = normalize(b);

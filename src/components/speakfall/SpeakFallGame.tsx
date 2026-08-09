@@ -26,6 +26,7 @@ import {
   MAX_WORDS_PER_LEVEL,
   RESCUES_PER_LEVEL_UP,
   WORDS_PER_LEVEL,
+  findTranscriptIpa,
   getWordsByLevel,
   getPronunciationFocus,
   PRONUNCIATION_FOCUSES,
@@ -883,6 +884,38 @@ export function SpeakFallGame() {
   const speechRef = useRef(speech);
   speechRef.current = speech;
 
+  /** 목표 단어를 원어민 TTS로 재생하고 재생이 끝나면 음성 인식을 다시 시작합니다. */
+  const playTargetPronunciation = useCallback(() => {
+    const target = activeRef.current;
+    if (!target || target.state !== "falling") return;
+    if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+      showToast("이 기기에서는 발음 재생을 지원하지 않아요");
+      return;
+    }
+
+    resumeAudio();
+    speechRef.current.stop();
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(target.word);
+    utterance.lang = "en-US";
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    const englishVoice = window.speechSynthesis
+      .getVoices()
+      .find((voice) => voice.lang.toLowerCase().startsWith("en-us"));
+    if (englishVoice) utterance.voice = englishVoice;
+
+    const resumeRecognition = () => {
+      window.setTimeout(() => {
+        if (phaseRef.current === "playing") speechRef.current.start();
+      }, 250);
+    };
+    utterance.onend = resumeRecognition;
+    utterance.onerror = resumeRecognition;
+    window.setTimeout(() => window.speechSynthesis.speak(utterance), 150);
+  }, [showToast]);
+
   /** 앱 실행 시 마이크 권한 상태를 확인하고, 처음이면 안내 시트를 띄웁니다. */
   useEffect(() => {
     let alive = true;
@@ -1433,18 +1466,41 @@ export function SpeakFallGame() {
                     )}
                   </p>
                   {heard && speech.supported && (
-                    <p
-                      className={`truncate text-xs ${
+                    <div
+                      className={`text-xs ${
                         containsProfanity(heard) ? "text-destructive" : "text-muted-foreground"
                       }`}
                     >
-                  {containsProfanity(heard)
-                    ? "앗! 다시 또박또박 말해볼까요?"
-                    : `“${heard}”으로 들었어요 · 다시 말해보세요`}
-                    </p>
+                      {containsProfanity(heard) ? (
+                        "앗! 다시 또박또박 말해볼까요?"
+                      ) : (
+                        <>
+                          <p className="truncate">“{heard}”으로 들었어요 · 다시 말해보세요</p>
+                          {active?.state === "falling" && (
+                            <p className="mt-0.5 truncate font-ui">
+                              목표 <b className="text-primary">{active.ipa}</b>
+                              <span className="px-1">↔</span>
+                              인식{" "}
+                              <b className="text-destructive">
+                                {findTranscriptIpa(heard) ?? "발음기호 정보 없음"}
+                              </b>
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
                   )}
                   <Soundwave active={speech.speaking || voiceLevel > 0} />
                 </div>
+                <button
+                  type="button"
+                  onClick={playTargetPronunciation}
+                  disabled={!active || active.state !== "falling"}
+                  className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary transition active:scale-95 disabled:opacity-40"
+                  aria-label={`${active?.word ?? "단어"} 발음 듣기`}
+                >
+                  <Volume2 className="size-5" />
+                </button>
               </div>
             )}
 
