@@ -321,4 +321,4 @@ Documentation-only commits should follow the shared format, for example: `docs: 
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Copyright © 2026 Andrew Kim, doing business as JOYgle Studio. All rights reserved.
