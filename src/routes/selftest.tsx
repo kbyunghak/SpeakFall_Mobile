@@ -113,12 +113,20 @@ function SelfTestPage() {
           paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom))",
         }}
       >
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-2 rounded-full bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-300 transition hover:bg-sky-500/20"
-        >
-          ← 홈으로 돌아가기
-        </Link>
+        <div className="mb-6 flex flex-wrap gap-2">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 rounded-full bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-300 transition hover:bg-sky-500/20"
+          >
+            ← 홈으로 돌아가기
+          </Link>
+          <Link
+            to="/dictation"
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-300 transition hover:bg-emerald-500/20"
+          >
+            영어 받아쓰기 테스트
+          </Link>
+        </div>
 
         <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
           사전 설치 테스트

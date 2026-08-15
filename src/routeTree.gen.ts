@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DictationRouteImport } from './routes/dictation'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SelftestRouteImport } from './routes/selftest'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DictationRoute = DictationRouteImport.update({
+  id: '/dictation',
+  path: '/dictation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -31,30 +37,34 @@ const SelftestRoute = SelftestRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dictation': typeof DictationRoute
   '/privacy': typeof PrivacyRoute
   '/selftest': typeof SelftestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dictation': typeof DictationRoute
   '/privacy': typeof PrivacyRoute
   '/selftest': typeof SelftestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dictation': typeof DictationRoute
   '/privacy': typeof PrivacyRoute
   '/selftest': typeof SelftestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacy' | '/selftest'
+  fullPaths: '/' | '/dictation' | '/privacy' | '/selftest'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacy' | '/selftest'
-  id: '__root__' | '/' | '/privacy' | '/selftest'
+  to: '/' | '/dictation' | '/privacy' | '/selftest'
+  id: '__root__' | '/' | '/dictation' | '/privacy' | '/selftest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DictationRoute: typeof DictationRoute
   PrivacyRoute: typeof PrivacyRoute
   SelftestRoute: typeof SelftestRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dictation': {
+      id: '/dictation'
+      path: '/dictation'
+      fullPath: '/dictation'
+      preLoaderRoute: typeof DictationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DictationRoute: DictationRoute,
   PrivacyRoute: PrivacyRoute,
   SelftestRoute: SelftestRoute,
 }
