@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "track": "biz",
+  "setId": 1,
+  "title": "Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "amortization",
+      "ipa": "/əˌmɔːrtəˈzeɪʃn/",
+      "meaning": "상각",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "annuity",
+      "ipa": "/əˈnuːəti/",
+      "meaning": "연금; 연금형 지급",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "appreciation",
+      "ipa": "/əˌpriːʃiˈeɪʃn/",
+      "meaning": "가치 상승; 평가",
+      "level": 4,
+      "topic": "economy"
+    },
+    {
+      "word": "arbitrage",
+      "ipa": "/ˈɑːrbɪtrɑːʒ/",
+      "meaning": "차익거래",
+      "level": 8,
+      "topic": "economy"
+    },
+    {
+      "word": "arrears",
+      "ipa": "/əˈrɪrz/",
+      "meaning": "연체금; 미지급금",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "collateral",
+      "ipa": "/kəˈlætərəl/",
+      "meaning": "담보",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "commodity",
+      "ipa": "/kəˈmɑːdəti/",
+      "meaning": "상품; 원자재",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "coupon",
+      "ipa": "/ˈkuːpɑːn/",
+      "meaning": "채권 이자표; 쿠폰",
+      "level": 4,
+      "topic": "economy"
+    },
+    {
+      "word": "depreciation",
+      "ipa": "/dɪˌpriːʃiˈeɪʃn/",
+      "meaning": "감가상각; 가치 하락",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "equities",
+      "ipa": "/ˈekwətiz/",
+      "meaning": "주식 자산",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "receivable",
+      "ipa": "/rɪˈsiːvəbl/",
+      "meaning": "미수금",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "writeoff",
+      "ipa": "/ˈraɪtɔːf/",
+      "meaning": "상각; 손실 처리",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "maturity",
+      "ipa": "/məˈtʃʊrəti/",
+      "meaning": "만기; 성숙도",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "underwriting",
+      "ipa": "/ˈʌndərraɪtɪŋ/",
+      "meaning": "인수 심사; 증권 인수",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "hedging",
+      "ipa": "/ˈhedʒɪŋ/",
+      "meaning": "위험 회피 거래",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "securitization",
+      "ipa": "/sɪˌkjʊrətəˈzeɪʃn/",
+      "meaning": "증권화",
+      "level": 9,
+      "topic": "economy"
+    },
+    {
+      "word": "recapitalization",
+      "ipa": "/ˌriːkæpɪtələˈzeɪʃn/",
+      "meaning": "자본 재구성",
+      "level": 9,
+      "topic": "economy"
+    },
+    {
+      "word": "workforce",
+      "ipa": "/ˈwɜːrkfɔːrs/",
+      "meaning": "노동 인력",
+      "level": 3,
+      "topic": "society"
+    },
+    {
+      "word": "compliance",
+      "ipa": "/kəmˈplaɪəns/",
+      "meaning": "준법; 규정 준수",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "dismissal",
+      "ipa": "/dɪsˈmɪsl/",
+      "meaning": "해고; 기각",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "harassment",
+      "ipa": "/həˈræsmənt/",
+      "meaning": "괴롭힘; 직장 내 괴롭힘",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "oversight",
+      "ipa": "/ˈoʊvərsaɪt/",
+      "meaning": "감독; 관리",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "regulator",
+      "ipa": "/ˈreɡjəleɪtər/",
+      "meaning": "규제 기관; 규제자",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "auditability",
+      "ipa": "/ˌɔːdɪtəˈbɪləti/",
+      "meaning": "감사 가능성",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "accountability",
+      "ipa": "/əˌkaʊntəˈbɪləti/",
+      "meaning": "책무성",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "diversity",
+      "ipa": "/daɪˈvɜːrsəti/",
+      "meaning": "다양성",
+      "level": 4,
+      "topic": "society"
+    },
+    {
+      "word": "inclusion",
+      "ipa": "/ɪnˈkluːʒn/",
+      "meaning": "포용; 포함",
+      "level": 4,
+      "topic": "society"
+    },
+    {
+      "word": "clientele",
+      "ipa": "/ˌklaɪənˈtel/",
+      "meaning": "고객층",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "coldcall",
+      "ipa": "/ˈkoʊldkɔːl/",
+      "meaning": "신규 영업 전화",
+      "level": 3,
+      "topic": "relation"
+    },
+    {
+      "word": "networking",
+      "ipa": "/ˈnetwɜːrkɪŋ/",
+      "meaning": "인맥 형성",
+      "level": 3,
+      "topic": "relation"
+    },
+    {
+      "word": "touchpoint",
+      "ipa": "/ˈtʌtʃpɔɪnt/",
+      "meaning": "고객 접점",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "upsell",
+      "ipa": "/ˈʌpsel/",
+      "meaning": "상위 상품 판매",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "crosssell",
+      "ipa": "/ˈkrɔːssel/",
+      "meaning": "교차 판매",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "negotiator",
+      "ipa": "/nɪˈɡoʊʃieɪtər/",
+      "meaning": "협상가",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "counteroffer",
+      "ipa": "/ˈkaʊntərˌɔːfər/",
+      "meaning": "대안 제시; 역제안",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "consensus",
+      "ipa": "/kənˈsensəs/",
+      "meaning": "합의",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "mediation",
+      "ipa": "/ˌmiːdiˈeɪʃn/",
+      "meaning": "중재",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "arbitrator",
+      "ipa": "/ˈɑːrbɪtreɪtər/",
+      "meaning": "중재인",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "outreach",
+      "ipa": "/ˈaʊtriːtʃ/",
+      "meaning": "대외 접촉; 홍보 활동",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "testimonial",
+      "ipa": "/ˌtestɪˈmoʊniəl/",
+      "meaning": "추천사; 고객 후기",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "endorsement",
+      "ipa": "/ɪnˈdɔːrsmənt/",
+      "meaning": "보증; 지지",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "patronage",
+      "ipa": "/ˈpætrənɪdʒ/",
+      "meaning": "후원; 단골 이용",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "actionable",
+      "ipa": "/ˈækʃənəbl/",
+      "meaning": "실행 가능한",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "alignment",
+      "ipa": "/əˈlaɪnmənt/",
+      "meaning": "목표 일치; 정렬",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "bottleneck",
+      "ipa": "/ˈbɑːtlnek/",
+      "meaning": "병목 현상",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "tradeoff",
+      "ipa": "/ˈtreɪdɔːf/",
+      "meaning": "상충 관계; 절충",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "turnaround",
+      "ipa": "/ˈtɜːrnəraʊnd/",
+      "meaning": "회복; 경영 정상화",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "viability",
+      "ipa": "/ˌvaɪəˈbɪləti/",
+      "meaning": "실행 가능성; 생존 가능성",
+      "level": 6,
+      "topic": "thought"
+    },
+    {
+      "word": "workaround",
+      "ipa": "/ˈwɜːrkəraʊnd/",
+      "meaning": "우회 해결책",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "prioritization",
+      "ipa": "/praɪˌɔːrətəˈzeɪʃn/",
+      "meaning": "우선순위 설정",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "optimization",
+      "ipa": "/ˌɑːptəməˈzeɪʃn/",
+      "meaning": "최적화",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "optionality",
+      "ipa": "/ˌɑːpʃəˈnæləti/",
+      "meaning": "선택 가능성",
+      "level": 7,
+      "topic": "thought"
+    },
+    {
+      "word": "foresight",
+      "ipa": "/ˈfɔːrsaɪt/",
+      "meaning": "선견지명",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "downside",
+      "ipa": "/ˈdaʊnsaɪd/",
+      "meaning": "하방 위험; 단점",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "upside",
+      "ipa": "/ˈʌpsaɪd/",
+      "meaning": "상방 잠재력; 장점",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "constraint",
+      "ipa": "/kənˈstreɪnt/",
+      "meaning": "제약 조건",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "assumption",
+      "ipa": "/əˈsʌmpʃn/",
+      "meaning": "가정",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "checkin",
+      "ipa": "/ˈtʃekɪn/",
+      "meaning": "업무 상태 확인",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "checkout",
+      "ipa": "/ˈtʃekaʊt/",
+      "meaning": "확인 완료; 퇴실 처리",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "deliverable",
+      "ipa": "/dɪˈlɪvərəbl/",
+      "meaning": "산출물",
+      "level": 4,
+      "topic": "daily"
+    },
+    {
+      "word": "handover",
+      "ipa": "/ˈhændoʊvər/",
+      "meaning": "업무 인수인계",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "offsite",
+      "ipa": "/ˈɔːfsaɪt/",
+      "meaning": "외부 행사; 오프사이트",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "reschedule",
+      "ipa": "/ˌriːˈskedʒuːl/",
+      "meaning": "일정을 다시 잡다",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "standup",
+      "ipa": "/ˈstændʌp/",
+      "meaning": "짧은 진행 회의",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "timesheet",
+      "ipa": "/ˈtaɪmʃiːt/",
+      "meaning": "근무 시간 기록표",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "workload",
+      "ipa": "/ˈwɜːrkloʊd/",
+      "meaning": "업무량",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "workflow",
+      "ipa": "/ˈwɜːrkfloʊ/",
+      "meaning": "업무 흐름",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "workstation",
+      "ipa": "/ˈwɜːrksteɪʃn/",
+      "meaning": "업무용 작업대; 컴퓨터",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "briefing",
+      "ipa": "/ˈbriːfɪŋ/",
+      "meaning": "업무 브리핑",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "debrief",
+      "ipa": "/ˌdiːˈbriːf/",
+      "meaning": "사후 보고하다",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "backlog",
+      "ipa": "/ˈbæklɔːɡ/",
+      "meaning": "미처리 업무 목록",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "timeslot",
+      "ipa": "/ˈtaɪmslɑːt/",
+      "meaning": "시간대; 일정 구간",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "breakdown",
+      "ipa": "/ˈbreɪkdaʊn/",
+      "meaning": "세부 분석; 분해",
+      "level": 3,
+      "topic": "study"
+    },
+    {
+      "word": "forecasting",
+      "ipa": "/ˈfɔːrkæstɪŋ/",
+      "meaning": "예측",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "trendline",
+      "ipa": "/ˈtrendlaɪn/",
+      "meaning": "추세선",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "benchmarking",
+      "ipa": "/ˈbentʃmɑːrkɪŋ/",
+      "meaning": "벤치마킹",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "attribution",
+      "ipa": "/ˌætrɪˈbjuːʃn/",
+      "meaning": "성과 기여도 분석",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "variance",
+      "ipa": "/ˈveriəns/",
+      "meaning": "차이; 분산",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "metric",
+      "ipa": "/ˈmetrɪk/",
+      "meaning": "측정 지표",
+      "level": 3,
+      "topic": "study"
+    },
+    {
+      "word": "analytics",
+      "ipa": "/ˌænəˈlɪtɪks/",
+      "meaning": "분석 데이터; 분석학",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "dashboarding",
+      "ipa": "/ˈdæʃbɔːrdɪŋ/",
+      "meaning": "대시보드 구성",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "modeling",
+      "ipa": "/ˈmɑːdəlɪŋ/",
+      "meaning": "모델링",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "API",
+      "ipa": "/ˌeɪpiːˈaɪ/",
+      "meaning": "응용 프로그램 인터페이스",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "automation",
+      "ipa": "/ˌɔːtəˈmeɪʃn/",
+      "meaning": "자동화",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "backend",
+      "ipa": "/ˈbækend/",
+      "meaning": "백엔드",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "latency",
+      "ipa": "/ˈleɪtənsi/",
+      "meaning": "지연 시간",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "uptime",
+      "ipa": "/ˈʌptaɪm/",
+      "meaning": "서비스 가동 시간",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "webhook",
+      "ipa": "/ˈwebhʊk/",
+      "meaning": "웹훅",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "middleware",
+      "ipa": "/ˈmɪdlwer/",
+      "meaning": "미들웨어",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "microservice",
+      "ipa": "/ˈmaɪkroʊˌsɜːrvɪs/",
+      "meaning": "마이크로서비스",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "encryption",
+      "ipa": "/ɪnˈkrɪpʃn/",
+      "meaning": "암호화",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "firewall",
+      "ipa": "/ˈfaɪərwɔːl/",
+      "meaning": "방화벽",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "bandwidth",
+      "ipa": "/ˈbændwɪdθ/",
+      "meaning": "대역폭",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "deployment",
+      "ipa": "/dɪˈplɔɪmənt/",
+      "meaning": "배포",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "rollback",
+      "ipa": "/ˈroʊlbæk/",
+      "meaning": "되돌리기; 롤백",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "sandbox",
+      "ipa": "/ˈsændbɑːks/",
+      "meaning": "격리된 테스트 환경",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "telemetry",
+      "ipa": "/təˈlemətri/",
+      "meaning": "원격 측정 데이터",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "observability",
+      "ipa": "/əbˌzɜːrvəˈbɪləti/",
+      "meaning": "관측 가능성",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "interoperability",
+      "ipa": "/ˌɪntərˌɑːpərəˈbɪləti/",
+      "meaning": "상호 운용성",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "provisioning",
+      "ipa": "/prəˈvɪʒənɪŋ/",
+      "meaning": "시스템 자원 할당",
+      "level": 5,
+      "topic": "tech"
+    }
+  ]
+}

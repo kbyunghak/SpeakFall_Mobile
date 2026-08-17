@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "middle",
+  "setId": 2,
+  "title": "Set 2",
+  "range": {
+    "from": 101,
+    "to": 200
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "adventure",
+      "ipa": "/ədˈventʃər/",
+      "meaning": "모험",
+      "level": 1
+    },
+    {
+      "word": "airport",
+      "ipa": "/ˈerpɔːrt/",
+      "meaning": "공항",
+      "level": 1
+    },
+    {
+      "word": "album",
+      "ipa": "/ˈælbəm/",
+      "meaning": "앨범",
+      "level": 1
+    },
+    {
+      "word": "camp",
+      "ipa": "/kæmp/",
+      "meaning": "야영하다; 캠프",
+      "level": 1
+    },
+    {
+      "word": "concert",
+      "ipa": "/ˈkɑːnsərt/",
+      "meaning": "콘서트; 연주회",
+      "level": 1
+    },
+    {
+      "word": "hobby",
+      "ipa": "/ˈhɑːbi/",
+      "meaning": "취미",
+      "level": 1
+    },
+    {
+      "word": "menu",
+      "ipa": "/ˈmenjuː/",
+      "meaning": "메뉴",
+      "level": 1
+    },
+    {
+      "word": "restaurant",
+      "ipa": "/ˈrestərɑːnt/",
+      "meaning": "식당",
+      "level": 1
+    },
+    {
+      "word": "ticket",
+      "ipa": "/ˈtɪkɪt/",
+      "meaning": "표; 티켓",
+      "level": 1
+    },
+    {
+      "word": "weekend",
+      "ipa": "/ˌwiːkˈend/",
+      "meaning": "주말",
+      "level": 1
+    },
+    {
+      "word": "actor",
+      "ipa": "/ˈæktər/",
+      "meaning": "배우",
+      "level": 2
+    },
+    {
+      "word": "coach",
+      "ipa": "/koʊtʃ/",
+      "meaning": "코치; 지도하다",
+      "level": 2
+    },
+    {
+      "word": "contest",
+      "ipa": "/ˈkɑːntest/",
+      "meaning": "대회; 경연",
+      "level": 2
+    },
+    {
+      "word": "customer",
+      "ipa": "/ˈkʌstəmər/",
+      "meaning": "고객",
+      "level": 2
+    },
+    {
+      "word": "downtown",
+      "ipa": "/ˌdaʊnˈtaʊn/",
+      "meaning": "도심; 시내",
+      "level": 2
+    },
+    {
+      "word": "souvenir",
+      "ipa": "/ˌsuːvəˈnɪr/",
+      "meaning": "기념품",
+      "level": 2
+    },
+    {
+      "word": "interview",
+      "ipa": "/ˈɪntərvjuː/",
+      "meaning": "면접; 인터뷰하다",
+      "level": 2
+    },
+    {
+      "word": "manager",
+      "ipa": "/ˈmænɪdʒər/",
+      "meaning": "관리자; 매니저",
+      "level": 2
+    },
+    {
+      "word": "photograph",
+      "ipa": "/ˈfoʊtəɡræf/",
+      "meaning": "사진",
+      "level": 2
+    },
+    {
+      "word": "musician",
+      "ipa": "/mjuˈzɪʃən/",
+      "meaning": "음악가",
+      "level": 2
+    },
+    {
+      "word": "admit",
+      "ipa": "/ədˈmɪt/",
+      "meaning": "인정하다; 허락하다",
+      "level": 3
+    },
+    {
+      "word": "compliment",
+      "ipa": "/ˈkɑːmplɪmənt/",
+      "meaning": "칭찬; 칭찬하다",
+      "level": 3
+    },
+    {
+      "word": "decorate",
+      "ipa": "/ˈdekəreɪt/",
+      "meaning": "장식하다",
+      "level": 3
+    },
+    {
+      "word": "disagree",
+      "ipa": "/ˌdɪsəˈɡriː/",
+      "meaning": "동의하지 않다",
+      "level": 3
+    },
+    {
+      "word": "hesitate",
+      "ipa": "/ˈhezɪteɪt/",
+      "meaning": "망설이다",
+      "level": 3
+    },
+    {
+      "word": "participate",
+      "ipa": "/pɑːrˈtɪsəpeɪt/",
+      "meaning": "참여하다",
+      "level": 3
+    },
+    {
+      "word": "postpone",
+      "ipa": "/poʊstˈpoʊn/",
+      "meaning": "연기하다",
+      "level": 3
+    },
+    {
+      "word": "pronounce",
+      "ipa": "/prəˈnaʊns/",
+      "meaning": "발음하다",
+      "level": 3
+    },
+    {
+      "word": "renovate",
+      "ipa": "/ˈrenəveɪt/",
+      "meaning": "개조하다; 보수하다",
+      "level": 3
+    },
+    {
+      "word": "register",
+      "ipa": "/ˈredʒɪstər/",
+      "meaning": "등록하다",
+      "level": 3
+    },
+    {
+      "word": "behavior",
+      "ipa": "/bɪˈheɪvjər/",
+      "meaning": "행동; 행동 방식",
+      "level": 4
+    },
+    {
+      "word": "confidence",
+      "ipa": "/ˈkɑːnfɪdəns/",
+      "meaning": "자신감; 신뢰",
+      "level": 4
+    },
+    {
+      "word": "curiosity",
+      "ipa": "/ˌkjʊriˈɑːsəti/",
+      "meaning": "호기심",
+      "level": 4
+    },
+    {
+      "word": "friendship",
+      "ipa": "/ˈfrendʃɪp/",
+      "meaning": "우정",
+      "level": 4
+    },
+    {
+      "word": "generation",
+      "ipa": "/ˌdʒenəˈreɪʃən/",
+      "meaning": "세대",
+      "level": 4
+    },
+    {
+      "word": "independence",
+      "ipa": "/ˌɪndɪˈpendəns/",
+      "meaning": "독립; 자립",
+      "level": 4
+    },
+    {
+      "word": "personality",
+      "ipa": "/ˌpɜːrsəˈnæləti/",
+      "meaning": "성격; 개성",
+      "level": 4
+    },
+    {
+      "word": "relationship",
+      "ipa": "/rɪˈleɪʃənʃɪp/",
+      "meaning": "관계",
+      "level": 4
+    },
+    {
+      "word": "teenager",
+      "ipa": "/ˈtiːneɪdʒər/",
+      "meaning": "십 대 청소년",
+      "level": 4
+    },
+    {
+      "word": "cooperation",
+      "ipa": "/koʊˌɑːpəˈreɪʃən/",
+      "meaning": "협력",
+      "level": 4
+    },
+    {
+      "word": "agriculture",
+      "ipa": "/ˈæɡrɪkʌltʃər/",
+      "meaning": "농업",
+      "level": 5
+    },
+    {
+      "word": "atmosphere",
+      "ipa": "/ˈætməsfɪr/",
+      "meaning": "대기; 분위기",
+      "level": 5
+    },
+    {
+      "word": "electricity",
+      "ipa": "/ɪˌlekˈtrɪsəti/",
+      "meaning": "전기",
+      "level": 5
+    },
+    {
+      "word": "geography",
+      "ipa": "/dʒiˈɑːɡrəfi/",
+      "meaning": "지리; 지리학",
+      "level": 5
+    },
+    {
+      "word": "invention",
+      "ipa": "/ɪnˈvenʃən/",
+      "meaning": "발명; 발명품",
+      "level": 5
+    },
+    {
+      "word": "literature",
+      "ipa": "/ˈlɪtərətʃər/",
+      "meaning": "문학",
+      "level": 5
+    },
+    {
+      "word": "migration",
+      "ipa": "/maɪˈɡreɪʃən/",
+      "meaning": "이동; 이주",
+      "level": 5
+    },
+    {
+      "word": "nutrition",
+      "ipa": "/nuˈtrɪʃən/",
+      "meaning": "영양",
+      "level": 5
+    },
+    {
+      "word": "revolution",
+      "ipa": "/ˌrevəˈluːʃən/",
+      "meaning": "혁명; 큰 변화",
+      "level": 5
+    },
+    {
+      "word": "satellite",
+      "ipa": "/ˈsætəlaɪt/",
+      "meaning": "위성",
+      "level": 5
+    },
+    {
+      "word": "accurate",
+      "ipa": "/ˈækjərət/",
+      "meaning": "정확한",
+      "level": 6
+    },
+    {
+      "word": "appropriate",
+      "ipa": "/əˈproʊpriət/",
+      "meaning": "적절한",
+      "level": 6
+    },
+    {
+      "word": "flexible",
+      "ipa": "/ˈfleksəbl/",
+      "meaning": "유연한",
+      "level": 6
+    },
+    {
+      "word": "logical",
+      "ipa": "/ˈlɑːdʒɪkl/",
+      "meaning": "논리적인",
+      "level": 6
+    },
+    {
+      "word": "reasonable",
+      "ipa": "/ˈriːzənəbl/",
+      "meaning": "합리적인",
+      "level": 6
+    },
+    {
+      "word": "relevant",
+      "ipa": "/ˈreləvənt/",
+      "meaning": "관련 있는",
+      "level": 6
+    },
+    {
+      "word": "sufficient",
+      "ipa": "/səˈfɪʃənt/",
+      "meaning": "충분한",
+      "level": 6
+    },
+    {
+      "word": "complexity",
+      "ipa": "/kəmˈpleksəti/",
+      "meaning": "복잡성",
+      "level": 6
+    },
+    {
+      "word": "precise",
+      "ipa": "/prɪˈsaɪs/",
+      "meaning": "정확한; 정밀한",
+      "level": 6
+    },
+    {
+      "word": "valid",
+      "ipa": "/ˈvælɪd/",
+      "meaning": "타당한; 유효한",
+      "level": 6
+    },
+    {
+      "word": "circumstance",
+      "ipa": "/ˈsɜːrkəmstæns/",
+      "meaning": "상황; 환경",
+      "level": 7
+    },
+    {
+      "word": "conclusion",
+      "ipa": "/kənˈkluːʒən/",
+      "meaning": "결론",
+      "level": 7
+    },
+    {
+      "word": "evidence",
+      "ipa": "/ˈevɪdəns/",
+      "meaning": "증거; 근거",
+      "level": 7
+    },
+    {
+      "word": "motivation",
+      "ipa": "/ˌmoʊtəˈveɪʃən/",
+      "meaning": "동기",
+      "level": 7
+    },
+    {
+      "word": "prejudice",
+      "ipa": "/ˈpredʒədɪs/",
+      "meaning": "편견",
+      "level": 7
+    },
+    {
+      "word": "reputation",
+      "ipa": "/ˌrepjəˈteɪʃən/",
+      "meaning": "평판",
+      "level": 7
+    },
+    {
+      "word": "requirement",
+      "ipa": "/rɪˈkwaɪərmənt/",
+      "meaning": "요구 사항; 필요 조건",
+      "level": 7
+    },
+    {
+      "word": "significance",
+      "ipa": "/sɪɡˈnɪfɪkəns/",
+      "meaning": "중요성; 의미",
+      "level": 7
+    },
+    {
+      "word": "assumption",
+      "ipa": "/əˈsʌmpʃən/",
+      "meaning": "가정; 추정",
+      "level": 7
+    },
+    {
+      "word": "contribution",
+      "ipa": "/ˌkɑːntrɪˈbjuːʃən/",
+      "meaning": "기여",
+      "level": 7
+    },
+    {
+      "word": "acknowledge",
+      "ipa": "/əkˈnɑːlɪdʒ/",
+      "meaning": "인정하다",
+      "level": 8
+    },
+    {
+      "word": "demonstrate",
+      "ipa": "/ˈdemənstreɪt/",
+      "meaning": "입증하다; 보여 주다",
+      "level": 8
+    },
+    {
+      "word": "distinguish",
+      "ipa": "/dɪˈstɪŋɡwɪʃ/",
+      "meaning": "구별하다",
+      "level": 8
+    },
+    {
+      "word": "illustrate",
+      "ipa": "/ˈɪləstreɪt/",
+      "meaning": "설명하다; 예시를 들다",
+      "level": 8
+    },
+    {
+      "word": "investigate",
+      "ipa": "/ɪnˈvestɪɡeɪt/",
+      "meaning": "조사하다",
+      "level": 8
+    },
+    {
+      "word": "summarize",
+      "ipa": "/ˈsʌməraɪz/",
+      "meaning": "요약하다",
+      "level": 8
+    },
+    {
+      "word": "formulate",
+      "ipa": "/ˈfɔːrmjəleɪt/",
+      "meaning": "공식화하다; 만들어 내다",
+      "level": 8
+    },
+    {
+      "word": "integrate",
+      "ipa": "/ˈɪntɪɡreɪt/",
+      "meaning": "통합하다",
+      "level": 8
+    },
+    {
+      "word": "modify",
+      "ipa": "/ˈmɑːdɪfaɪ/",
+      "meaning": "수정하다",
+      "level": 8
+    },
+    {
+      "word": "verify",
+      "ipa": "/ˈverɪfaɪ/",
+      "meaning": "확인하다; 검증하다",
+      "level": 8
+    },
+    {
+      "word": "biodiversity",
+      "ipa": "/ˌbaɪoʊdaɪˈvɜːrsəti/",
+      "meaning": "생물 다양성",
+      "level": 9
+    },
+    {
+      "word": "consumption",
+      "ipa": "/kənˈsʌmpʃən/",
+      "meaning": "소비",
+      "level": 9
+    },
+    {
+      "word": "discrimination",
+      "ipa": "/dɪˌskrɪməˈneɪʃən/",
+      "meaning": "차별",
+      "level": 9
+    },
+    {
+      "word": "globalization",
+      "ipa": "/ˌɡloʊbələˈzeɪʃən/",
+      "meaning": "세계화",
+      "level": 9
+    },
+    {
+      "word": "infrastructure",
+      "ipa": "/ˈɪnfrəstrʌktʃər/",
+      "meaning": "사회 기반 시설",
+      "level": 9
+    },
+    {
+      "word": "innovation",
+      "ipa": "/ˌɪnəˈveɪʃən/",
+      "meaning": "혁신",
+      "level": 9
+    },
+    {
+      "word": "sustainability",
+      "ipa": "/səˌsteɪnəˈbɪləti/",
+      "meaning": "지속 가능성",
+      "level": 9
+    },
+    {
+      "word": "urbanization",
+      "ipa": "/ˌɜːrbənəˈzeɪʃən/",
+      "meaning": "도시화",
+      "level": 9
+    },
+    {
+      "word": "vulnerability",
+      "ipa": "/ˌvʌlnərəˈbɪləti/",
+      "meaning": "취약성",
+      "level": 9
+    },
+    {
+      "word": "inequality",
+      "ipa": "/ˌɪnɪˈkwɑːləti/",
+      "meaning": "불평등",
+      "level": 9
+    },
+    {
+      "word": "controversial",
+      "ipa": "/ˌkɑːntrəˈvɜːrʃəl/",
+      "meaning": "논란이 많은",
+      "level": 10
+    },
+    {
+      "word": "correlation",
+      "ipa": "/ˌkɔːrəˈleɪʃən/",
+      "meaning": "상관관계",
+      "level": 10
+    },
+    {
+      "word": "deteriorate",
+      "ipa": "/dɪˈtɪriəreɪt/",
+      "meaning": "악화되다",
+      "level": 10
+    },
+    {
+      "word": "inevitable",
+      "ipa": "/ɪnˈevɪtəbl/",
+      "meaning": "피할 수 없는",
+      "level": 10
+    },
+    {
+      "word": "legislation",
+      "ipa": "/ˌledʒɪsˈleɪʃən/",
+      "meaning": "법률; 입법",
+      "level": 10
+    },
+    {
+      "word": "manipulate",
+      "ipa": "/məˈnɪpjəleɪt/",
+      "meaning": "조종하다; 교묘히 다루다",
+      "level": 10
+    },
+    {
+      "word": "phenomenon",
+      "ipa": "/fəˈnɑːmənɑːn/",
+      "meaning": "현상",
+      "level": 10
+    },
+    {
+      "word": "substantial",
+      "ipa": "/səbˈstænʃəl/",
+      "meaning": "상당한; 실질적인",
+      "level": 10
+    },
+    {
+      "word": "transformation",
+      "ipa": "/ˌtrænsfərˈmeɪʃən/",
+      "meaning": "변화; 변형",
+      "level": 10
+    },
+    {
+      "word": "contradiction",
+      "ipa": "/ˌkɑːntrəˈdɪkʃən/",
+      "meaning": "모순",
+      "level": 10
+    }
+  ]
+}

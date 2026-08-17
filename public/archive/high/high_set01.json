@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "high",
+  "setId": 1,
+  "title": "Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "academic",
+      "ipa": "/ˌækəˈdemɪk/",
+      "meaning": "학업의; 학문적인",
+      "level": 1
+    },
+    {
+      "word": "adolescent",
+      "ipa": "/ˌædəˈlesnt/",
+      "meaning": "청소년",
+      "level": 1
+    },
+    {
+      "word": "assignment",
+      "ipa": "/əˈsaɪnmənt/",
+      "meaning": "과제",
+      "level": 1
+    },
+    {
+      "word": "campus",
+      "ipa": "/ˈkæmpəs/",
+      "meaning": "교정; 캠퍼스",
+      "level": 1
+    },
+    {
+      "word": "concentrate",
+      "ipa": "/ˈkɑːnsntreɪt/",
+      "meaning": "집중하다",
+      "level": 1
+    },
+    {
+      "word": "graduate",
+      "ipa": "/ˈɡrædʒuət/",
+      "meaning": "졸업생; 졸업하다",
+      "level": 1
+    },
+    {
+      "word": "lecture",
+      "ipa": "/ˈlektʃər/",
+      "meaning": "강의",
+      "level": 1
+    },
+    {
+      "word": "semester",
+      "ipa": "/səˈmestər/",
+      "meaning": "학기",
+      "level": 1
+    },
+    {
+      "word": "scholarship",
+      "ipa": "/ˈskɑːlərʃɪp/",
+      "meaning": "장학금",
+      "level": 1
+    },
+    {
+      "word": "textbook",
+      "ipa": "/ˈtekstbʊk/",
+      "meaning": "교과서",
+      "level": 1
+    },
+    {
+      "word": "ambition",
+      "ipa": "/æmˈbɪʃn/",
+      "meaning": "야망; 포부",
+      "level": 2
+    },
+    {
+      "word": "pursue",
+      "ipa": "/pərˈsuː/",
+      "meaning": "추구하다",
+      "level": 2
+    },
+    {
+      "word": "respond",
+      "ipa": "/rɪˈspɑːnd/",
+      "meaning": "응답하다",
+      "level": 2
+    },
+    {
+      "word": "struggle",
+      "ipa": "/ˈstrʌɡl/",
+      "meaning": "분투하다; 어려움을 겪다",
+      "level": 2
+    },
+    {
+      "word": "volunteer",
+      "ipa": "/ˌvɑːlənˈtɪr/",
+      "meaning": "자원봉사자; 자원하다",
+      "level": 2
+    },
+    {
+      "word": "commitment",
+      "ipa": "/kəˈmɪtmənt/",
+      "meaning": "헌신; 약속",
+      "level": 2
+    },
+    {
+      "word": "aspiration",
+      "ipa": "/ˌæspəˈreɪʃn/",
+      "meaning": "열망",
+      "level": 2
+    },
+    {
+      "word": "dedication",
+      "ipa": "/ˌdedɪˈkeɪʃn/",
+      "meaning": "헌신",
+      "level": 2
+    },
+    {
+      "word": "endeavor",
+      "ipa": "/ɪnˈdevər/",
+      "meaning": "노력; 시도",
+      "level": 2
+    },
+    {
+      "word": "accomplishment",
+      "ipa": "/əˈkɑːmplɪʃmənt/",
+      "meaning": "성취",
+      "level": 2
+    },
+    {
+      "word": "advancement",
+      "ipa": "/ədˈvænsmənt/",
+      "meaning": "발전; 진보",
+      "level": 3
+    },
+    {
+      "word": "complexity",
+      "ipa": "/kəmˈpleksəti/",
+      "meaning": "복잡성",
+      "level": 3
+    },
+    {
+      "word": "concentration",
+      "ipa": "/ˌkɑːnsnˈtreɪʃn/",
+      "meaning": "집중; 농도",
+      "level": 3
+    },
+    {
+      "word": "interaction",
+      "ipa": "/ˌɪntərˈækʃn/",
+      "meaning": "상호 작용",
+      "level": 3
+    },
+    {
+      "word": "interpretation",
+      "ipa": "/ɪnˌtɜːrprɪˈteɪʃn/",
+      "meaning": "해석",
+      "level": 3
+    },
+    {
+      "word": "justification",
+      "ipa": "/ˌdʒʌstɪfɪˈkeɪʃn/",
+      "meaning": "정당화; 근거",
+      "level": 3
+    },
+    {
+      "word": "modification",
+      "ipa": "/ˌmɑːdɪfɪˈkeɪʃn/",
+      "meaning": "수정; 변형",
+      "level": 3
+    },
+    {
+      "word": "observation",
+      "ipa": "/ˌɑːbzərˈveɪʃn/",
+      "meaning": "관찰",
+      "level": 3
+    },
+    {
+      "word": "prediction",
+      "ipa": "/prɪˈdɪkʃn/",
+      "meaning": "예측",
+      "level": 3
+    },
+    {
+      "word": "restriction",
+      "ipa": "/rɪˈstrɪkʃn/",
+      "meaning": "제한",
+      "level": 3
+    },
+    {
+      "word": "coherent",
+      "ipa": "/koʊˈhɪrənt/",
+      "meaning": "일관성 있는",
+      "level": 4
+    },
+    {
+      "word": "distinctive",
+      "ipa": "/dɪˈstɪŋktɪv/",
+      "meaning": "독특한; 구별되는",
+      "level": 4
+    },
+    {
+      "word": "inevitably",
+      "ipa": "/ɪnˈevɪtəbli/",
+      "meaning": "불가피하게",
+      "level": 4
+    },
+    {
+      "word": "subtle",
+      "ipa": "/ˈsʌtl/",
+      "meaning": "미묘한",
+      "level": 4
+    },
+    {
+      "word": "tentative",
+      "ipa": "/ˈtentətɪv/",
+      "meaning": "잠정적인; 조심스러운",
+      "level": 4
+    },
+    {
+      "word": "underlying",
+      "ipa": "/ˌʌndərˈlaɪɪŋ/",
+      "meaning": "근본적인; 기저의",
+      "level": 4
+    },
+    {
+      "word": "viable",
+      "ipa": "/ˈvaɪəbl/",
+      "meaning": "실행 가능한",
+      "level": 4
+    },
+    {
+      "word": "pervasive",
+      "ipa": "/pərˈveɪsɪv/",
+      "meaning": "만연한",
+      "level": 4
+    },
+    {
+      "word": "consecutive",
+      "ipa": "/kənˈsekjətɪv/",
+      "meaning": "연속적인",
+      "level": 4
+    },
+    {
+      "word": "sporadic",
+      "ipa": "/spəˈrædɪk/",
+      "meaning": "간헐적인",
+      "level": 4
+    },
+    {
+      "word": "diversity",
+      "ipa": "/daɪˈvɜːrsəti/",
+      "meaning": "다양성",
+      "level": 5
+    },
+    {
+      "word": "validity",
+      "ipa": "/vəˈlɪdəti/",
+      "meaning": "타당성; 유효성",
+      "level": 5
+    },
+    {
+      "word": "neutrality",
+      "ipa": "/nuːˈtræləti/",
+      "meaning": "중립성",
+      "level": 5
+    },
+    {
+      "word": "reciprocity",
+      "ipa": "/ˌresəˈprɑːsəti/",
+      "meaning": "상호성",
+      "level": 5
+    },
+    {
+      "word": "scarcity",
+      "ipa": "/ˈskersəti/",
+      "meaning": "희소성",
+      "level": 5
+    },
+    {
+      "word": "stability",
+      "ipa": "/stəˈbɪləti/",
+      "meaning": "안정성",
+      "level": 5
+    },
+    {
+      "word": "uncertainty",
+      "ipa": "/ʌnˈsɜːrtnti/",
+      "meaning": "불확실성",
+      "level": 5
+    },
+    {
+      "word": "utility",
+      "ipa": "/juːˈtɪləti/",
+      "meaning": "효용; 유용성",
+      "level": 5
+    },
+    {
+      "word": "versatility",
+      "ipa": "/ˌvɜːrsəˈtɪləti/",
+      "meaning": "다재다능함; 활용성",
+      "level": 5
+    },
+    {
+      "word": "authenticity",
+      "ipa": "/ˌɔːθenˈtɪsəti/",
+      "meaning": "진정성",
+      "level": 5
+    },
+    {
+      "word": "attainable",
+      "ipa": "/əˈteɪnəbl/",
+      "meaning": "달성 가능한",
+      "level": 6
+    },
+    {
+      "word": "converge",
+      "ipa": "/kənˈvɜːrdʒ/",
+      "meaning": "수렴하다",
+      "level": 6
+    },
+    {
+      "word": "intensify",
+      "ipa": "/ɪnˈtensɪfaɪ/",
+      "meaning": "강화하다",
+      "level": 6
+    },
+    {
+      "word": "mediate",
+      "ipa": "/ˈmiːdieɪt/",
+      "meaning": "중재하다",
+      "level": 6
+    },
+    {
+      "word": "reconcile",
+      "ipa": "/ˈrekənsaɪl/",
+      "meaning": "조정하다; 화해시키다",
+      "level": 6
+    },
+    {
+      "word": "substantiate",
+      "ipa": "/səbˈstænʃieɪt/",
+      "meaning": "입증하다",
+      "level": 6
+    },
+    {
+      "word": "synthesize",
+      "ipa": "/ˈsɪnθəsaɪz/",
+      "meaning": "종합하다",
+      "level": 6
+    },
+    {
+      "word": "validate",
+      "ipa": "/ˈvælɪdeɪt/",
+      "meaning": "검증하다; 타당성을 확인하다",
+      "level": 6
+    },
+    {
+      "word": "generalize",
+      "ipa": "/ˈdʒenrəlaɪz/",
+      "meaning": "일반화하다",
+      "level": 6
+    },
+    {
+      "word": "conceptualize",
+      "ipa": "/kənˈseptʃuəlaɪz/",
+      "meaning": "개념화하다",
+      "level": 6
+    },
+    {
+      "word": "accountability",
+      "ipa": "/əˌkaʊntəˈbɪləti/",
+      "meaning": "책무성",
+      "level": 7
+    },
+    {
+      "word": "compatibility",
+      "ipa": "/kəmˌpætəˈbɪləti/",
+      "meaning": "호환성; 양립 가능성",
+      "level": 7
+    },
+    {
+      "word": "credibility",
+      "ipa": "/ˌkredəˈbɪləti/",
+      "meaning": "신뢰성",
+      "level": 7
+    },
+    {
+      "word": "feasibility",
+      "ipa": "/ˌfiːzəˈbɪləti/",
+      "meaning": "실현 가능성",
+      "level": 7
+    },
+    {
+      "word": "legitimacy",
+      "ipa": "/ləˈdʒɪtəməsi/",
+      "meaning": "정당성",
+      "level": 7
+    },
+    {
+      "word": "reliability",
+      "ipa": "/rɪˌlaɪəˈbɪləti/",
+      "meaning": "신뢰성",
+      "level": 7
+    },
+    {
+      "word": "sustainability",
+      "ipa": "/səˌsteɪnəˈbɪləti/",
+      "meaning": "지속 가능성",
+      "level": 7
+    },
+    {
+      "word": "transparency",
+      "ipa": "/trænsˈperənsi/",
+      "meaning": "투명성",
+      "level": 7
+    },
+    {
+      "word": "vulnerability",
+      "ipa": "/ˌvʌlnərəˈbɪləti/",
+      "meaning": "취약성",
+      "level": 7
+    },
+    {
+      "word": "interdependence",
+      "ipa": "/ˌɪntərdɪˈpendəns/",
+      "meaning": "상호 의존",
+      "level": 7
+    },
+    {
+      "word": "anomaly",
+      "ipa": "/əˈnɑːməli/",
+      "meaning": "이례적인 현상; 이상",
+      "level": 8
+    },
+    {
+      "word": "coincidence",
+      "ipa": "/koʊˈɪnsɪdəns/",
+      "meaning": "우연의 일치",
+      "level": 8
+    },
+    {
+      "word": "prerequisite",
+      "ipa": "/priːˈrekwəzɪt/",
+      "meaning": "필수 조건",
+      "level": 8
+    },
+    {
+      "word": "repercussion",
+      "ipa": "/ˌriːpərˈkʌʃn/",
+      "meaning": "파급 효과; 영향",
+      "level": 8
+    },
+    {
+      "word": "stereotype",
+      "ipa": "/ˈsteriətaɪp/",
+      "meaning": "고정관념",
+      "level": 8
+    },
+    {
+      "word": "threshold",
+      "ipa": "/ˈθreʃhoʊld/",
+      "meaning": "문턱; 기준점",
+      "level": 8
+    },
+    {
+      "word": "dichotomy",
+      "ipa": "/daɪˈkɑːtəmi/",
+      "meaning": "이분법",
+      "level": 8
+    },
+    {
+      "word": "ramification",
+      "ipa": "/ˌræməfɪˈkeɪʃn/",
+      "meaning": "파급 결과",
+      "level": 8
+    },
+    {
+      "word": "conundrum",
+      "ipa": "/kəˈnʌndrəm/",
+      "meaning": "난제; 수수께끼",
+      "level": 8
+    },
+    {
+      "word": "juxtaposition",
+      "ipa": "/ˌdʒʌkstəpəˈzɪʃn/",
+      "meaning": "병치; 나란히 놓음",
+      "level": 8
+    },
+    {
+      "word": "correlation",
+      "ipa": "/ˌkɔːrəˈleɪʃn/",
+      "meaning": "상관관계",
+      "level": 9
+    },
+    {
+      "word": "deprivation",
+      "ipa": "/ˌdeprɪˈveɪʃn/",
+      "meaning": "박탈; 결핍",
+      "level": 9
+    },
+    {
+      "word": "determinism",
+      "ipa": "/dɪˈtɜːrmɪnɪzəm/",
+      "meaning": "결정론",
+      "level": 9
+    },
+    {
+      "word": "disparity",
+      "ipa": "/dɪˈspærəti/",
+      "meaning": "격차; 불균형",
+      "level": 9
+    },
+    {
+      "word": "exploitation",
+      "ipa": "/ˌeksplɔɪˈteɪʃn/",
+      "meaning": "착취; 이용",
+      "level": 9
+    },
+    {
+      "word": "fragmentation",
+      "ipa": "/ˌfræɡmənˈteɪʃn/",
+      "meaning": "분절; 파편화",
+      "level": 9
+    },
+    {
+      "word": "polarization",
+      "ipa": "/ˌpoʊlərəˈzeɪʃn/",
+      "meaning": "양극화",
+      "level": 9
+    },
+    {
+      "word": "proliferation",
+      "ipa": "/prəˌlɪfəˈreɪʃn/",
+      "meaning": "확산; 급증",
+      "level": 9
+    },
+    {
+      "word": "redistribution",
+      "ipa": "/ˌriːdɪstrɪˈbjuːʃn/",
+      "meaning": "재분배",
+      "level": 9
+    },
+    {
+      "word": "marginalization",
+      "ipa": "/ˌmɑːrdʒɪnələˈzeɪʃn/",
+      "meaning": "주변화",
+      "level": 9
+    },
+    {
+      "word": "anthropocentric",
+      "ipa": "/ˌænθrəpoʊˈsentrɪk/",
+      "meaning": "인간 중심적인",
+      "level": 10
+    },
+    {
+      "word": "commodification",
+      "ipa": "/kəˌmɑːdəfɪˈkeɪʃn/",
+      "meaning": "상품화",
+      "level": 10
+    },
+    {
+      "word": "counterintuitive",
+      "ipa": "/ˌkaʊntərɪnˈtuːɪtɪv/",
+      "meaning": "직관에 반하는",
+      "level": 10
+    },
+    {
+      "word": "epistemological",
+      "ipa": "/ɪˌpɪstəməˈlɑːdʒɪkl/",
+      "meaning": "인식론적인",
+      "level": 10
+    },
+    {
+      "word": "institutionalization",
+      "ipa": "/ˌɪnstɪtuːʃənələˈzeɪʃn/",
+      "meaning": "제도화",
+      "level": 10
+    },
+    {
+      "word": "multidimensional",
+      "ipa": "/ˌmʌltidaɪˈmenʃənl/",
+      "meaning": "다차원적인",
+      "level": 10
+    },
+    {
+      "word": "normative",
+      "ipa": "/ˈnɔːrmətɪv/",
+      "meaning": "규범적인",
+      "level": 10
+    },
+    {
+      "word": "paradigmatic",
+      "ipa": "/ˌpærədaɪɡˈmætɪk/",
+      "meaning": "패러다임의; 전형적인",
+      "level": 10
+    },
+    {
+      "word": "socioeconomic",
+      "ipa": "/ˌsoʊsioʊˌekəˈnɑːmɪk/",
+      "meaning": "사회경제적인",
+      "level": 10
+    },
+    {
+      "word": "systemic",
+      "ipa": "/sɪˈstemɪk/",
+      "meaning": "체계적인; 구조적인",
+      "level": 10
+    }
+  ]
+}

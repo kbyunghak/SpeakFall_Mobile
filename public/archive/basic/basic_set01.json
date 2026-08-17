@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "basic",
+  "setId": 1,
+  "title": "Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "acorn",
+      "ipa": "/ˈeɪkɔːrn/",
+      "meaning": "도토리",
+      "level": 1
+    },
+    {
+      "word": "apron",
+      "ipa": "/ˈeɪprən/",
+      "meaning": "앞치마",
+      "level": 1
+    },
+    {
+      "word": "attic",
+      "ipa": "/ˈætɪk/",
+      "meaning": "다락방",
+      "level": 1
+    },
+    {
+      "word": "bamboo",
+      "ipa": "/bæmˈbuː/",
+      "meaning": "대나무",
+      "level": 1
+    },
+    {
+      "word": "basin",
+      "ipa": "/ˈbeɪsən/",
+      "meaning": "대야; 세면대",
+      "level": 1
+    },
+    {
+      "word": "bean",
+      "ipa": "/biːn/",
+      "meaning": "콩",
+      "level": 1
+    },
+    {
+      "word": "beard",
+      "ipa": "/bɪrd/",
+      "meaning": "수염",
+      "level": 1
+    },
+    {
+      "word": "biscuit",
+      "ipa": "/ˈbɪskɪt/",
+      "meaning": "비스킷",
+      "level": 1
+    },
+    {
+      "word": "blade",
+      "ipa": "/bleɪd/",
+      "meaning": "날; 칼날",
+      "level": 1
+    },
+    {
+      "word": "blouse",
+      "ipa": "/blaʊs/",
+      "meaning": "블라우스",
+      "level": 1
+    },
+    {
+      "word": "breeze",
+      "ipa": "/briːz/",
+      "meaning": "산들바람",
+      "level": 2
+    },
+    {
+      "word": "brick",
+      "ipa": "/brɪk/",
+      "meaning": "벽돌",
+      "level": 2
+    },
+    {
+      "word": "broom",
+      "ipa": "/bruːm/",
+      "meaning": "빗자루",
+      "level": 2
+    },
+    {
+      "word": "bucket",
+      "ipa": "/ˈbʌkɪt/",
+      "meaning": "양동이",
+      "level": 2
+    },
+    {
+      "word": "cabin",
+      "ipa": "/ˈkæbɪn/",
+      "meaning": "오두막; 객실",
+      "level": 2
+    },
+    {
+      "word": "candle",
+      "ipa": "/ˈkændl/",
+      "meaning": "양초",
+      "level": 2
+    },
+    {
+      "word": "chalk",
+      "ipa": "/tʃɔːk/",
+      "meaning": "분필",
+      "level": 2
+    },
+    {
+      "word": "chin",
+      "ipa": "/tʃɪn/",
+      "meaning": "턱",
+      "level": 2
+    },
+    {
+      "word": "clay",
+      "ipa": "/kleɪ/",
+      "meaning": "점토",
+      "level": 2
+    },
+    {
+      "word": "closet",
+      "ipa": "/ˈklɑːzɪt/",
+      "meaning": "벽장",
+      "level": 2
+    },
+    {
+      "word": "creek",
+      "ipa": "/kriːk/",
+      "meaning": "개울",
+      "level": 3
+    },
+    {
+      "word": "crown",
+      "ipa": "/kraʊn/",
+      "meaning": "왕관",
+      "level": 3
+    },
+    {
+      "word": "daisy",
+      "ipa": "/ˈdeɪzi/",
+      "meaning": "데이지",
+      "level": 3
+    },
+    {
+      "word": "drawer",
+      "ipa": "/drɔːr/",
+      "meaning": "서랍",
+      "level": 3
+    },
+    {
+      "word": "fence",
+      "ipa": "/fens/",
+      "meaning": "울타리",
+      "level": 3
+    },
+    {
+      "word": "flame",
+      "ipa": "/fleɪm/",
+      "meaning": "불꽃",
+      "level": 3
+    },
+    {
+      "word": "flashlight",
+      "ipa": "/ˈflæʃlaɪt/",
+      "meaning": "손전등",
+      "level": 3
+    },
+    {
+      "word": "gate",
+      "ipa": "/ɡeɪt/",
+      "meaning": "문; 출입구",
+      "level": 3
+    },
+    {
+      "word": "hammer",
+      "ipa": "/ˈhæmər/",
+      "meaning": "망치",
+      "level": 3
+    },
+    {
+      "word": "helmet",
+      "ipa": "/ˈhelmɪt/",
+      "meaning": "헬멧",
+      "level": 3
+    },
+    {
+      "word": "honey",
+      "ipa": "/ˈhʌni/",
+      "meaning": "꿀",
+      "level": 4
+    },
+    {
+      "word": "hook",
+      "ipa": "/hʊk/",
+      "meaning": "갈고리; 고리",
+      "level": 4
+    },
+    {
+      "word": "jelly",
+      "ipa": "/ˈdʒeli/",
+      "meaning": "젤리",
+      "level": 4
+    },
+    {
+      "word": "kettle",
+      "ipa": "/ˈketl/",
+      "meaning": "주전자",
+      "level": 4
+    },
+    {
+      "word": "kitten",
+      "ipa": "/ˈkɪtn/",
+      "meaning": "새끼 고양이",
+      "level": 4
+    },
+    {
+      "word": "ladder",
+      "ipa": "/ˈlædər/",
+      "meaning": "사다리",
+      "level": 4
+    },
+    {
+      "word": "lamb",
+      "ipa": "/læm/",
+      "meaning": "어린 양",
+      "level": 4
+    },
+    {
+      "word": "lid",
+      "ipa": "/lɪd/",
+      "meaning": "뚜껑",
+      "level": 4
+    },
+    {
+      "word": "marble",
+      "ipa": "/ˈmɑːrbl/",
+      "meaning": "구슬; 대리석",
+      "level": 4
+    },
+    {
+      "word": "meadow",
+      "ipa": "/ˈmedoʊ/",
+      "meaning": "초원",
+      "level": 4
+    },
+    {
+      "word": "panda",
+      "ipa": "/ˈpændə/",
+      "meaning": "판다",
+      "level": 5
+    },
+    {
+      "word": "pebble",
+      "ipa": "/ˈpebl/",
+      "meaning": "조약돌",
+      "level": 5
+    },
+    {
+      "word": "pine",
+      "ipa": "/paɪn/",
+      "meaning": "소나무",
+      "level": 5
+    },
+    {
+      "word": "ribbon",
+      "ipa": "/ˈrɪbən/",
+      "meaning": "리본",
+      "level": 5
+    },
+    {
+      "word": "rope",
+      "ipa": "/roʊp/",
+      "meaning": "밧줄",
+      "level": 5
+    },
+    {
+      "word": "saddle",
+      "ipa": "/ˈsædl/",
+      "meaning": "안장",
+      "level": 5
+    },
+    {
+      "word": "shelf",
+      "ipa": "/ʃelf/",
+      "meaning": "선반",
+      "level": 5
+    },
+    {
+      "word": "shovel",
+      "ipa": "/ˈʃʌvl/",
+      "meaning": "삽",
+      "level": 5
+    },
+    {
+      "word": "skate",
+      "ipa": "/skeɪt/",
+      "meaning": "스케이트를 타다",
+      "level": 5
+    },
+    {
+      "word": "snail",
+      "ipa": "/sneɪl/",
+      "meaning": "달팽이",
+      "level": 5
+    },
+    {
+      "word": "tent",
+      "ipa": "/tent/",
+      "meaning": "텐트",
+      "level": 6
+    },
+    {
+      "word": "umbrella",
+      "ipa": "/ʌmˈbrelə/",
+      "meaning": "우산",
+      "level": 6
+    },
+    {
+      "word": "vase",
+      "ipa": "/veɪs/",
+      "meaning": "꽃병",
+      "level": 6
+    },
+    {
+      "word": "wallet",
+      "ipa": "/ˈwɑːlɪt/",
+      "meaning": "지갑",
+      "level": 6
+    },
+    {
+      "word": "wheat",
+      "ipa": "/wiːt/",
+      "meaning": "밀",
+      "level": 6
+    },
+    {
+      "word": "zipper",
+      "ipa": "/ˈzɪpər/",
+      "meaning": "지퍼",
+      "level": 6
+    },
+    {
+      "word": "ankle",
+      "ipa": "/ˈæŋkl/",
+      "meaning": "발목",
+      "level": 6
+    },
+    {
+      "word": "badge",
+      "ipa": "/bædʒ/",
+      "meaning": "배지",
+      "level": 6
+    },
+    {
+      "word": "basket",
+      "ipa": "/ˈbæskɪt/",
+      "meaning": "바구니",
+      "level": 6
+    },
+    {
+      "word": "carpet",
+      "ipa": "/ˈkɑːrpɪt/",
+      "meaning": "카펫",
+      "level": 6
+    },
+    {
+      "word": "cherry",
+      "ipa": "/ˈtʃeri/",
+      "meaning": "체리",
+      "level": 7
+    },
+    {
+      "word": "comb",
+      "ipa": "/koʊm/",
+      "meaning": "빗; 빗질하다",
+      "level": 7
+    },
+    {
+      "word": "curtain",
+      "ipa": "/ˈkɜːrtn/",
+      "meaning": "커튼",
+      "level": 7
+    },
+    {
+      "word": "drum",
+      "ipa": "/drʌm/",
+      "meaning": "북; 드럼",
+      "level": 7
+    },
+    {
+      "word": "elbow",
+      "ipa": "/ˈelboʊ/",
+      "meaning": "팔꿈치",
+      "level": 7
+    },
+    {
+      "word": "flute",
+      "ipa": "/fluːt/",
+      "meaning": "플루트",
+      "level": 7
+    },
+    {
+      "word": "garage",
+      "ipa": "/ɡəˈrɑːʒ/",
+      "meaning": "차고",
+      "level": 7
+    },
+    {
+      "word": "garlic",
+      "ipa": "/ˈɡɑːrlɪk/",
+      "meaning": "마늘",
+      "level": 7
+    },
+    {
+      "word": "lemon",
+      "ipa": "/ˈlemən/",
+      "meaning": "레몬",
+      "level": 7
+    },
+    {
+      "word": "magnet",
+      "ipa": "/ˈmæɡnət/",
+      "meaning": "자석",
+      "level": 7
+    },
+    {
+      "word": "mushroom",
+      "ipa": "/ˈmʌʃruːm/",
+      "meaning": "버섯",
+      "level": 8
+    },
+    {
+      "word": "nail",
+      "ipa": "/neɪl/",
+      "meaning": "손톱; 못",
+      "level": 8
+    },
+    {
+      "word": "noodle",
+      "ipa": "/ˈnuːdl/",
+      "meaning": "국수; 면",
+      "level": 8
+    },
+    {
+      "word": "onion",
+      "ipa": "/ˈʌnjən/",
+      "meaning": "양파",
+      "level": 8
+    },
+    {
+      "word": "peach",
+      "ipa": "/piːtʃ/",
+      "meaning": "복숭아",
+      "level": 8
+    },
+    {
+      "word": "pillow",
+      "ipa": "/ˈpɪloʊ/",
+      "meaning": "베개",
+      "level": 8
+    },
+    {
+      "word": "pizza",
+      "ipa": "/ˈpiːtsə/",
+      "meaning": "피자",
+      "level": 8
+    },
+    {
+      "word": "pond",
+      "ipa": "/pɑːnd/",
+      "meaning": "연못",
+      "level": 8
+    },
+    {
+      "word": "sandwich",
+      "ipa": "/ˈsænwɪtʃ/",
+      "meaning": "샌드위치",
+      "level": 8
+    },
+    {
+      "word": "scarf",
+      "ipa": "/skɑːrf/",
+      "meaning": "목도리",
+      "level": 8
+    },
+    {
+      "word": "sink",
+      "ipa": "/sɪŋk/",
+      "meaning": "싱크대; 가라앉다",
+      "level": 9
+    },
+    {
+      "word": "skirt",
+      "ipa": "/skɜːrt/",
+      "meaning": "치마",
+      "level": 9
+    },
+    {
+      "word": "squirrel",
+      "ipa": "/ˈskwɜːrəl/",
+      "meaning": "다람쥐",
+      "level": 9
+    },
+    {
+      "word": "stamp",
+      "ipa": "/stæmp/",
+      "meaning": "우표; 도장",
+      "level": 9
+    },
+    {
+      "word": "stove",
+      "ipa": "/stoʊv/",
+      "meaning": "레인지; 난로",
+      "level": 9
+    },
+    {
+      "word": "strawberry",
+      "ipa": "/ˈstrɔːberi/",
+      "meaning": "딸기",
+      "level": 9
+    },
+    {
+      "word": "swing",
+      "ipa": "/swɪŋ/",
+      "meaning": "그네; 흔들다",
+      "level": 9
+    },
+    {
+      "word": "tunnel",
+      "ipa": "/ˈtʌnl/",
+      "meaning": "터널",
+      "level": 9
+    },
+    {
+      "word": "violin",
+      "ipa": "/ˌvaɪəˈlɪn/",
+      "meaning": "바이올린",
+      "level": 9
+    },
+    {
+      "word": "aquarium",
+      "ipa": "/əˈkweriəm/",
+      "meaning": "수족관",
+      "level": 9
+    },
+    {
+      "word": "bracelet",
+      "ipa": "/ˈbreɪslət/",
+      "meaning": "팔찌",
+      "level": 10
+    },
+    {
+      "word": "cactus",
+      "ipa": "/ˈkæktəs/",
+      "meaning": "선인장",
+      "level": 10
+    },
+    {
+      "word": "canoe",
+      "ipa": "/kəˈnuː/",
+      "meaning": "카누",
+      "level": 10
+    },
+    {
+      "word": "castle",
+      "ipa": "/ˈkæsl/",
+      "meaning": "성",
+      "level": 10
+    },
+    {
+      "word": "chimney",
+      "ipa": "/ˈtʃɪmni/",
+      "meaning": "굴뚝",
+      "level": 10
+    },
+    {
+      "word": "coral",
+      "ipa": "/ˈkɔːrəl/",
+      "meaning": "산호",
+      "level": 10
+    },
+    {
+      "word": "donkey",
+      "ipa": "/ˈdɑːŋki/",
+      "meaning": "당나귀",
+      "level": 10
+    },
+    {
+      "word": "envelope",
+      "ipa": "/ˈenvəloʊp/",
+      "meaning": "봉투",
+      "level": 10
+    },
+    {
+      "word": "fountain",
+      "ipa": "/ˈfaʊntn/",
+      "meaning": "분수",
+      "level": 10
+    },
+    {
+      "word": "galaxy",
+      "ipa": "/ˈɡæləksi/",
+      "meaning": "은하",
+      "level": 10
+    }
+  ]
+}

@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "elementary",
+  "setId": 1,
+  "title": "Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "notebook",
+      "ipa": "/ˈnoʊtbʊk/",
+      "meaning": "공책",
+      "level": 1
+    },
+    {
+      "word": "pencil case",
+      "ipa": "/ˈpensl keɪs/",
+      "meaning": "필통",
+      "level": 1
+    },
+    {
+      "word": "marker",
+      "ipa": "/ˈmɑːrkər/",
+      "meaning": "마커; 표시용 펜",
+      "level": 1
+    },
+    {
+      "word": "clipboard",
+      "ipa": "/ˈklɪpbɔːrd/",
+      "meaning": "클립보드",
+      "level": 1
+    },
+    {
+      "word": "stapler",
+      "ipa": "/ˈsteɪplər/",
+      "meaning": "스테이플러",
+      "level": 1
+    },
+    {
+      "word": "break time",
+      "ipa": "/ˈbreɪk taɪm/",
+      "meaning": "쉬는 시간",
+      "level": 1
+    },
+    {
+      "word": "locker",
+      "ipa": "/ˈlɑːkər/",
+      "meaning": "사물함",
+      "level": 1
+    },
+    {
+      "word": "worksheet",
+      "ipa": "/ˈwɜːrkʃiːt/",
+      "meaning": "학습지",
+      "level": 1
+    },
+    {
+      "word": "highlighter",
+      "ipa": "/ˈhaɪlaɪtər/",
+      "meaning": "형광펜",
+      "level": 1
+    },
+    {
+      "word": "sharpener",
+      "ipa": "/ˈʃɑːrpənər/",
+      "meaning": "연필깎이",
+      "level": 1
+    },
+    {
+      "word": "recipe",
+      "ipa": "/ˈresəpi/",
+      "meaning": "조리법",
+      "level": 2
+    },
+    {
+      "word": "oatmeal",
+      "ipa": "/ˈoʊtmiːl/",
+      "meaning": "오트밀",
+      "level": 2
+    },
+    {
+      "word": "waffle",
+      "ipa": "/ˈwɑːfl/",
+      "meaning": "와플",
+      "level": 2
+    },
+    {
+      "word": "pudding",
+      "ipa": "/ˈpʊdɪŋ/",
+      "meaning": "푸딩",
+      "level": 2
+    },
+    {
+      "word": "mustard",
+      "ipa": "/ˈmʌstərd/",
+      "meaning": "겨자; 머스터드",
+      "level": 2
+    },
+    {
+      "word": "pancake",
+      "ipa": "/ˈpænkeɪk/",
+      "meaning": "팬케이크",
+      "level": 2
+    },
+    {
+      "word": "dishwasher",
+      "ipa": "/ˈdɪʃwɑːʃər/",
+      "meaning": "식기세척기",
+      "level": 2
+    },
+    {
+      "word": "ketchup",
+      "ipa": "/ˈketʃəp/",
+      "meaning": "케첩",
+      "level": 2
+    },
+    {
+      "word": "lettuce",
+      "ipa": "/ˈletɪs/",
+      "meaning": "상추; 양상추",
+      "level": 2
+    },
+    {
+      "word": "pumpkin",
+      "ipa": "/ˈpʌmpkɪn/",
+      "meaning": "호박",
+      "level": 2
+    },
+    {
+      "word": "cheerful",
+      "ipa": "/ˈtʃɪrfəl/",
+      "meaning": "쾌활한",
+      "level": 3
+    },
+    {
+      "word": "lonely",
+      "ipa": "/ˈloʊnli/",
+      "meaning": "외로운",
+      "level": 3
+    },
+    {
+      "word": "curious",
+      "ipa": "/ˈkjʊriəs/",
+      "meaning": "호기심 많은",
+      "level": 3
+    },
+    {
+      "word": "gentle",
+      "ipa": "/ˈdʒentl/",
+      "meaning": "상냥한; 부드러운",
+      "level": 3
+    },
+    {
+      "word": "rude",
+      "ipa": "/ruːd/",
+      "meaning": "무례한",
+      "level": 3
+    },
+    {
+      "word": "selfish",
+      "ipa": "/ˈselfɪʃ/",
+      "meaning": "이기적인",
+      "level": 3
+    },
+    {
+      "word": "friendly",
+      "ipa": "/ˈfrendli/",
+      "meaning": "친근한",
+      "level": 3
+    },
+    {
+      "word": "generous",
+      "ipa": "/ˈdʒenərəs/",
+      "meaning": "너그러운",
+      "level": 3
+    },
+    {
+      "word": "helpful",
+      "ipa": "/ˈhelpfəl/",
+      "meaning": "도움이 되는; 친절한",
+      "level": 3
+    },
+    {
+      "word": "thoughtful",
+      "ipa": "/ˈθɔːtfəl/",
+      "meaning": "사려 깊은",
+      "level": 3
+    },
+    {
+      "word": "platform",
+      "ipa": "/ˈplætfɔːrm/",
+      "meaning": "승강장",
+      "level": 4
+    },
+    {
+      "word": "intersection",
+      "ipa": "/ˌɪntərˈsekʃn/",
+      "meaning": "교차로",
+      "level": 4
+    },
+    {
+      "word": "downtown",
+      "ipa": "/ˌdaʊnˈtaʊn/",
+      "meaning": "도심",
+      "level": 4
+    },
+    {
+      "word": "barbershop",
+      "ipa": "/ˈbɑːrbərʃɑːp/",
+      "meaning": "이발소",
+      "level": 4
+    },
+    {
+      "word": "parking lot",
+      "ipa": "/ˈpɑːrkɪŋ lɑːt/",
+      "meaning": "주차장",
+      "level": 4
+    },
+    {
+      "word": "laundromat",
+      "ipa": "/ˈlɔːndrəˌmæt/",
+      "meaning": "셀프 세탁소",
+      "level": 4
+    },
+    {
+      "word": "gallery",
+      "ipa": "/ˈɡæləri/",
+      "meaning": "미술관; 전시관",
+      "level": 4
+    },
+    {
+      "word": "bus stop",
+      "ipa": "/ˈbʌs stɑːp/",
+      "meaning": "버스 정류장",
+      "level": 4
+    },
+    {
+      "word": "city hall",
+      "ipa": "/ˈsɪti hɔːl/",
+      "meaning": "시청",
+      "level": 4
+    },
+    {
+      "word": "department store",
+      "ipa": "/dɪˈpɑːrtmənt stɔːr/",
+      "meaning": "백화점",
+      "level": 4
+    },
+    {
+      "word": "slippers",
+      "ipa": "/ˈslɪpərz/",
+      "meaning": "슬리퍼",
+      "level": 5
+    },
+    {
+      "word": "earring",
+      "ipa": "/ˈɪrɪŋ/",
+      "meaning": "귀걸이",
+      "level": 5
+    },
+    {
+      "word": "raincoat",
+      "ipa": "/ˈreɪnkoʊt/",
+      "meaning": "비옷",
+      "level": 5
+    },
+    {
+      "word": "shoelace",
+      "ipa": "/ˈʃuːleɪs/",
+      "meaning": "신발끈",
+      "level": 5
+    },
+    {
+      "word": "uniformed",
+      "ipa": "/ˈjuːnɪfɔːrmd/",
+      "meaning": "제복을 입은",
+      "level": 5
+    },
+    {
+      "word": "pocket",
+      "ipa": "/ˈpɑːkɪt/",
+      "meaning": "주머니",
+      "level": 5
+    },
+    {
+      "word": "sleeve",
+      "ipa": "/sliːv/",
+      "meaning": "소매",
+      "level": 5
+    },
+    {
+      "word": "collar",
+      "ipa": "/ˈkɑːlər/",
+      "meaning": "옷깃; 칼라",
+      "level": 5
+    },
+    {
+      "word": "handbag",
+      "ipa": "/ˈhændbæɡ/",
+      "meaning": "핸드백",
+      "level": 5
+    },
+    {
+      "word": "sportswear",
+      "ipa": "/ˈspɔːrtswer/",
+      "meaning": "운동복",
+      "level": 5
+    },
+    {
+      "word": "cave",
+      "ipa": "/keɪv/",
+      "meaning": "동굴",
+      "level": 6
+    },
+    {
+      "word": "soil",
+      "ipa": "/sɔɪl/",
+      "meaning": "흙; 토양",
+      "level": 6
+    },
+    {
+      "word": "cliff",
+      "ipa": "/klɪf/",
+      "meaning": "절벽",
+      "level": 6
+    },
+    {
+      "word": "shore",
+      "ipa": "/ʃɔːr/",
+      "meaning": "물가; 해안",
+      "level": 6
+    },
+    {
+      "word": "field",
+      "ipa": "/fiːld/",
+      "meaning": "들판; 밭",
+      "level": 6
+    },
+    {
+      "word": "hilltop",
+      "ipa": "/ˈhɪltɑːp/",
+      "meaning": "언덕 꼭대기",
+      "level": 6
+    },
+    {
+      "word": "bark",
+      "ipa": "/bɑːrk/",
+      "meaning": "나무껍질",
+      "level": 6
+    },
+    {
+      "word": "shell",
+      "ipa": "/ʃel/",
+      "meaning": "껍데기; 조개껍데기",
+      "level": 6
+    },
+    {
+      "word": "canyon",
+      "ipa": "/ˈkænjən/",
+      "meaning": "협곡",
+      "level": 6
+    },
+    {
+      "word": "coast",
+      "ipa": "/koʊst/",
+      "meaning": "해안",
+      "level": 6
+    },
+    {
+      "word": "photography",
+      "ipa": "/fəˈtɑːɡrəfi/",
+      "meaning": "사진 촬영",
+      "level": 7
+    },
+    {
+      "word": "gardening",
+      "ipa": "/ˈɡɑːrdnɪŋ/",
+      "meaning": "원예; 정원 가꾸기",
+      "level": 7
+    },
+    {
+      "word": "knitting",
+      "ipa": "/ˈnɪtɪŋ/",
+      "meaning": "뜨개질",
+      "level": 7
+    },
+    {
+      "word": "drawing",
+      "ipa": "/ˈdrɔːɪŋ/",
+      "meaning": "그림 그리기",
+      "level": 7
+    },
+    {
+      "word": "collection",
+      "ipa": "/kəˈlekʃn/",
+      "meaning": "수집품; 수집",
+      "level": 7
+    },
+    {
+      "word": "competition",
+      "ipa": "/ˌkɑːmpəˈtɪʃn/",
+      "meaning": "경쟁; 대회",
+      "level": 7
+    },
+    {
+      "word": "performance",
+      "ipa": "/pərˈfɔːrməns/",
+      "meaning": "공연; 수행",
+      "level": 7
+    },
+    {
+      "word": "costume",
+      "ipa": "/ˈkɑːstuːm/",
+      "meaning": "의상; 복장",
+      "level": 7
+    },
+    {
+      "word": "sketching",
+      "ipa": "/ˈsketʃɪŋ/",
+      "meaning": "스케치하기",
+      "level": 7
+    },
+    {
+      "word": "craft",
+      "ipa": "/kræft/",
+      "meaning": "공예; 만들기",
+      "level": 7
+    },
+    {
+      "word": "suggest",
+      "ipa": "/səˈdʒest/",
+      "meaning": "제안하다",
+      "level": 8
+    },
+    {
+      "word": "recommend",
+      "ipa": "/ˌrekəˈmend/",
+      "meaning": "추천하다",
+      "level": 8
+    },
+    {
+      "word": "compare",
+      "ipa": "/kəmˈper/",
+      "meaning": "비교하다",
+      "level": 8
+    },
+    {
+      "word": "expect",
+      "ipa": "/ɪkˈspekt/",
+      "meaning": "기대하다; 예상하다",
+      "level": 8
+    },
+    {
+      "word": "notice",
+      "ipa": "/ˈnoʊtɪs/",
+      "meaning": "알아차리다",
+      "level": 8
+    },
+    {
+      "word": "wonder",
+      "ipa": "/ˈwʌndər/",
+      "meaning": "궁금해하다",
+      "level": 8
+    },
+    {
+      "word": "realize",
+      "ipa": "/ˈriːəlaɪz/",
+      "meaning": "깨닫다",
+      "level": 8
+    },
+    {
+      "word": "refuse",
+      "ipa": "/rɪˈfjuːz/",
+      "meaning": "거절하다",
+      "level": 8
+    },
+    {
+      "word": "invite",
+      "ipa": "/ɪnˈvaɪt/",
+      "meaning": "초대하다",
+      "level": 8
+    },
+    {
+      "word": "mention",
+      "ipa": "/ˈmenʃn/",
+      "meaning": "언급하다",
+      "level": 8
+    },
+    {
+      "word": "eleventh",
+      "ipa": "/ɪˈlevnθ/",
+      "meaning": "열한 번째의",
+      "level": 9
+    },
+    {
+      "word": "twelfth",
+      "ipa": "/twelfθ/",
+      "meaning": "열두 번째의",
+      "level": 9
+    },
+    {
+      "word": "halfway",
+      "ipa": "/ˌhæfˈweɪ/",
+      "meaning": "중간쯤에",
+      "level": 9
+    },
+    {
+      "word": "nearby",
+      "ipa": "/ˌnɪrˈbaɪ/",
+      "meaning": "근처의; 근처에",
+      "level": 9
+    },
+    {
+      "word": "opposite",
+      "ipa": "/ˈɑːpəzɪt/",
+      "meaning": "반대편의; 반대의",
+      "level": 9
+    },
+    {
+      "word": "upstairs",
+      "ipa": "/ˌʌpˈsterz/",
+      "meaning": "위층으로; 위층",
+      "level": 9
+    },
+    {
+      "word": "downstairs",
+      "ipa": "/ˌdaʊnˈsterz/",
+      "meaning": "아래층으로; 아래층",
+      "level": 9
+    },
+    {
+      "word": "thirteenth",
+      "ipa": "/ˌθɜːrˈtiːnθ/",
+      "meaning": "열세 번째의",
+      "level": 9
+    },
+    {
+      "word": "fourteenth",
+      "ipa": "/ˌfɔːrˈtiːnθ/",
+      "meaning": "열네 번째의",
+      "level": 9
+    },
+    {
+      "word": "fifteenth",
+      "ipa": "/ˌfɪfˈtiːnθ/",
+      "meaning": "열다섯 번째의",
+      "level": 9
+    },
+    {
+      "word": "explorer",
+      "ipa": "/ɪkˈsplɔːrər/",
+      "meaning": "탐험가",
+      "level": 10
+    },
+    {
+      "word": "laboratory",
+      "ipa": "/ˈlæbrətɔːri/",
+      "meaning": "실험실",
+      "level": 10
+    },
+    {
+      "word": "environmental",
+      "ipa": "/ɪnˌvaɪrənˈmentl/",
+      "meaning": "환경의",
+      "level": 10
+    },
+    {
+      "word": "volunteer",
+      "ipa": "/ˌvɑːlənˈtɪr/",
+      "meaning": "자원봉사자; 자원봉사하다",
+      "level": 10
+    },
+    {
+      "word": "responsibility",
+      "ipa": "/rɪˌspɑːnsəˈbɪləti/",
+      "meaning": "책임",
+      "level": 10
+    },
+    {
+      "word": "tradition",
+      "ipa": "/trəˈdɪʃn/",
+      "meaning": "전통",
+      "level": 10
+    },
+    {
+      "word": "heritage",
+      "ipa": "/ˈherɪtɪdʒ/",
+      "meaning": "유산",
+      "level": 10
+    },
+    {
+      "word": "researcher",
+      "ipa": "/rɪˈsɜːrtʃər/",
+      "meaning": "연구자",
+      "level": 10
+    },
+    {
+      "word": "mission",
+      "ipa": "/ˈmɪʃn/",
+      "meaning": "임무; 사명",
+      "level": 10
+    },
+    {
+      "word": "recycling",
+      "ipa": "/ˌriːˈsaɪklɪŋ/",
+      "meaning": "재활용",
+      "level": 10
+    }
+  ]
+}

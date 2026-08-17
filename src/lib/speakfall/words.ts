@@ -10,13 +10,10 @@ export * from "@/data/words";
 /** Recognition strictness — how forgiving the pronunciation match is. */
 export type Strictness = "easy" | "normal" | "hard";
 
-export const STRICTNESS: Record<
-  Strictness,
-  { label: string; hint: string; threshold: number }
-> = {
-  easy: { label: "쉬움", hint: "비슷하게만 들려도 통과해요", threshold: 0.55 },
-  normal: { label: "보통", hint: "웬만큼 정확하면 통과해요", threshold: 0.72 },
-  hard: { label: "어려움", hint: "정확한 단어로 들려야 통과해요", threshold: 0.88 },
+export const STRICTNESS: Record<Strictness, { label: string; hint: string; threshold: number }> = {
+  easy: { label: "쉬움", hint: "비슷한 발음도 통과해요", threshold: 0.55 },
+  normal: { label: "보통", hint: "인식 후보에 정확한 단어가 필요해요", threshold: 0.72 },
+  hard: { label: "어려움", hint: "첫 인식이 정확한 단어여야 해요", threshold: 0.88 },
 };
 
 /** 기본 레벨당 단어 수 */
@@ -33,6 +30,54 @@ export const MAX_WORDS_PER_LEVEL = 40;
 /** 현재 레벨에 맞는 단어 풀을 반환합니다. */
 export function getWordsByLevel(level: number, track: TrackType = "basic"): WordItem[] {
   return getWordsByTrackLevel(level, track);
+}
+
+/** 기본 단어와 내려받은 추가 단어를 합치되 같은 영단어는 한 번만 유지합니다. */
+export function mergeLevelWords(
+  level: number,
+  track: TrackType,
+  additionalWords: readonly WordItem[] = [],
+): WordItem[] {
+  const merged = new Map<string, WordItem>();
+  for (const item of getWordsByLevel(level, track)) {
+    merged.set(item.word.trim().toLowerCase(), item);
+  }
+  for (const item of additionalWords) {
+    if (item.level !== level || (item.track && item.track !== track)) continue;
+    const key = item.word.trim().toLowerCase();
+    if (!merged.has(key)) merged.set(key, { ...item, track });
+  }
+  return [...merged.values()];
+}
+
+function shuffled<T>(items: readonly T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j]!, result[i]!];
+  }
+  return result;
+}
+
+/** 레벨 선택 시 통합 단어 풀을 한 번 섞어 필요한 출제 큐를 만듭니다. */
+export function createLevelWordQueue(
+  level: number,
+  track: TrackType,
+  additionalWords: readonly WordItem[],
+  count: number,
+  exclude: readonly string[] = [],
+  recent: readonly string[] = [],
+): WordItem[] {
+  const blocked = new Set(exclude.map((word) => word.trim().toLowerCase()));
+  const recentWords = new Set(recent.map((word) => word.trim().toLowerCase()));
+  const available = mergeLevelWords(level, track, additionalWords).filter(
+    ({ word }) => !blocked.has(word.trim().toLowerCase()),
+  );
+  const fresh = shuffled(available.filter(({ word }) => !recentWords.has(word.toLowerCase())));
+  const seenRecently = shuffled(
+    available.filter(({ word }) => recentWords.has(word.toLowerCase())),
+  );
+  return [...fresh, ...seenRecently].slice(0, Math.max(0, count));
 }
 
 export const PRONUNCIATION_FOCUSES: PronunciationFocus[] = [
@@ -73,8 +118,9 @@ export function randomWord(
   recent: string[] = [],
   track: TrackType = "basic",
   pronunciationFocus: PronunciationFocus | null = null,
+  additionalWords: readonly WordItem[] = [],
 ): WordItem {
-  const pool = getWordsByLevel(level, track);
+  const pool = mergeLevelWords(level, track, additionalWords);
   const available = pool.filter((w) => !exclude.includes(w.word));
 
   // 우선: exclude에 없고 recent에도 없는 단어
@@ -89,7 +135,11 @@ export function randomWord(
 }
 
 const normalize = (s: string) =>
-  s.toLowerCase().replace(/[^a-z\s]/g, "").replace(/\s+/g, " ").trim();
+  s
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 /** 음성 인식 결과와 일치하는 단어의 IPA를 찾아 피드백에 사용합니다. */
 export function findTranscriptIpa(transcript: string): string | null {

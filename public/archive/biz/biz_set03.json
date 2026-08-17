@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "track": "biz",
+  "setId": 3,
+  "title": "Set 3",
+  "range": {
+    "from": 201,
+    "to": 300
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "acquirer",
+      "ipa": "/əˈkwaɪərər/",
+      "meaning": "인수 기업; 인수자",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "assetbacked",
+      "ipa": "/ˈæset bækt/",
+      "meaning": "자산담보부의",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "bankruptcy",
+      "ipa": "/ˈbæŋkrʌptsi/",
+      "meaning": "파산",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "buyback",
+      "ipa": "/ˈbaɪbæk/",
+      "meaning": "자사주 매입",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "capitalstructure",
+      "ipa": "/ˈkæpɪtl ˌstrʌktʃər/",
+      "meaning": "자본 구조",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "cashreserve",
+      "ipa": "/ˈkæʃ rɪˌzɜːrv/",
+      "meaning": "현금 준비금",
+      "level": 4,
+      "topic": "economy"
+    },
+    {
+      "word": "convertible",
+      "ipa": "/kənˈvɜːrtəbl/",
+      "meaning": "전환 가능한; 전환사채",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "creditline",
+      "ipa": "/ˈkredɪt laɪn/",
+      "meaning": "신용 한도",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "debtservice",
+      "ipa": "/ˈdet ˌsɜːrvɪs/",
+      "meaning": "부채 원리금 상환",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "dilution",
+      "ipa": "/daɪˈluːʃn/",
+      "meaning": "지분 희석",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "disburse",
+      "ipa": "/dɪsˈbɜːrs/",
+      "meaning": "자금을 지급하다",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "enterprisevalue",
+      "ipa": "/ˈentərpraɪz ˌvæljuː/",
+      "meaning": "기업가치",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "futures",
+      "ipa": "/ˈfjuːtʃərz/",
+      "meaning": "선물 계약",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "grossprofit",
+      "ipa": "/ˈɡroʊs ˌprɑːfɪt/",
+      "meaning": "매출총이익",
+      "level": 4,
+      "topic": "economy"
+    },
+    {
+      "word": "impairment",
+      "ipa": "/ɪmˈpermənt/",
+      "meaning": "자산 손상",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "indexation",
+      "ipa": "/ˌɪndekˈseɪʃn/",
+      "meaning": "지수 연동",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "antibribery",
+      "ipa": "/ˌæntiˈbraɪbəri/",
+      "meaning": "반부패·뇌물방지의",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "benefits",
+      "ipa": "/ˈbenəfɪts/",
+      "meaning": "복리후생",
+      "level": 3,
+      "topic": "society"
+    },
+    {
+      "word": "boardroom",
+      "ipa": "/ˈbɔːrdruːm/",
+      "meaning": "이사회 회의실",
+      "level": 3,
+      "topic": "society"
+    },
+    {
+      "word": "complianceprogram",
+      "ipa": "/kəmˈplaɪəns ˌproʊɡræm/",
+      "meaning": "준법 프로그램",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "confidentiality",
+      "ipa": "/ˌkɑːnfɪdenʃiˈæləti/",
+      "meaning": "기밀성",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "disciplinary",
+      "ipa": "/ˈdɪsəpləneri/",
+      "meaning": "징계의",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "employeeengagement",
+      "ipa": "/ɪmˈplɔɪi ɪnˌɡeɪdʒmənt/",
+      "meaning": "직원 몰입도",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "employeeretention",
+      "ipa": "/ɪmˈplɔɪi rɪˌtenʃn/",
+      "meaning": "직원 유지",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "equalpay",
+      "ipa": "/ˌiːkwəl ˈpeɪ/",
+      "meaning": "동일 임금",
+      "level": 4,
+      "topic": "society"
+    },
+    {
+      "word": "ethicalconduct",
+      "ipa": "/ˈeθɪkl ˈkɑːndʌkt/",
+      "meaning": "윤리적 행동",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "laborrelations",
+      "ipa": "/ˈleɪbər rɪˌleɪʃnz/",
+      "meaning": "노사 관계",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "nonretaliation",
+      "ipa": "/ˌnɑːnriˌtæliˈeɪʃn/",
+      "meaning": "보복 금지",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "accountplanning",
+      "ipa": "/əˈkaʊnt ˌplænɪŋ/",
+      "meaning": "고객 계정 계획",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "channelmanagement",
+      "ipa": "/ˈtʃænl ˌmænɪdʒmənt/",
+      "meaning": "유통 채널 관리",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "clientbrief",
+      "ipa": "/ˈklaɪənt briːf/",
+      "meaning": "고객 요구사항 문서",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "clientportfolio",
+      "ipa": "/ˈklaɪənt pɔːrtˌfoʊlioʊ/",
+      "meaning": "고객 포트폴리오",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "contractor",
+      "ipa": "/ˈkɑːntræktər/",
+      "meaning": "계약업체; 계약직",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "dealflow",
+      "ipa": "/ˈdiːl floʊ/",
+      "meaning": "거래 유입 흐름",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "distributornetwork",
+      "ipa": "/dɪˈstrɪbjətər ˌnetwɜːrk/",
+      "meaning": "유통업체 네트워크",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "franchiseagreement",
+      "ipa": "/ˈfræntʃaɪz əˌɡriːmənt/",
+      "meaning": "가맹 계약",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "keyaccount",
+      "ipa": "/ˈkiː əˌkaʊnt/",
+      "meaning": "핵심 고객",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "leadqualification",
+      "ipa": "/ˈliːd ˌkwɑːlɪfɪˈkeɪʃn/",
+      "meaning": "잠재고객 자격 판별",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "partnerprogram",
+      "ipa": "/ˈpɑːrtnər ˌproʊɡræm/",
+      "meaning": "파트너 프로그램",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "prospecting",
+      "ipa": "/ˈprɑːspektɪŋ/",
+      "meaning": "잠재고객 발굴",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "relationshipmanager",
+      "ipa": "/rɪˈleɪʃnʃɪp ˌmænɪdʒər/",
+      "meaning": "관계 담당 매니저",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "salescycle",
+      "ipa": "/ˈseɪlz ˌsaɪkl/",
+      "meaning": "영업 주기",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "assumptiontesting",
+      "ipa": "/əˈsʌmpʃn ˌtestɪŋ/",
+      "meaning": "가정 검증",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "businesscase",
+      "ipa": "/ˈbɪznəs keɪs/",
+      "meaning": "사업 타당성 문서",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "decisioncriteria",
+      "ipa": "/dɪˈsɪʒn kraɪˌtɪriə/",
+      "meaning": "의사결정 기준",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "diagnostic",
+      "ipa": "/ˌdaɪəɡˈnɑːstɪk/",
+      "meaning": "진단용의; 진단",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "executionrisk",
+      "ipa": "/ˌeksɪˈkjuːʃn rɪsk/",
+      "meaning": "실행 위험",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "impactanalysis",
+      "ipa": "/ˈɪmpækt əˌnæləsɪs/",
+      "meaning": "영향 분석",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "keydriver",
+      "ipa": "/ˈkiː ˌdraɪvər/",
+      "meaning": "핵심 동인",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "leveragepoint",
+      "ipa": "/ˈlevərɪdʒ pɔɪnt/",
+      "meaning": "지렛대 효과 지점; 핵심 개입점",
+      "level": 6,
+      "topic": "thought"
+    },
+    {
+      "word": "operatingmodel",
+      "ipa": "/ˈɑːpəreɪtɪŋ ˌmɑːdl/",
+      "meaning": "운영 모델",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "prioritizationmatrix",
+      "ipa": "/praɪˌɔːrətəˈzeɪʃn ˌmeɪtrɪks/",
+      "meaning": "우선순위 매트릭스",
+      "level": 6,
+      "topic": "thought"
+    },
+    {
+      "word": "riskmatrix",
+      "ipa": "/ˈrɪsk ˌmeɪtrɪks/",
+      "meaning": "위험 매트릭스",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "scenarioframework",
+      "ipa": "/səˈnerioʊ ˌfreɪmwɜːrk/",
+      "meaning": "시나리오 체계",
+      "level": 6,
+      "topic": "thought"
+    },
+    {
+      "word": "strategicfit",
+      "ipa": "/strəˈtiːdʒɪk fɪt/",
+      "meaning": "전략적 적합성",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "targetstate",
+      "ipa": "/ˈtɑːrɡɪt steɪt/",
+      "meaning": "목표 상태",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "actionlog",
+      "ipa": "/ˈækʃn lɔːɡ/",
+      "meaning": "조치 기록",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "calendarinvite",
+      "ipa": "/ˈkælɪndər ˌɪnvaɪt/",
+      "meaning": "캘린더 초대",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "checklistitem",
+      "ipa": "/ˈtʃeklɪst ˌaɪtəm/",
+      "meaning": "점검 항목",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "deadlineextension",
+      "ipa": "/ˈdedlaɪn ɪkˌstenʃn/",
+      "meaning": "마감 연장",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "discussionpoint",
+      "ipa": "/dɪˈskʌʃn pɔɪnt/",
+      "meaning": "논의 사항",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "emailthread",
+      "ipa": "/ˈiːmeɪl θred/",
+      "meaning": "이메일 대화 묶음",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "followthrough",
+      "ipa": "/ˈfɑːloʊ θruː/",
+      "meaning": "끝까지 실행함",
+      "level": 4,
+      "topic": "daily"
+    },
+    {
+      "word": "handoffnote",
+      "ipa": "/ˈhændɔːf noʊt/",
+      "meaning": "업무 인계 메모",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "meetinginvite",
+      "ipa": "/ˈmiːtɪŋ ˌɪnvaɪt/",
+      "meaning": "회의 초대",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "meetingnotes",
+      "ipa": "/ˈmiːtɪŋ noʊts/",
+      "meaning": "회의 메모",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "officehours",
+      "ipa": "/ˈɔːfɪs ˌaʊərz/",
+      "meaning": "업무 시간",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "outofoffice",
+      "ipa": "/ˌaʊt əv ˈɔːfɪs/",
+      "meaning": "부재중",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "statusreport",
+      "ipa": "/ˈsteɪtəs rɪˌpɔːrt/",
+      "meaning": "상태 보고서",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "taskowner",
+      "ipa": "/ˈtæsk ˌoʊnər/",
+      "meaning": "업무 담당자",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "annualized",
+      "ipa": "/ˈænjuəlaɪzd/",
+      "meaning": "연환산한",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "benchmarkratio",
+      "ipa": "/ˈbentʃmɑːrk ˌreɪʃioʊ/",
+      "meaning": "벤치마크 비율",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "churn",
+      "ipa": "/tʃɜːrn/",
+      "meaning": "고객 이탈",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "conversion",
+      "ipa": "/kənˈvɜːrʒn/",
+      "meaning": "전환",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "costbase",
+      "ipa": "/ˈkɔːst beɪs/",
+      "meaning": "비용 기반",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "growthcurve",
+      "ipa": "/ˈɡroʊθ kɜːrv/",
+      "meaning": "성장 곡선",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "marketmix",
+      "ipa": "/ˈmɑːrkɪt mɪks/",
+      "meaning": "시장 구성",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "monthlyactive",
+      "ipa": "/ˈmʌnθli ˈæktɪv/",
+      "meaning": "월간 활성 사용자 기준의",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "operatingleverage",
+      "ipa": "/ˈɑːpəreɪtɪŋ ˈlevərɪdʒ/",
+      "meaning": "영업 레버리지",
+      "level": 6,
+      "topic": "study"
+    },
+    {
+      "word": "pipelinecoverage",
+      "ipa": "/ˈpaɪplaɪn ˌkʌvərɪdʒ/",
+      "meaning": "파이프라인 커버리지",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "runway",
+      "ipa": "/ˈrʌnweɪ/",
+      "meaning": "현금 소진 전 운영 가능 기간",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "unitmargin",
+      "ipa": "/ˈjuːnɪt ˌmɑːrdʒɪn/",
+      "meaning": "단위당 이익률",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "accessibility",
+      "ipa": "/əkˌsesəˈbɪləti/",
+      "meaning": "접근성",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "apigateway",
+      "ipa": "/ˌeɪpiːˈaɪ ˌɡeɪtweɪ/",
+      "meaning": "API 게이트웨이",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "autoscaling",
+      "ipa": "/ˈɔːtoʊˌskeɪlɪŋ/",
+      "meaning": "자동 확장",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "backup",
+      "ipa": "/ˈbækʌp/",
+      "meaning": "백업",
+      "level": 2,
+      "topic": "tech"
+    },
+    {
+      "word": "cloudnative",
+      "ipa": "/ˈklaʊd ˌneɪtɪv/",
+      "meaning": "클라우드 네이티브의",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "compliancecheck",
+      "ipa": "/kəmˈplaɪəns tʃek/",
+      "meaning": "준수 점검",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "datamasking",
+      "ipa": "/ˈdeɪtə ˌmæskɪŋ/",
+      "meaning": "데이터 마스킹",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "dataprivacy",
+      "ipa": "/ˈdeɪtə ˌpraɪvəsi/",
+      "meaning": "데이터 개인정보 보호",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "dependency",
+      "ipa": "/dɪˈpendənsi/",
+      "meaning": "의존성",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "devops",
+      "ipa": "/ˈdevɑːps/",
+      "meaning": "개발·운영 통합",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "disasterrecovery",
+      "ipa": "/dɪˈzæstər rɪˌkʌvəri/",
+      "meaning": "재해 복구",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "encryptionkey",
+      "ipa": "/ɪnˈkrɪpʃn kiː/",
+      "meaning": "암호화 키",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "featureflag",
+      "ipa": "/ˈfiːtʃər flæɡ/",
+      "meaning": "기능 플래그",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "incidentmanagement",
+      "ipa": "/ˈɪnsɪdənt ˌmænɪdʒmənt/",
+      "meaning": "장애 관리",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "logaggregation",
+      "ipa": "/ˈlɔːɡ ˌæɡrɪˈɡeɪʃn/",
+      "meaning": "로그 집계",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "observabilitystack",
+      "ipa": "/əbˌzɜːrvəˈbɪləti stæk/",
+      "meaning": "관측성 도구 묶음",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "ratecontrol",
+      "ipa": "/ˈreɪt kənˌtroʊl/",
+      "meaning": "요청 속도 제어",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "recoverypoint",
+      "ipa": "/rɪˈkʌvəri pɔɪnt/",
+      "meaning": "복구 지점",
+      "level": 5,
+      "topic": "tech"
+    }
+  ]
+}

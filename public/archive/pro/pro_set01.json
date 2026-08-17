@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "pro",
+  "setId": 1,
+  "title": "전문/학술 Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "syllabus",
+      "ipa": "/ˈsɪləbəs/",
+      "meaning": "강의 계획서",
+      "level": 1
+    },
+    {
+      "word": "seminar",
+      "ipa": "/ˈsemɪnɑːr/",
+      "meaning": "세미나",
+      "level": 1
+    },
+    {
+      "word": "citation",
+      "ipa": "/saɪˈteɪʃn/",
+      "meaning": "인용; 인용 표시",
+      "level": 1
+    },
+    {
+      "word": "tutorial",
+      "ipa": "/tuːˈtɔːriəl/",
+      "meaning": "개별 지도; 튜토리얼",
+      "level": 1
+    },
+    {
+      "word": "dissertation",
+      "ipa": "/ˌdɪsərˈteɪʃn/",
+      "meaning": "학위 논문",
+      "level": 1
+    },
+    {
+      "word": "curriculum",
+      "ipa": "/kəˈrɪkjələm/",
+      "meaning": "교육 과정",
+      "level": 1
+    },
+    {
+      "word": "plagiarism",
+      "ipa": "/ˈpleɪdʒərɪzəm/",
+      "meaning": "표절",
+      "level": 1
+    },
+    {
+      "word": "undergraduate",
+      "ipa": "/ˌʌndərˈɡrædʒuət/",
+      "meaning": "학부생; 학부의",
+      "level": 1
+    },
+    {
+      "word": "bibliography",
+      "ipa": "/ˌbɪbliˈɑːɡrəfi/",
+      "meaning": "참고 문헌 목록",
+      "level": 1
+    },
+    {
+      "word": "coursework",
+      "ipa": "/ˈkɔːrswɜːrk/",
+      "meaning": "수업 과제; 과정 이수 활동",
+      "level": 1
+    },
+    {
+      "word": "annotate",
+      "ipa": "/ˈænəteɪt/",
+      "meaning": "주석을 달다",
+      "level": 2
+    },
+    {
+      "word": "paraphrase",
+      "ipa": "/ˈpærəfreɪz/",
+      "meaning": "바꾸어 표현하다",
+      "level": 2
+    },
+    {
+      "word": "summarize",
+      "ipa": "/ˈsʌməraɪz/",
+      "meaning": "요약하다",
+      "level": 2
+    },
+    {
+      "word": "revise",
+      "ipa": "/rɪˈvaɪz/",
+      "meaning": "수정하다; 복습하다",
+      "level": 2
+    },
+    {
+      "word": "cite",
+      "ipa": "/saɪt/",
+      "meaning": "인용하다",
+      "level": 2
+    },
+    {
+      "word": "compile",
+      "ipa": "/kəmˈpaɪl/",
+      "meaning": "수집하여 정리하다",
+      "level": 2
+    },
+    {
+      "word": "outline",
+      "ipa": "/ˈaʊtlaɪn/",
+      "meaning": "개요를 작성하다",
+      "level": 2
+    },
+    {
+      "word": "critique",
+      "ipa": "/krɪˈtiːk/",
+      "meaning": "비평하다; 비평",
+      "level": 2
+    },
+    {
+      "word": "proofread",
+      "ipa": "/ˈpruːfriːd/",
+      "meaning": "교정하다",
+      "level": 2
+    },
+    {
+      "word": "rephrase",
+      "ipa": "/ˌriːˈfreɪz/",
+      "meaning": "바꾸어 말하다",
+      "level": 2
+    },
+    {
+      "word": "dataset",
+      "ipa": "/ˈdeɪtəset/",
+      "meaning": "데이터 집합",
+      "level": 3
+    },
+    {
+      "word": "sampling",
+      "ipa": "/ˈsæmplɪŋ/",
+      "meaning": "표본 추출",
+      "level": 3
+    },
+    {
+      "word": "questionnaire",
+      "ipa": "/ˌkwestʃəˈner/",
+      "meaning": "설문지",
+      "level": 3
+    },
+    {
+      "word": "respondent",
+      "ipa": "/rɪˈspɑːndənt/",
+      "meaning": "응답자",
+      "level": 3
+    },
+    {
+      "word": "replicate",
+      "ipa": "/ˈreplɪkeɪt/",
+      "meaning": "재현하다; 복제하다",
+      "level": 3
+    },
+    {
+      "word": "baseline",
+      "ipa": "/ˈbeɪslaɪn/",
+      "meaning": "기준선",
+      "level": 3
+    },
+    {
+      "word": "protocol",
+      "ipa": "/ˈproʊtəkɔːl/",
+      "meaning": "연구 절차; 규약",
+      "level": 3
+    },
+    {
+      "word": "observation",
+      "ipa": "/ˌɑːbzərˈveɪʃn/",
+      "meaning": "관찰",
+      "level": 3
+    },
+    {
+      "word": "interviewee",
+      "ipa": "/ˌɪntərvjuːˈiː/",
+      "meaning": "면접·인터뷰 대상자",
+      "level": 3
+    },
+    {
+      "word": "fieldwork",
+      "ipa": "/ˈfiːldwɜːrk/",
+      "meaning": "현장 조사",
+      "level": 3
+    },
+    {
+      "word": "causation",
+      "ipa": "/kɔːˈzeɪʃn/",
+      "meaning": "인과관계; 원인 작용",
+      "level": 4
+    },
+    {
+      "word": "significance",
+      "ipa": "/sɪɡˈnɪfɪkəns/",
+      "meaning": "유의성; 중요성",
+      "level": 4
+    },
+    {
+      "word": "regression",
+      "ipa": "/rɪˈɡreʃn/",
+      "meaning": "회귀; 퇴행",
+      "level": 4
+    },
+    {
+      "word": "crosssectional",
+      "ipa": "/ˌkrɔːsˈsekʃənl/",
+      "meaning": "횡단면의",
+      "level": 4
+    },
+    {
+      "word": "randomization",
+      "ipa": "/ˌrændəməˈzeɪʃn/",
+      "meaning": "무작위화",
+      "level": 4
+    },
+    {
+      "word": "confounding",
+      "ipa": "/kənˈfaʊndɪŋ/",
+      "meaning": "교란; 혼란을 일으키는",
+      "level": 4
+    },
+    {
+      "word": "cohort",
+      "ipa": "/ˈkoʊhɔːrt/",
+      "meaning": "코호트; 집단",
+      "level": 4
+    },
+    {
+      "word": "percentile",
+      "ipa": "/pərˈsentaɪl/",
+      "meaning": "백분위수",
+      "level": 4
+    },
+    {
+      "word": "median",
+      "ipa": "/ˈmiːdiən/",
+      "meaning": "중앙값",
+      "level": 4
+    },
+    {
+      "word": "predictor",
+      "ipa": "/prɪˈdɪktər/",
+      "meaning": "예측 변수",
+      "level": 4
+    },
+    {
+      "word": "generalizability",
+      "ipa": "/ˌdʒenərəlaɪzəˈbɪləti/",
+      "meaning": "일반화 가능성",
+      "level": 5
+    },
+    {
+      "word": "replicability",
+      "ipa": "/ˌreplɪkəˈbɪləti/",
+      "meaning": "재현 가능성",
+      "level": 5
+    },
+    {
+      "word": "triangulation",
+      "ipa": "/traɪˌæŋɡjəˈleɪʃn/",
+      "meaning": "삼각 검증",
+      "level": 5
+    },
+    {
+      "word": "operationalization",
+      "ipa": "/ˌɑːpəreɪʃənələˈzeɪʃn/",
+      "meaning": "조작화",
+      "level": 5
+    },
+    {
+      "word": "conceptualization",
+      "ipa": "/kənˌseptʃuələˈzeɪʃn/",
+      "meaning": "개념화",
+      "level": 5
+    },
+    {
+      "word": "instrumentation",
+      "ipa": "/ˌɪnstrəmənˈteɪʃn/",
+      "meaning": "측정 도구 구성; 계측",
+      "level": 5
+    },
+    {
+      "word": "interrater",
+      "ipa": "/ˌɪntərˈreɪtər/",
+      "meaning": "평가자 간의",
+      "level": 5
+    },
+    {
+      "word": "reproducibility",
+      "ipa": "/rɪˌprɑːdjuːsəˈbɪləti/",
+      "meaning": "재현성",
+      "level": 5
+    },
+    {
+      "word": "robustness",
+      "ipa": "/roʊˈbʌstnəs/",
+      "meaning": "강건성; 견고성",
+      "level": 5
+    },
+    {
+      "word": "calibration",
+      "ipa": "/ˌkælɪˈbreɪʃn/",
+      "meaning": "보정; 교정",
+      "level": 5
+    },
+    {
+      "word": "inferential",
+      "ipa": "/ˌɪnfəˈrenʃl/",
+      "meaning": "추론의; 추론 통계의",
+      "level": 6
+    },
+    {
+      "word": "multivariate",
+      "ipa": "/ˌmʌltiˈveriət/",
+      "meaning": "다변량의",
+      "level": 6
+    },
+    {
+      "word": "covariance",
+      "ipa": "/koʊˈveriəns/",
+      "meaning": "공분산",
+      "level": 6
+    },
+    {
+      "word": "endogeneity",
+      "ipa": "/ˌendoʊdʒəˈnɪsəti/",
+      "meaning": "내생성",
+      "level": 6
+    },
+    {
+      "word": "exogeneity",
+      "ipa": "/ˌeksoʊdʒəˈnɪsəti/",
+      "meaning": "외생성",
+      "level": 6
+    },
+    {
+      "word": "nonparametric",
+      "ipa": "/ˌnɑːnpærəˈmetrɪk/",
+      "meaning": "비모수의",
+      "level": 6
+    },
+    {
+      "word": "probabilistic",
+      "ipa": "/ˌprɑːbəbəˈlɪstɪk/",
+      "meaning": "확률적인",
+      "level": 6
+    },
+    {
+      "word": "normalization",
+      "ipa": "/ˌnɔːrmələˈzeɪʃn/",
+      "meaning": "정규화; 정상화",
+      "level": 6
+    },
+    {
+      "word": "extrapolation",
+      "ipa": "/ɪkˌstræpəˈleɪʃn/",
+      "meaning": "외삽; 추정",
+      "level": 6
+    },
+    {
+      "word": "multilevel",
+      "ipa": "/ˌmʌltiˈlevl/",
+      "meaning": "다수준의",
+      "level": 6
+    },
+    {
+      "word": "multidisciplinary",
+      "ipa": "/ˌmʌltidɪsəˈpləneri/",
+      "meaning": "다학제적인",
+      "level": 7
+    },
+    {
+      "word": "positivism",
+      "ipa": "/ˈpɑːzətɪvɪzəm/",
+      "meaning": "실증주의",
+      "level": 7
+    },
+    {
+      "word": "constructivism",
+      "ipa": "/kənˈstrʌktɪvɪzəm/",
+      "meaning": "구성주의",
+      "level": 7
+    },
+    {
+      "word": "reductionism",
+      "ipa": "/rɪˈdʌkʃənɪzəm/",
+      "meaning": "환원주의",
+      "level": 7
+    },
+    {
+      "word": "interpretivism",
+      "ipa": "/ɪnˈtɜːrprətɪvɪzəm/",
+      "meaning": "해석주의",
+      "level": 7
+    },
+    {
+      "word": "realism",
+      "ipa": "/ˈriːəlɪzəm/",
+      "meaning": "실재론",
+      "level": 7
+    },
+    {
+      "word": "relativism",
+      "ipa": "/ˈrelətɪvɪzəm/",
+      "meaning": "상대주의",
+      "level": 7
+    },
+    {
+      "word": "holism",
+      "ipa": "/ˈhoʊlɪzəm/",
+      "meaning": "전체론",
+      "level": 7
+    },
+    {
+      "word": "essentialism",
+      "ipa": "/ɪˈsenʃəlɪzəm/",
+      "meaning": "본질주의",
+      "level": 7
+    },
+    {
+      "word": "functionalism",
+      "ipa": "/ˈfʌŋkʃənəlɪzəm/",
+      "meaning": "기능주의",
+      "level": 7
+    },
+    {
+      "word": "metacognition",
+      "ipa": "/ˌmetəkɑːɡˈnɪʃn/",
+      "meaning": "메타인지",
+      "level": 8
+    },
+    {
+      "word": "neuroplasticity",
+      "ipa": "/ˌnʊroʊplæˈstɪsəti/",
+      "meaning": "신경가소성",
+      "level": 8
+    },
+    {
+      "word": "intersectionality",
+      "ipa": "/ˌɪntərsekʃəˈnæləti/",
+      "meaning": "교차성",
+      "level": 8
+    },
+    {
+      "word": "contextualization",
+      "ipa": "/kənˌtekstʃuələˈzeɪʃn/",
+      "meaning": "맥락화",
+      "level": 8
+    },
+    {
+      "word": "semiotics",
+      "ipa": "/ˌsemiˈɑːtɪks/",
+      "meaning": "기호학",
+      "level": 8
+    },
+    {
+      "word": "discursivity",
+      "ipa": "/dɪˌskɜːrˈsɪvəti/",
+      "meaning": "담론성",
+      "level": 8
+    },
+    {
+      "word": "reflexivity",
+      "ipa": "/ˌriːflekˈsɪvəti/",
+      "meaning": "성찰성",
+      "level": 8
+    },
+    {
+      "word": "intersubjectivity",
+      "ipa": "/ˌɪntərsʌbdʒekˈtɪvəti/",
+      "meaning": "상호주관성",
+      "level": 8
+    },
+    {
+      "word": "commensurability",
+      "ipa": "/kəˌmenʃərəˈbɪləti/",
+      "meaning": "비교 가능성; 공약 가능성",
+      "level": 8
+    },
+    {
+      "word": "positionality",
+      "ipa": "/pəˌzɪʃəˈnæləti/",
+      "meaning": "연구자의 위치성",
+      "level": 8
+    },
+    {
+      "word": "methodological",
+      "ipa": "/ˌmeθədəˈlɑːdʒɪkl/",
+      "meaning": "방법론적인",
+      "level": 9
+    },
+    {
+      "word": "axiomatic",
+      "ipa": "/ˌæksiəˈmætɪk/",
+      "meaning": "공리적인",
+      "level": 9
+    },
+    {
+      "word": "dialectical",
+      "ipa": "/ˌdaɪəˈlektɪkl/",
+      "meaning": "변증법적인",
+      "level": 9
+    },
+    {
+      "word": "nomothetic",
+      "ipa": "/ˌnɑːməˈθetɪk/",
+      "meaning": "법칙 정립적인",
+      "level": 9
+    },
+    {
+      "word": "idiographic",
+      "ipa": "/ˌɪdioʊˈɡræfɪk/",
+      "meaning": "개별 사례 기술적인",
+      "level": 9
+    },
+    {
+      "word": "metatheoretical",
+      "ipa": "/ˌmetəθiːəˈretɪkl/",
+      "meaning": "메타이론적인",
+      "level": 9
+    },
+    {
+      "word": "postpositivist",
+      "ipa": "/ˌpoʊstˈpɑːzətɪvɪst/",
+      "meaning": "후기 실증주의의",
+      "level": 9
+    },
+    {
+      "word": "constructivist",
+      "ipa": "/kənˈstrʌktɪvɪst/",
+      "meaning": "구성주의의",
+      "level": 9
+    },
+    {
+      "word": "interpretivist",
+      "ipa": "/ɪnˈtɜːrprətɪvɪst/",
+      "meaning": "해석주의의",
+      "level": 9
+    },
+    {
+      "word": "perspectival",
+      "ipa": "/pərˈspektɪvl/",
+      "meaning": "관점에 따른",
+      "level": 9
+    },
+    {
+      "word": "phenomenography",
+      "ipa": "/fəˌnɑːməˈnɑːɡrəfi/",
+      "meaning": "현상기술학",
+      "level": 10
+    },
+    {
+      "word": "ethnomethodology",
+      "ipa": "/ˌeθnoʊˌmeθəˈdɑːlədʒi/",
+      "meaning": "민속방법론",
+      "level": 10
+    },
+    {
+      "word": "psycholinguistics",
+      "ipa": "/ˌsaɪkoʊlɪŋˈɡwɪstɪks/",
+      "meaning": "심리언어학",
+      "level": 10
+    },
+    {
+      "word": "sociolinguistics",
+      "ipa": "/ˌsoʊsioʊlɪŋˈɡwɪstɪks/",
+      "meaning": "사회언어학",
+      "level": 10
+    },
+    {
+      "word": "neuropsychology",
+      "ipa": "/ˌnʊroʊsaɪˈkɑːlədʒi/",
+      "meaning": "신경심리학",
+      "level": 10
+    },
+    {
+      "word": "biostatistics",
+      "ipa": "/ˌbaɪoʊstəˈtɪstɪks/",
+      "meaning": "생물통계학",
+      "level": 10
+    },
+    {
+      "word": "multicollinearity",
+      "ipa": "/ˌmʌltikəˌlɪniˈerəti/",
+      "meaning": "다중공선성",
+      "level": 10
+    },
+    {
+      "word": "heteroscedasticity",
+      "ipa": "/ˌhetəroʊskedæˈstɪsəti/",
+      "meaning": "이분산성",
+      "level": 10
+    },
+    {
+      "word": "autocorrelation",
+      "ipa": "/ˌɔːtoʊˌkɔːrəˈleɪʃn/",
+      "meaning": "자기상관",
+      "level": 10
+    },
+    {
+      "word": "transdisciplinarity",
+      "ipa": "/ˌtrænzdɪsəpləˈnerəti/",
+      "meaning": "초학제성",
+      "level": 10
+    }
+  ]
+}

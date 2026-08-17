@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "track": "biz",
+  "setId": 2,
+  "title": "Set 2",
+  "range": {
+    "from": 101,
+    "to": 200
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "accrual",
+      "ipa": "/əˈkruːəl/",
+      "meaning": "발생주의; 미지급 발생액",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "acquisition",
+      "ipa": "/ˌækwɪˈzɪʃn/",
+      "meaning": "인수; 취득",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "creditor",
+      "ipa": "/ˈkredɪtər/",
+      "meaning": "채권자",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "debenture",
+      "ipa": "/dɪˈbentʃər/",
+      "meaning": "회사채; 무담보 채권",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "deflation",
+      "ipa": "/diːˈfleɪʃn/",
+      "meaning": "디플레이션",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "derivative",
+      "ipa": "/dɪˈrɪvətɪv/",
+      "meaning": "파생상품",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "disinflation",
+      "ipa": "/ˌdɪsɪnˈfleɪʃn/",
+      "meaning": "물가상승률 둔화",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "divestiture",
+      "ipa": "/daɪˈvestɪtʃər/",
+      "meaning": "사업 매각; 자산 처분",
+      "level": 8,
+      "topic": "economy"
+    },
+    {
+      "word": "foreclosure",
+      "ipa": "/fɔːrˈkloʊʒər/",
+      "meaning": "담보권 실행; 압류",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "goodwill",
+      "ipa": "/ˌɡʊdˈwɪl/",
+      "meaning": "영업권; 기업의 무형 가치",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "absenteeism",
+      "ipa": "/ˌæbsənˈtiːɪzəm/",
+      "meaning": "상습 결근",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "arbitration",
+      "ipa": "/ˌɑːrbɪˈtreɪʃn/",
+      "meaning": "중재",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "beneficiary",
+      "ipa": "/ˌbenəˈfɪʃieri/",
+      "meaning": "수혜자",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "credential",
+      "ipa": "/krəˈdenʃl/",
+      "meaning": "자격 증명",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "discrimination",
+      "ipa": "/dɪˌskrɪməˈneɪʃn/",
+      "meaning": "차별",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "ethics",
+      "ipa": "/ˈeθɪks/",
+      "meaning": "윤리; 기업 윤리",
+      "level": 4,
+      "topic": "society"
+    },
+    {
+      "word": "indemnity",
+      "ipa": "/ɪnˈdemnəti/",
+      "meaning": "손해 배상; 면책",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "transparency",
+      "ipa": "/trænsˈperənsi/",
+      "meaning": "투명성",
+      "level": 5,
+      "topic": "society"
+    },
+    {
+      "word": "affiliate",
+      "ipa": "/əˈfɪlieɪt/",
+      "meaning": "제휴하다; 계열사",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "collaboration",
+      "ipa": "/kəˌlæbəˈreɪʃn/",
+      "meaning": "협업",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "counterparty",
+      "ipa": "/ˈkaʊntərˌpɑːrti/",
+      "meaning": "거래 상대방",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "franchisee",
+      "ipa": "/ˌfræntʃaɪˈziː/",
+      "meaning": "가맹점 사업자",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "interlocutor",
+      "ipa": "/ˌɪntərˈlɑːkjətər/",
+      "meaning": "대화 상대; 협상 상대",
+      "level": 7,
+      "topic": "relation"
+    },
+    {
+      "word": "licensee",
+      "ipa": "/ˌlaɪsənˈsiː/",
+      "meaning": "사용권자",
+      "level": 5,
+      "topic": "relation"
+    },
+    {
+      "word": "reseller",
+      "ipa": "/ˌriːˈselər/",
+      "meaning": "재판매업체",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "wholesaler",
+      "ipa": "/ˈhoʊlseɪlər/",
+      "meaning": "도매업체",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "consignee",
+      "ipa": "/ˌkɑːnsaɪˈniː/",
+      "meaning": "수하인",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "brainstorm",
+      "ipa": "/ˈbreɪnstɔːrm/",
+      "meaning": "아이디어를 발상하다",
+      "level": 3,
+      "topic": "thought"
+    },
+    {
+      "word": "calibrate",
+      "ipa": "/ˈkælɪbreɪt/",
+      "meaning": "조정하다; 보정하다",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "diagnose",
+      "ipa": "/ˌdaɪəɡˈnoʊs/",
+      "meaning": "문제를 진단하다",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "differentiate",
+      "ipa": "/ˌdɪfəˈrenʃieɪt/",
+      "meaning": "차별화하다",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "disruptive",
+      "ipa": "/dɪsˈrʌptɪv/",
+      "meaning": "파괴적 혁신의",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "ideation",
+      "ipa": "/ˌaɪdiˈeɪʃn/",
+      "meaning": "아이디어 발상",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "incentivize",
+      "ipa": "/ɪnˈsentɪvaɪz/",
+      "meaning": "동기를 부여하다",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "iterate",
+      "ipa": "/ˈɪtəreɪt/",
+      "meaning": "반복 개선하다",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "reassess",
+      "ipa": "/ˌriːəˈses/",
+      "meaning": "재평가하다",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "streamline",
+      "ipa": "/ˈstriːmlaɪn/",
+      "meaning": "효율화하다",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "strategize",
+      "ipa": "/ˈstrætədʒaɪz/",
+      "meaning": "전략을 세우다",
+      "level": 5,
+      "topic": "thought"
+    },
+    {
+      "word": "validate",
+      "ipa": "/ˈvælɪdeɪt/",
+      "meaning": "검증하다",
+      "level": 4,
+      "topic": "thought"
+    },
+    {
+      "word": "availability",
+      "ipa": "/əˌveɪləˈbɪləti/",
+      "meaning": "가능 시간; 이용 가능성",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "calendar",
+      "ipa": "/ˈkælɪndər/",
+      "meaning": "일정표",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "circulate",
+      "ipa": "/ˈsɜːrkjəleɪt/",
+      "meaning": "자료를 회람하다",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "correspondence",
+      "ipa": "/ˌkɔːrəˈspɑːndəns/",
+      "meaning": "업무 서신",
+      "level": 5,
+      "topic": "daily"
+    },
+    {
+      "word": "escalate",
+      "ipa": "/ˈeskəleɪt/",
+      "meaning": "상위 단계로 보고하다",
+      "level": 4,
+      "topic": "daily"
+    },
+    {
+      "word": "inbox",
+      "ipa": "/ˈɪnbɑːks/",
+      "meaning": "받은 편지함",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "notify",
+      "ipa": "/ˈnoʊtɪfaɪ/",
+      "meaning": "알리다",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "postpone",
+      "ipa": "/poʊstˈpoʊn/",
+      "meaning": "연기하다",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "reminder",
+      "ipa": "/rɪˈmaɪndər/",
+      "meaning": "알림; 리마인더",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "sync",
+      "ipa": "/sɪŋk/",
+      "meaning": "업무 내용을 맞추다; 동기화",
+      "level": 2,
+      "topic": "daily"
+    },
+    {
+      "word": "teleconference",
+      "ipa": "/ˈtelikɑːnfərəns/",
+      "meaning": "원격 회의",
+      "level": 4,
+      "topic": "daily"
+    },
+    {
+      "word": "venue",
+      "ipa": "/ˈvenjuː/",
+      "meaning": "행사 장소",
+      "level": 3,
+      "topic": "daily"
+    },
+    {
+      "word": "cohortanalysis",
+      "ipa": "/ˈkoʊhɔːrt əˌnæləsɪs/",
+      "meaning": "코호트 분석",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "conversionrate",
+      "ipa": "/kənˈvɜːrʒn reɪt/",
+      "meaning": "전환율",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "forecastmodel",
+      "ipa": "/ˈfɔːrkæst ˌmɑːdl/",
+      "meaning": "예측 모델",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "growthrate",
+      "ipa": "/ˈɡroʊθ reɪt/",
+      "meaning": "성장률",
+      "level": 3,
+      "topic": "study"
+    },
+    {
+      "word": "marketpenetration",
+      "ipa": "/ˈmɑːrkɪt ˌpenəˈtreɪʃn/",
+      "meaning": "시장 침투율",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "retentionrate",
+      "ipa": "/rɪˈtenʃn reɪt/",
+      "meaning": "유지율",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "runrate",
+      "ipa": "/ˈrʌn reɪt/",
+      "meaning": "연환산 실적; 런레이트",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "seasonality",
+      "ipa": "/ˌsiːzəˈnæləti/",
+      "meaning": "계절성",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "utilization",
+      "ipa": "/ˌjuːtələˈzeɪʃn/",
+      "meaning": "가동률; 활용률",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "authentication",
+      "ipa": "/ɔːˌθentɪˈkeɪʃn/",
+      "meaning": "인증",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "authorization",
+      "ipa": "/ˌɔːθərəˈzeɪʃn/",
+      "meaning": "권한 부여",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "containerization",
+      "ipa": "/kənˌteɪnərəˈzeɪʃn/",
+      "meaning": "컨테이너화",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "datacenter",
+      "ipa": "/ˈdeɪtə ˌsentər/",
+      "meaning": "데이터 센터",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "endpoint",
+      "ipa": "/ˈendpɔɪnt/",
+      "meaning": "엔드포인트",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "migration",
+      "ipa": "/maɪˈɡreɪʃn/",
+      "meaning": "시스템 이전",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "monitoring",
+      "ipa": "/ˈmɑːnɪtərɪŋ/",
+      "meaning": "모니터링",
+      "level": 3,
+      "topic": "tech"
+    },
+    {
+      "word": "repository",
+      "ipa": "/rɪˈpɑːzətɔːri/",
+      "meaning": "코드 저장소",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "serverless",
+      "ipa": "/ˈsɜːrvərləs/",
+      "meaning": "서버리스 방식",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "virtualization",
+      "ipa": "/ˌvɜːrtʃuələˈzeɪʃn/",
+      "meaning": "가상화",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "vulnerability",
+      "ipa": "/ˌvʌlnərəˈbɪləti/",
+      "meaning": "보안 취약점",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "caching",
+      "ipa": "/ˈkæʃɪŋ/",
+      "meaning": "캐싱",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "failover",
+      "ipa": "/ˈfeɪloʊvər/",
+      "meaning": "장애 조치 전환",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "loadbalancing",
+      "ipa": "/ˈloʊd ˌbælənsɪŋ/",
+      "meaning": "부하 분산",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "replication",
+      "ipa": "/ˌreplɪˈkeɪʃn/",
+      "meaning": "복제",
+      "level": 5,
+      "topic": "tech"
+    },
+    {
+      "word": "scaling",
+      "ipa": "/ˈskeɪlɪŋ/",
+      "meaning": "확장",
+      "level": 4,
+      "topic": "tech"
+    },
+    {
+      "word": "tokenization",
+      "ipa": "/ˌtoʊkənəˈzeɪʃn/",
+      "meaning": "토큰화",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "orchestration",
+      "ipa": "/ˌɔːrkəˈstreɪʃn/",
+      "meaning": "오케스트레이션; 자동 조정",
+      "level": 6,
+      "topic": "tech"
+    },
+    {
+      "word": "macroeconomic",
+      "ipa": "/ˌmækroʊˌekəˈnɑːmɪk/",
+      "meaning": "거시경제의",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "microeconomic",
+      "ipa": "/ˌmaɪkroʊˌekəˈnɑːmɪk/",
+      "meaning": "미시경제의",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "bondholder",
+      "ipa": "/ˈbɑːndhoʊldər/",
+      "meaning": "채권 보유자",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "shareholding",
+      "ipa": "/ˈʃerhoʊldɪŋ/",
+      "meaning": "주식 보유; 지분",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "stewardship",
+      "ipa": "/ˈstuːərdʃɪp/",
+      "meaning": "책임 있는 관리",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "unionization",
+      "ipa": "/ˌjuːniənəˈzeɪʃn/",
+      "meaning": "노조 결성",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "breakeven",
+      "ipa": "/ˈbreɪkˌiːvn/",
+      "meaning": "손익분기",
+      "level": 5,
+      "topic": "study"
+    },
+    {
+      "word": "unitcost",
+      "ipa": "/ˈjuːnɪt kɔːst/",
+      "meaning": "단위 비용",
+      "level": 4,
+      "topic": "study"
+    },
+    {
+      "word": "contributionmargin",
+      "ipa": "/ˌkɑːntrɪˈbjuːʃn ˌmɑːrdʒɪn/",
+      "meaning": "공헌이익률",
+      "level": 6,
+      "topic": "study"
+    },
+    {
+      "word": "capitalexpenditure",
+      "ipa": "/ˈkæpɪtl ɪkˌspendɪtʃər/",
+      "meaning": "자본적 지출",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "workingcapital",
+      "ipa": "/ˈwɜːrkɪŋ ˌkæpɪtl/",
+      "meaning": "운전자본",
+      "level": 5,
+      "topic": "economy"
+    },
+    {
+      "word": "marketcapitalization",
+      "ipa": "/ˈmɑːrkɪt ˌkæpɪtələˈzeɪʃn/",
+      "meaning": "시가총액",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "delinquency",
+      "ipa": "/dɪˈlɪŋkwənsi/",
+      "meaning": "연체; 채무 불이행",
+      "level": 6,
+      "topic": "economy"
+    },
+    {
+      "word": "encumbrance",
+      "ipa": "/ɪnˈkʌmbrəns/",
+      "meaning": "재산상의 부담; 채무",
+      "level": 7,
+      "topic": "economy"
+    },
+    {
+      "word": "fiduciary",
+      "ipa": "/fɪˈduːʃieri/",
+      "meaning": "수탁자의; 신임의",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "ombudsman",
+      "ipa": "/ˈɑːmbʊdzmən/",
+      "meaning": "고충 처리 담당자",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "governability",
+      "ipa": "/ˌɡʌvərnəˈbɪləti/",
+      "meaning": "관리 가능성; 통치 가능성",
+      "level": 7,
+      "topic": "society"
+    },
+    {
+      "word": "complianceaudit",
+      "ipa": "/kəmˈplaɪəns ˌɔːdɪt/",
+      "meaning": "준법 감사",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "noncompliance",
+      "ipa": "/ˌnɑːnkəmˈplaɪəns/",
+      "meaning": "규정 미준수",
+      "level": 6,
+      "topic": "society"
+    },
+    {
+      "word": "distributorship",
+      "ipa": "/dɪˈstrɪbjətərʃɪp/",
+      "meaning": "판매 대리권; 유통 계약",
+      "level": 6,
+      "topic": "relation"
+    },
+    {
+      "word": "dealership",
+      "ipa": "/ˈdiːlərʃɪp/",
+      "meaning": "판매 대리점",
+      "level": 4,
+      "topic": "relation"
+    },
+    {
+      "word": "consortium",
+      "ipa": "/kənˈsɔːrtiəm/",
+      "meaning": "기업 연합; 컨소시엄",
+      "level": 6,
+      "topic": "relation"
+    }
+  ]
+}

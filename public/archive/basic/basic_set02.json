@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "basic",
+  "setId": 2,
+  "title": "Set 2",
+  "range": {
+    "from": 101,
+    "to": 200
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "board",
+      "ipa": "/bɔːrd/",
+      "meaning": "칠판; 게시판",
+      "level": 1
+    },
+    {
+      "word": "glue",
+      "ipa": "/ɡluː/",
+      "meaning": "풀; 풀칠하다",
+      "level": 1
+    },
+    {
+      "word": "tape",
+      "ipa": "/teɪp/",
+      "meaning": "테이프",
+      "level": 1
+    },
+    {
+      "word": "gym",
+      "ipa": "/dʒɪm/",
+      "meaning": "체육관",
+      "level": 1
+    },
+    {
+      "word": "soap",
+      "ipa": "/soʊp/",
+      "meaning": "비누",
+      "level": 1
+    },
+    {
+      "word": "yard",
+      "ipa": "/jɑːrd/",
+      "meaning": "마당",
+      "level": 1
+    },
+    {
+      "word": "roof",
+      "ipa": "/ruːf/",
+      "meaning": "지붕",
+      "level": 1
+    },
+    {
+      "word": "cry",
+      "ipa": "/kraɪ/",
+      "meaning": "울다",
+      "level": 1
+    },
+    {
+      "word": "hug",
+      "ipa": "/hʌɡ/",
+      "meaning": "껴안다",
+      "level": 1
+    },
+    {
+      "word": "kiss",
+      "ipa": "/kɪs/",
+      "meaning": "입맞추다",
+      "level": 1
+    },
+    {
+      "word": "crayon",
+      "ipa": "/ˈkreɪɑːn/",
+      "meaning": "크레파스",
+      "level": 2
+    },
+    {
+      "word": "scissors",
+      "ipa": "/ˈsɪzərz/",
+      "meaning": "가위",
+      "level": 2
+    },
+    {
+      "word": "backpack",
+      "ipa": "/ˈbækpæk/",
+      "meaning": "배낭; 책가방",
+      "level": 2
+    },
+    {
+      "word": "bedroom",
+      "ipa": "/ˈbedruːm/",
+      "meaning": "침실",
+      "level": 2
+    },
+    {
+      "word": "bathroom",
+      "ipa": "/ˈbæθruːm/",
+      "meaning": "욕실",
+      "level": 2
+    },
+    {
+      "word": "dance",
+      "ipa": "/dæns/",
+      "meaning": "춤추다",
+      "level": 2
+    },
+    {
+      "word": "shout",
+      "ipa": "/ʃaʊt/",
+      "meaning": "소리치다",
+      "level": 2
+    },
+    {
+      "word": "whisper",
+      "ipa": "/ˈwɪspər/",
+      "meaning": "속삭이다",
+      "level": 2
+    },
+    {
+      "word": "crawl",
+      "ipa": "/krɔːl/",
+      "meaning": "기어가다",
+      "level": 2
+    },
+    {
+      "word": "sleepy",
+      "ipa": "/ˈsliːpi/",
+      "meaning": "졸린",
+      "level": 2
+    },
+    {
+      "word": "hallway",
+      "ipa": "/ˈhɔːlweɪ/",
+      "meaning": "복도",
+      "level": 3
+    },
+    {
+      "word": "classroom",
+      "ipa": "/ˈklæsruːm/",
+      "meaning": "교실",
+      "level": 3
+    },
+    {
+      "word": "playground",
+      "ipa": "/ˈpleɪɡraʊnd/",
+      "meaning": "운동장; 놀이터",
+      "level": 3
+    },
+    {
+      "word": "parents",
+      "ipa": "/ˈperənts/",
+      "meaning": "부모님",
+      "level": 3
+    },
+    {
+      "word": "grandmother",
+      "ipa": "/ˈɡrænmʌðər/",
+      "meaning": "할머니",
+      "level": 3
+    },
+    {
+      "word": "grandfather",
+      "ipa": "/ˈɡrænfɑːðər/",
+      "meaning": "할아버지",
+      "level": 3
+    },
+    {
+      "word": "balcony",
+      "ipa": "/ˈbælkəni/",
+      "meaning": "발코니; 베란다",
+      "level": 3
+    },
+    {
+      "word": "basement",
+      "ipa": "/ˈbeɪsmənt/",
+      "meaning": "지하실",
+      "level": 3
+    },
+    {
+      "word": "clever",
+      "ipa": "/ˈklevər/",
+      "meaning": "영리한",
+      "level": 3
+    },
+    {
+      "word": "nervous",
+      "ipa": "/ˈnɜːrvəs/",
+      "meaning": "초조한; 긴장된",
+      "level": 3
+    },
+    {
+      "word": "cafeteria",
+      "ipa": "/ˌkæfəˈtɪriə/",
+      "meaning": "급식실; 식당",
+      "level": 4
+    },
+    {
+      "word": "principal",
+      "ipa": "/ˈprɪnsəpl/",
+      "meaning": "교장 선생님",
+      "level": 4
+    },
+    {
+      "word": "crosswalk",
+      "ipa": "/ˈkrɔːswɔːk/",
+      "meaning": "횡단보도",
+      "level": 4
+    },
+    {
+      "word": "sidewalk",
+      "ipa": "/ˈsaɪdwɔːk/",
+      "meaning": "보도; 인도",
+      "level": 4
+    },
+    {
+      "word": "clinic",
+      "ipa": "/ˈklɪnɪk/",
+      "meaning": "의원; 클리닉",
+      "level": 4
+    },
+    {
+      "word": "supermarket",
+      "ipa": "/ˈsuːpərmɑːrkɪt/",
+      "meaning": "슈퍼마켓",
+      "level": 4
+    },
+    {
+      "word": "mall",
+      "ipa": "/mɔːl/",
+      "meaning": "쇼핑몰",
+      "level": 4
+    },
+    {
+      "word": "bookstore",
+      "ipa": "/ˈbʊkstɔːr/",
+      "meaning": "서점",
+      "level": 4
+    },
+    {
+      "word": "cinema",
+      "ipa": "/ˈsɪnəmə/",
+      "meaning": "영화관",
+      "level": 4
+    },
+    {
+      "word": "zoo",
+      "ipa": "/zuː/",
+      "meaning": "동물원",
+      "level": 4
+    },
+    {
+      "word": "clothes",
+      "ipa": "/kloʊðz/",
+      "meaning": "옷; 의복",
+      "level": 5
+    },
+    {
+      "word": "jeans",
+      "ipa": "/dʒiːnz/",
+      "meaning": "청바지",
+      "level": 5
+    },
+    {
+      "word": "sweater",
+      "ipa": "/ˈswetər/",
+      "meaning": "스웨터",
+      "level": 5
+    },
+    {
+      "word": "hoodie",
+      "ipa": "/ˈhʊdi/",
+      "meaning": "후드티",
+      "level": 5
+    },
+    {
+      "word": "sneakers",
+      "ipa": "/ˈsniːkərz/",
+      "meaning": "운동화",
+      "level": 5
+    },
+    {
+      "word": "boots",
+      "ipa": "/buːts/",
+      "meaning": "장화; 부츠",
+      "level": 5
+    },
+    {
+      "word": "sandals",
+      "ipa": "/ˈsændlz/",
+      "meaning": "샌들",
+      "level": 5
+    },
+    {
+      "word": "pajamas",
+      "ipa": "/pəˈdʒæməz/",
+      "meaning": "잠옷",
+      "level": 5
+    },
+    {
+      "word": "swimsuit",
+      "ipa": "/ˈswɪmsuːt/",
+      "meaning": "수영복",
+      "level": 5
+    },
+    {
+      "word": "pockets",
+      "ipa": "/ˈpɑːkɪts/",
+      "meaning": "주머니",
+      "level": 5
+    },
+    {
+      "word": "jungle",
+      "ipa": "/ˈdʒʌŋɡl/",
+      "meaning": "밀림; 정글",
+      "level": 6
+    },
+    {
+      "word": "volcano",
+      "ipa": "/vɑːlˈkeɪnoʊ/",
+      "meaning": "화산",
+      "level": 6
+    },
+    {
+      "word": "root",
+      "ipa": "/ruːt/",
+      "meaning": "뿌리",
+      "level": 6
+    },
+    {
+      "word": "stem",
+      "ipa": "/stem/",
+      "meaning": "줄기",
+      "level": 6
+    },
+    {
+      "word": "tulip",
+      "ipa": "/ˈtuːlɪp/",
+      "meaning": "튤립",
+      "level": 6
+    },
+    {
+      "word": "sunflower",
+      "ipa": "/ˈsʌnflaʊər/",
+      "meaning": "해바라기",
+      "level": 6
+    },
+    {
+      "word": "nation",
+      "ipa": "/ˈneɪʃn/",
+      "meaning": "국가; 민족",
+      "level": 6
+    },
+    {
+      "word": "flag",
+      "ipa": "/flæɡ/",
+      "meaning": "국기; 깃발",
+      "level": 6
+    },
+    {
+      "word": "instrument",
+      "ipa": "/ˈɪnstrəmənt/",
+      "meaning": "악기; 도구",
+      "level": 6
+    },
+    {
+      "word": "rhythm",
+      "ipa": "/ˈrɪðəm/",
+      "meaning": "리듬",
+      "level": 6
+    },
+    {
+      "word": "opportunity",
+      "ipa": "/ˌɑːpərˈtuːnəti/",
+      "meaning": "좋은 기회",
+      "level": 7
+    },
+    {
+      "word": "ordinary",
+      "ipa": "/ˈɔːrdneri/",
+      "meaning": "평범한",
+      "level": 7
+    },
+    {
+      "word": "outcome",
+      "ipa": "/ˈaʊtkʌm/",
+      "meaning": "결과",
+      "level": 7
+    },
+    {
+      "word": "outstanding",
+      "ipa": "/aʊtˈstændɪŋ/",
+      "meaning": "뛰어난",
+      "level": 7
+    },
+    {
+      "word": "overcome",
+      "ipa": "/ˌoʊvərˈkʌm/",
+      "meaning": "극복하다",
+      "level": 7
+    },
+    {
+      "word": "parallel",
+      "ipa": "/ˈpærəlel/",
+      "meaning": "평행의",
+      "level": 7
+    },
+    {
+      "word": "propose",
+      "ipa": "/prəˈpoʊz/",
+      "meaning": "제안하다",
+      "level": 7
+    },
+    {
+      "word": "quantity",
+      "ipa": "/ˈkwɑːntəti/",
+      "meaning": "수량",
+      "level": 7
+    },
+    {
+      "word": "recommend",
+      "ipa": "/ˌrekəˈmend/",
+      "meaning": "추천하다",
+      "level": 7
+    },
+    {
+      "word": "recover",
+      "ipa": "/rɪˈkʌvər/",
+      "meaning": "회복하다",
+      "level": 7
+    },
+    {
+      "word": "satisfaction",
+      "ipa": "/ˌsætɪsˈfækʃn/",
+      "meaning": "만족",
+      "level": 8
+    },
+    {
+      "word": "sensitive",
+      "ipa": "/ˈsensətɪv/",
+      "meaning": "민감한",
+      "level": 8
+    },
+    {
+      "word": "separate",
+      "ipa": "/ˈseprət/",
+      "meaning": "분리된",
+      "level": 8
+    },
+    {
+      "word": "severe",
+      "ipa": "/sɪˈvɪər/",
+      "meaning": "심각한",
+      "level": 8
+    },
+    {
+      "word": "suitable",
+      "ipa": "/ˈsuːtəbl/",
+      "meaning": "적합한",
+      "level": 8
+    },
+    {
+      "word": "superior",
+      "ipa": "/suːˈpɪriər/",
+      "meaning": "우월한",
+      "level": 8
+    },
+    {
+      "word": "sustain",
+      "ipa": "/səˈsteɪn/",
+      "meaning": "지속하다",
+      "level": 8
+    },
+    {
+      "word": "sympathy",
+      "ipa": "/ˈsɪmpəθi/",
+      "meaning": "동정심; 공감",
+      "level": 8
+    },
+    {
+      "word": "temporary",
+      "ipa": "/ˈtempəreri/",
+      "meaning": "일시적인",
+      "level": 8
+    },
+    {
+      "word": "tendency",
+      "ipa": "/ˈtendənsi/",
+      "meaning": "경향",
+      "level": 8
+    },
+    {
+      "word": "urban",
+      "ipa": "/ˈɜːrbən/",
+      "meaning": "도시의",
+      "level": 9
+    },
+    {
+      "word": "urgent",
+      "ipa": "/ˈɜːrdʒənt/",
+      "meaning": "긴급한",
+      "level": 9
+    },
+    {
+      "word": "valuable",
+      "ipa": "/ˈvæljuəbl/",
+      "meaning": "가치 있는",
+      "level": 9
+    },
+    {
+      "word": "variety",
+      "ipa": "/vəˈraɪəti/",
+      "meaning": "다양성",
+      "level": 9
+    },
+    {
+      "word": "venture",
+      "ipa": "/ˈventʃər/",
+      "meaning": "모험적 사업",
+      "level": 9
+    },
+    {
+      "word": "version",
+      "ipa": "/ˈvɜːrʒn/",
+      "meaning": "버전; 판",
+      "level": 9
+    },
+    {
+      "word": "virtue",
+      "ipa": "/ˈvɜːrtʃuː/",
+      "meaning": "미덕; 덕목",
+      "level": 9
+    },
+    {
+      "word": "visual",
+      "ipa": "/ˈvɪʒuəl/",
+      "meaning": "시각의",
+      "level": 9
+    },
+    {
+      "word": "vital",
+      "ipa": "/ˈvaɪtl/",
+      "meaning": "필수적인; 생명의",
+      "level": 9
+    },
+    {
+      "word": "voluntary",
+      "ipa": "/ˈvɑːlənteri/",
+      "meaning": "자발적인",
+      "level": 9
+    },
+    {
+      "word": "chaos",
+      "ipa": "/ˈkeɪɑːs/",
+      "meaning": "혼돈",
+      "level": 10
+    },
+    {
+      "word": "civilization",
+      "ipa": "/ˌsɪvələˈzeɪʃn/",
+      "meaning": "문명",
+      "level": 10
+    },
+    {
+      "word": "cohere",
+      "ipa": "/koʊˈhɪər/",
+      "meaning": "일관성 있다",
+      "level": 10
+    },
+    {
+      "word": "collapse",
+      "ipa": "/kəˈlæps/",
+      "meaning": "붕괴하다",
+      "level": 10
+    },
+    {
+      "word": "commerce",
+      "ipa": "/ˈkɑːmɜːrs/",
+      "meaning": "상업",
+      "level": 10
+    },
+    {
+      "word": "compelling",
+      "ipa": "/kəmˈpelɪŋ/",
+      "meaning": "설득력 있는",
+      "level": 10
+    },
+    {
+      "word": "competent",
+      "ipa": "/ˈkɑːmpɪtənt/",
+      "meaning": "유능한",
+      "level": 10
+    },
+    {
+      "word": "component",
+      "ipa": "/kəmˈpoʊnənt/",
+      "meaning": "구성 요소",
+      "level": 10
+    },
+    {
+      "word": "comprehend",
+      "ipa": "/ˌkɑːmprɪˈhend/",
+      "meaning": "이해하다",
+      "level": 10
+    },
+    {
+      "word": "compromise",
+      "ipa": "/ˈkɑːmprəmaɪz/",
+      "meaning": "타협하다",
+      "level": 10
+    }
+  ]
+}

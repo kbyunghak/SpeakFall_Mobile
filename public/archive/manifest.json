@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "tracks": {
+    "basic": [
+      {
+        "setId": 1,
+        "title": "기초 영단어 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "basic/basic_set01.json"
+      },
+      {
+        "setId": 2,
+        "title": "기초 영단어 Set 2",
+        "wordCount": 100,
+        "version": 1,
+        "file": "basic/basic_set02.json"
+      }
+    ],
+    "elementary": [
+      {
+        "setId": 1,
+        "title": "초등 필수 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "elementary/elementary_set01.json"
+      },
+      {
+        "setId": 2,
+        "title": "초등 필수 Set 2",
+        "wordCount": 100,
+        "version": 1,
+        "file": "elementary/elementary_set02.json"
+      }
+    ],
+    "middle": [
+      {
+        "setId": 1,
+        "title": "중학 필수 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "middle/middle_set01.json"
+      },
+      {
+        "setId": 2,
+        "title": "중학 필수 Set 2",
+        "wordCount": 100,
+        "version": 1,
+        "file": "middle/middle_set02.json"
+      }
+    ],
+    "high": [
+      {
+        "setId": 1,
+        "title": "고등/수능 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "high/high_set01.json"
+      },
+      {
+        "setId": 2,
+        "title": "고등/수능 Set 2",
+        "wordCount": 100,
+        "version": 1,
+        "file": "high/high_set02.json"
+      }
+    ],
+    "biz": [
+      {
+        "setId": 1,
+        "title": "사회/비즈니스 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "biz/biz_set01.json"
+      },
+      {
+        "setId": 2,
+        "title": "사회/비즈니스 Set 2",
+        "wordCount": 100,
+        "version": 1,
+        "file": "biz/biz_set02.json"
+      },
+      {
+        "setId": 3,
+        "title": "사회/비즈니스 Set 3",
+        "wordCount": 100,
+        "version": 1,
+        "file": "biz/biz_set03.json"
+      }
+    ],
+    "pro": [
+      {
+        "setId": 1,
+        "title": "전문/학술 Set 1",
+        "wordCount": 100,
+        "version": 1,
+        "file": "pro/pro_set01.json"
+      }
+    ]
+  }
+}

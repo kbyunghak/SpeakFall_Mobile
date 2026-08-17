@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "elementary",
+  "setId": 2,
+  "title": "Set 2",
+  "range": {
+    "from": 101,
+    "to": 200
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "alarm",
+      "ipa": "/əˈlɑːrm/",
+      "meaning": "알람; 경보",
+      "level": 1
+    },
+    {
+      "word": "album",
+      "ipa": "/ˈælbəm/",
+      "meaning": "앨범",
+      "level": 1
+    },
+    {
+      "word": "arrow",
+      "ipa": "/ˈæroʊ/",
+      "meaning": "화살; 화살표",
+      "level": 1
+    },
+    {
+      "word": "candle",
+      "ipa": "/ˈkændl/",
+      "meaning": "양초",
+      "level": 1
+    },
+    {
+      "word": "glove",
+      "ipa": "/ɡlʌv/",
+      "meaning": "장갑",
+      "level": 1
+    },
+    {
+      "word": "helmet",
+      "ipa": "/ˈhelmɪt/",
+      "meaning": "헬멧",
+      "level": 1
+    },
+    {
+      "word": "kettle",
+      "ipa": "/ˈketl/",
+      "meaning": "주전자",
+      "level": 1
+    },
+    {
+      "word": "mango",
+      "ipa": "/ˈmæŋɡoʊ/",
+      "meaning": "망고",
+      "level": 1
+    },
+    {
+      "word": "wallet",
+      "ipa": "/ˈwɑːlɪt/",
+      "meaning": "지갑",
+      "level": 1
+    },
+    {
+      "word": "whistle",
+      "ipa": "/ˈwɪsl/",
+      "meaning": "호루라기; 휘파람을 불다",
+      "level": 1
+    },
+    {
+      "word": "almond",
+      "ipa": "/ˈɑːmənd/",
+      "meaning": "아몬드",
+      "level": 2
+    },
+    {
+      "word": "apron",
+      "ipa": "/ˈeɪprən/",
+      "meaning": "앞치마",
+      "level": 2
+    },
+    {
+      "word": "bracelet",
+      "ipa": "/ˈbreɪslət/",
+      "meaning": "팔찌",
+      "level": 2
+    },
+    {
+      "word": "broccoli",
+      "ipa": "/ˈbrɑːkəli/",
+      "meaning": "브로콜리",
+      "level": 2
+    },
+    {
+      "word": "ceiling",
+      "ipa": "/ˈsiːlɪŋ/",
+      "meaning": "천장",
+      "level": 2
+    },
+    {
+      "word": "chimney",
+      "ipa": "/ˈtʃɪmni/",
+      "meaning": "굴뚝",
+      "level": 2
+    },
+    {
+      "word": "coconut",
+      "ipa": "/ˈkoʊkənʌt/",
+      "meaning": "코코넛",
+      "level": 2
+    },
+    {
+      "word": "diary",
+      "ipa": "/ˈdaɪəri/",
+      "meaning": "일기장",
+      "level": 2
+    },
+    {
+      "word": "envelope",
+      "ipa": "/ˈenvəloʊp/",
+      "meaning": "봉투",
+      "level": 2
+    },
+    {
+      "word": "freezer",
+      "ipa": "/ˈfriːzər/",
+      "meaning": "냉동고",
+      "level": 2
+    },
+    {
+      "word": "aquarium",
+      "ipa": "/əˈkweriəm/",
+      "meaning": "수족관",
+      "level": 3
+    },
+    {
+      "word": "circus",
+      "ipa": "/ˈsɜːrkəs/",
+      "meaning": "서커스",
+      "level": 3
+    },
+    {
+      "word": "elevator",
+      "ipa": "/ˈelɪveɪtər/",
+      "meaning": "엘리베이터",
+      "level": 3
+    },
+    {
+      "word": "flashlight",
+      "ipa": "/ˈflæʃlaɪt/",
+      "meaning": "손전등",
+      "level": 3
+    },
+    {
+      "word": "jellyfish",
+      "ipa": "/ˈdʒelifɪʃ/",
+      "meaning": "해파리",
+      "level": 3
+    },
+    {
+      "word": "ladder",
+      "ipa": "/ˈlædər/",
+      "meaning": "사다리",
+      "level": 3
+    },
+    {
+      "word": "lantern",
+      "ipa": "/ˈlæntərn/",
+      "meaning": "랜턴; 등불",
+      "level": 3
+    },
+    {
+      "word": "laptop",
+      "ipa": "/ˈlæptɑːp/",
+      "meaning": "노트북 컴퓨터",
+      "level": 3
+    },
+    {
+      "word": "laundry",
+      "ipa": "/ˈlɔːndri/",
+      "meaning": "세탁물; 세탁",
+      "level": 3
+    },
+    {
+      "word": "package",
+      "ipa": "/ˈpækɪdʒ/",
+      "meaning": "소포; 포장",
+      "level": 3
+    },
+    {
+      "word": "cheer",
+      "ipa": "/tʃɪr/",
+      "meaning": "응원하다; 환호하다",
+      "level": 4
+    },
+    {
+      "word": "happen",
+      "ipa": "/ˈhæpən/",
+      "meaning": "일어나다; 발생하다",
+      "level": 4
+    },
+    {
+      "word": "hide",
+      "ipa": "/haɪd/",
+      "meaning": "숨다; 숨기다",
+      "level": 4
+    },
+    {
+      "word": "join",
+      "ipa": "/dʒɔɪn/",
+      "meaning": "참가하다; 합류하다",
+      "level": 4
+    },
+    {
+      "word": "knock",
+      "ipa": "/nɑːk/",
+      "meaning": "두드리다",
+      "level": 4
+    },
+    {
+      "word": "lift",
+      "ipa": "/lɪft/",
+      "meaning": "들어 올리다",
+      "level": 4
+    },
+    {
+      "word": "pack",
+      "ipa": "/pæk/",
+      "meaning": "짐을 싸다; 포장하다",
+      "level": 4
+    },
+    {
+      "word": "peel",
+      "ipa": "/piːl/",
+      "meaning": "껍질을 벗기다",
+      "level": 4
+    },
+    {
+      "word": "pour",
+      "ipa": "/pɔːr/",
+      "meaning": "붓다",
+      "level": 4
+    },
+    {
+      "word": "share",
+      "ipa": "/ʃer/",
+      "meaning": "나누다; 공유하다",
+      "level": 4
+    },
+    {
+      "word": "admire",
+      "ipa": "/ədˈmaɪər/",
+      "meaning": "감탄하다; 존경하다",
+      "level": 5
+    },
+    {
+      "word": "arrange",
+      "ipa": "/əˈreɪndʒ/",
+      "meaning": "정리하다; 배열하다",
+      "level": 5
+    },
+    {
+      "word": "attach",
+      "ipa": "/əˈtætʃ/",
+      "meaning": "붙이다; 첨부하다",
+      "level": 5
+    },
+    {
+      "word": "balance",
+      "ipa": "/ˈbæləns/",
+      "meaning": "균형을 잡다; 균형",
+      "level": 5
+    },
+    {
+      "word": "borrow",
+      "ipa": "/ˈbɑːroʊ/",
+      "meaning": "빌리다",
+      "level": 5
+    },
+    {
+      "word": "decorate",
+      "ipa": "/ˈdekəreɪt/",
+      "meaning": "장식하다",
+      "level": 5
+    },
+    {
+      "word": "deliver",
+      "ipa": "/dɪˈlɪvər/",
+      "meaning": "배달하다; 전달하다",
+      "level": 5
+    },
+    {
+      "word": "exercise",
+      "ipa": "/ˈeksərsaɪz/",
+      "meaning": "운동하다; 운동",
+      "level": 5
+    },
+    {
+      "word": "explore",
+      "ipa": "/ɪkˈsplɔːr/",
+      "meaning": "탐험하다; 살펴보다",
+      "level": 5
+    },
+    {
+      "word": "measure",
+      "ipa": "/ˈmeʒər/",
+      "meaning": "재다; 측정하다",
+      "level": 5
+    },
+    {
+      "word": "complain",
+      "ipa": "/kəmˈpleɪn/",
+      "meaning": "불평하다",
+      "level": 6
+    },
+    {
+      "word": "connect",
+      "ipa": "/kəˈnekt/",
+      "meaning": "연결하다",
+      "level": 6
+    },
+    {
+      "word": "depend",
+      "ipa": "/dɪˈpend/",
+      "meaning": "의존하다; ~에 달려 있다",
+      "level": 6
+    },
+    {
+      "word": "relax",
+      "ipa": "/rɪˈlæks/",
+      "meaning": "쉬다; 긴장을 풀다",
+      "level": 6
+    },
+    {
+      "word": "search",
+      "ipa": "/sɜːrtʃ/",
+      "meaning": "찾다; 검색하다",
+      "level": 6
+    },
+    {
+      "word": "solve",
+      "ipa": "/sɑːlv/",
+      "meaning": "해결하다",
+      "level": 6
+    },
+    {
+      "word": "spell",
+      "ipa": "/spel/",
+      "meaning": "철자를 쓰다; 철자를 말하다",
+      "level": 6
+    },
+    {
+      "word": "spend",
+      "ipa": "/spend/",
+      "meaning": "쓰다; 시간을 보내다",
+      "level": 6
+    },
+    {
+      "word": "trust",
+      "ipa": "/trʌst/",
+      "meaning": "믿다; 신뢰",
+      "level": 6
+    },
+    {
+      "word": "wrap",
+      "ipa": "/ræp/",
+      "meaning": "싸다; 포장하다",
+      "level": 6
+    },
+    {
+      "word": "awful",
+      "ipa": "/ˈɔːfəl/",
+      "meaning": "끔찍한",
+      "level": 7
+    },
+    {
+      "word": "calm",
+      "ipa": "/kɑːm/",
+      "meaning": "차분한; 진정시키다",
+      "level": 7
+    },
+    {
+      "word": "delicious",
+      "ipa": "/dɪˈlɪʃəs/",
+      "meaning": "맛있는",
+      "level": 7
+    },
+    {
+      "word": "fair",
+      "ipa": "/fer/",
+      "meaning": "공정한; 꽤 좋은",
+      "level": 7
+    },
+    {
+      "word": "healthy",
+      "ipa": "/ˈhelθi/",
+      "meaning": "건강한",
+      "level": 7
+    },
+    {
+      "word": "lucky",
+      "ipa": "/ˈlʌki/",
+      "meaning": "운이 좋은",
+      "level": 7
+    },
+    {
+      "word": "pretty",
+      "ipa": "/ˈprɪti/",
+      "meaning": "예쁜; 꽤",
+      "level": 7
+    },
+    {
+      "word": "silly",
+      "ipa": "/ˈsɪli/",
+      "meaning": "어리석은; 장난스러운",
+      "level": 7
+    },
+    {
+      "word": "tiny",
+      "ipa": "/ˈtaɪni/",
+      "meaning": "아주 작은",
+      "level": 7
+    },
+    {
+      "word": "wild",
+      "ipa": "/waɪld/",
+      "meaning": "야생의; 거친",
+      "level": 7
+    },
+    {
+      "word": "eager",
+      "ipa": "/ˈiːɡər/",
+      "meaning": "열망하는; 간절히 원하는",
+      "level": 8
+    },
+    {
+      "word": "enormous",
+      "ipa": "/ɪˈnɔːrməs/",
+      "meaning": "거대한",
+      "level": 8
+    },
+    {
+      "word": "important",
+      "ipa": "/ɪmˈpɔːrtnt/",
+      "meaning": "중요한",
+      "level": 8
+    },
+    {
+      "word": "ordinary",
+      "ipa": "/ˈɔːrdəneri/",
+      "meaning": "평범한",
+      "level": 8
+    },
+    {
+      "word": "possible",
+      "ipa": "/ˈpɑːsəbl/",
+      "meaning": "가능한",
+      "level": 8
+    },
+    {
+      "word": "powerful",
+      "ipa": "/ˈpaʊərfəl/",
+      "meaning": "강력한",
+      "level": 8
+    },
+    {
+      "word": "serious",
+      "ipa": "/ˈsɪriəs/",
+      "meaning": "심각한; 진지한",
+      "level": 8
+    },
+    {
+      "word": "thankful",
+      "ipa": "/ˈθæŋkfəl/",
+      "meaning": "감사하는",
+      "level": 8
+    },
+    {
+      "word": "useful",
+      "ipa": "/ˈjuːsfəl/",
+      "meaning": "유용한",
+      "level": 8
+    },
+    {
+      "word": "wise",
+      "ipa": "/waɪz/",
+      "meaning": "현명한",
+      "level": 8
+    },
+    {
+      "word": "advise",
+      "ipa": "/ədˈvaɪz/",
+      "meaning": "조언하다",
+      "level": 9
+    },
+    {
+      "word": "afford",
+      "ipa": "/əˈfɔːrd/",
+      "meaning": "~할 여유가 있다",
+      "level": 9
+    },
+    {
+      "word": "amuse",
+      "ipa": "/əˈmjuːz/",
+      "meaning": "즐겁게 하다",
+      "level": 9
+    },
+    {
+      "word": "annoy",
+      "ipa": "/əˈnɔɪ/",
+      "meaning": "짜증 나게 하다",
+      "level": 9
+    },
+    {
+      "word": "apologize",
+      "ipa": "/əˈpɑːlədʒaɪz/",
+      "meaning": "사과하다",
+      "level": 9
+    },
+    {
+      "word": "behave",
+      "ipa": "/bɪˈheɪv/",
+      "meaning": "행동하다",
+      "level": 9
+    },
+    {
+      "word": "breathe",
+      "ipa": "/briːð/",
+      "meaning": "숨 쉬다",
+      "level": 9
+    },
+    {
+      "word": "discover",
+      "ipa": "/dɪˈskʌvər/",
+      "meaning": "발견하다",
+      "level": 9
+    },
+    {
+      "word": "lend",
+      "ipa": "/lend/",
+      "meaning": "빌려주다",
+      "level": 9
+    },
+    {
+      "word": "sprinkle",
+      "ipa": "/ˈsprɪŋkl/",
+      "meaning": "뿌리다; 흩뿌리다",
+      "level": 9
+    },
+    {
+      "word": "responsible",
+      "ipa": "/rɪˈspɑːnsəbl/",
+      "meaning": "책임이 있는",
+      "level": 10
+    },
+    {
+      "word": "independent",
+      "ipa": "/ˌɪndɪˈpendənt/",
+      "meaning": "독립적인",
+      "level": 10
+    },
+    {
+      "word": "creative",
+      "ipa": "/kriˈeɪtɪv/",
+      "meaning": "창의적인",
+      "level": 10
+    },
+    {
+      "word": "confident",
+      "ipa": "/ˈkɑːnfɪdənt/",
+      "meaning": "자신감 있는",
+      "level": 10
+    },
+    {
+      "word": "successful",
+      "ipa": "/səkˈsesfəl/",
+      "meaning": "성공적인",
+      "level": 10
+    },
+    {
+      "word": "necessary",
+      "ipa": "/ˈnesəseri/",
+      "meaning": "필요한",
+      "level": 10
+    },
+    {
+      "word": "valuable",
+      "ipa": "/ˈvæljuəbl/",
+      "meaning": "가치 있는",
+      "level": 10
+    },
+    {
+      "word": "excellent",
+      "ipa": "/ˈeksələnt/",
+      "meaning": "훌륭한",
+      "level": 10
+    },
+    {
+      "word": "convenient",
+      "ipa": "/kənˈviːniənt/",
+      "meaning": "편리한",
+      "level": 10
+    },
+    {
+      "word": "traditional",
+      "ipa": "/trəˈdɪʃənl/",
+      "meaning": "전통적인",
+      "level": 10
+    }
+  ]
+}

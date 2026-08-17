@@ -5,6 +5,10 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { generateArchiveManifest } from "./scripts/generateArchiveManifest";
+
+// 개발 서버와 모든 빌드에서 실제 Archive JSON 개수를 목록에 자동 반영합니다.
+generateArchiveManifest();
 
 // MOBILE=1 로 빌드하면 Capacitor(Android/iOS)용 정적 SPA 셸(dist/client/index.html)을 생성합니다.
 // 웹 배포(기본 빌드)는 기존 SSR 동작을 그대로 유지합니다.

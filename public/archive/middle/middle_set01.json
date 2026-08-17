@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "track": "middle",
+  "setId": 1,
+  "title": "Set 1",
+  "range": {
+    "from": 1,
+    "to": 100
+  },
+  "version": 1,
+  "words": [
+    {
+      "word": "bakery",
+      "ipa": "/ˈbeɪkəri/",
+      "meaning": "빵집",
+      "level": 1
+    },
+    {
+      "word": "calendar",
+      "ipa": "/ˈkælɪndər/",
+      "meaning": "달력",
+      "level": 1
+    },
+    {
+      "word": "diary",
+      "ipa": "/ˈdaɪəri/",
+      "meaning": "일기장",
+      "level": 1
+    },
+    {
+      "word": "exit",
+      "ipa": "/ˈeɡzɪt/",
+      "meaning": "출구",
+      "level": 1
+    },
+    {
+      "word": "locker",
+      "ipa": "/ˈlɑːkər/",
+      "meaning": "사물함",
+      "level": 1
+    },
+    {
+      "word": "picnic",
+      "ipa": "/ˈpɪknɪk/",
+      "meaning": "소풍",
+      "level": 1
+    },
+    {
+      "word": "wallet",
+      "ipa": "/ˈwɑːlɪt/",
+      "meaning": "지갑",
+      "level": 1
+    },
+    {
+      "word": "cafeteria",
+      "ipa": "/ˌkæfəˈtɪriə/",
+      "meaning": "급식실; 구내식당",
+      "level": 1
+    },
+    {
+      "word": "notebook",
+      "ipa": "/ˈnoʊtbʊk/",
+      "meaning": "공책",
+      "level": 1
+    },
+    {
+      "word": "hallway",
+      "ipa": "/ˈhɔːlweɪ/",
+      "meaning": "복도",
+      "level": 1
+    },
+    {
+      "word": "borrow",
+      "ipa": "/ˈbɑːroʊ/",
+      "meaning": "빌리다",
+      "level": 2
+    },
+    {
+      "word": "trust",
+      "ipa": "/trʌst/",
+      "meaning": "믿다; 신뢰",
+      "level": 2
+    },
+    {
+      "word": "greet",
+      "ipa": "/ɡriːt/",
+      "meaning": "인사하다",
+      "level": 2
+    },
+    {
+      "word": "lend",
+      "ipa": "/lend/",
+      "meaning": "빌려주다",
+      "level": 2
+    },
+    {
+      "word": "choose",
+      "ipa": "/tʃuːz/",
+      "meaning": "고르다; 선택하다",
+      "level": 2
+    },
+    {
+      "word": "follow",
+      "ipa": "/ˈfɑːloʊ/",
+      "meaning": "따라가다; 따르다",
+      "level": 2
+    },
+    {
+      "word": "join",
+      "ipa": "/dʒɔɪn/",
+      "meaning": "참여하다; 합류하다",
+      "level": 2
+    },
+    {
+      "word": "thank",
+      "ipa": "/θæŋk/",
+      "meaning": "감사하다",
+      "level": 2
+    },
+    {
+      "word": "visit",
+      "ipa": "/ˈvɪzɪt/",
+      "meaning": "방문하다",
+      "level": 2
+    },
+    {
+      "word": "welcome",
+      "ipa": "/ˈwelkəm/",
+      "meaning": "환영하다; 환영",
+      "level": 2
+    },
+    {
+      "word": "attentive",
+      "ipa": "/əˈtentɪv/",
+      "meaning": "주의 깊은",
+      "level": 3
+    },
+    {
+      "word": "confident",
+      "ipa": "/ˈkɑːnfɪdənt/",
+      "meaning": "자신감 있는",
+      "level": 3
+    },
+    {
+      "word": "shy",
+      "ipa": "/ʃaɪ/",
+      "meaning": "수줍은",
+      "level": 3
+    },
+    {
+      "word": "cheerful",
+      "ipa": "/ˈtʃɪrfl/",
+      "meaning": "쾌활한",
+      "level": 3
+    },
+    {
+      "word": "friendly",
+      "ipa": "/ˈfrendli/",
+      "meaning": "친근한; 다정한",
+      "level": 3
+    },
+    {
+      "word": "lazy",
+      "ipa": "/ˈleɪzi/",
+      "meaning": "게으른",
+      "level": 3
+    },
+    {
+      "word": "reliable",
+      "ipa": "/rɪˈlaɪəbl/",
+      "meaning": "믿을 수 있는",
+      "level": 3
+    },
+    {
+      "word": "thoughtful",
+      "ipa": "/ˈθɔːtfl/",
+      "meaning": "사려 깊은",
+      "level": 3
+    },
+    {
+      "word": "grateful",
+      "ipa": "/ˈɡreɪtfl/",
+      "meaning": "감사하는",
+      "level": 3
+    },
+    {
+      "word": "mature",
+      "ipa": "/məˈtʃʊr/",
+      "meaning": "성숙한",
+      "level": 3
+    },
+    {
+      "word": "assignment",
+      "ipa": "/əˈsaɪnmənt/",
+      "meaning": "과제",
+      "level": 4
+    },
+    {
+      "word": "chapter",
+      "ipa": "/ˈtʃæptər/",
+      "meaning": "장; 챕터",
+      "level": 4
+    },
+    {
+      "word": "dictionary",
+      "ipa": "/ˈdɪkʃəneri/",
+      "meaning": "사전",
+      "level": 4
+    },
+    {
+      "word": "memorize",
+      "ipa": "/ˈmeməraɪz/",
+      "meaning": "암기하다",
+      "level": 4
+    },
+    {
+      "word": "paragraph",
+      "ipa": "/ˈpærəɡræf/",
+      "meaning": "문단",
+      "level": 4
+    },
+    {
+      "word": "presentation",
+      "ipa": "/ˌprezənˈteɪʃn/",
+      "meaning": "발표",
+      "level": 4
+    },
+    {
+      "word": "reference",
+      "ipa": "/ˈrefərəns/",
+      "meaning": "참고; 참조",
+      "level": 4
+    },
+    {
+      "word": "worksheet",
+      "ipa": "/ˈwɜːrkʃiːt/",
+      "meaning": "학습지",
+      "level": 4
+    },
+    {
+      "word": "grammar",
+      "ipa": "/ˈɡræmər/",
+      "meaning": "문법",
+      "level": 4
+    },
+    {
+      "word": "vocabulary",
+      "ipa": "/voʊˈkæbjəleri/",
+      "meaning": "어휘",
+      "level": 4
+    },
+    {
+      "word": "commute",
+      "ipa": "/kəˈmjuːt/",
+      "meaning": "통학하다; 통근하다",
+      "level": 5
+    },
+    {
+      "word": "destination",
+      "ipa": "/ˌdestɪˈneɪʃn/",
+      "meaning": "목적지",
+      "level": 5
+    },
+    {
+      "word": "direction",
+      "ipa": "/dəˈrekʃn/",
+      "meaning": "방향; 지시",
+      "level": 5
+    },
+    {
+      "word": "platform",
+      "ipa": "/ˈplætfɔːrm/",
+      "meaning": "승강장; 플랫폼",
+      "level": 5
+    },
+    {
+      "word": "route",
+      "ipa": "/ruːt/",
+      "meaning": "경로",
+      "level": 5
+    },
+    {
+      "word": "traffic",
+      "ipa": "/ˈtræfɪk/",
+      "meaning": "교통; 교통량",
+      "level": 5
+    },
+    {
+      "word": "transportation",
+      "ipa": "/ˌtrænspərˈteɪʃn/",
+      "meaning": "교통; 운송",
+      "level": 5
+    },
+    {
+      "word": "subway",
+      "ipa": "/ˈsʌbweɪ/",
+      "meaning": "지하철",
+      "level": 5
+    },
+    {
+      "word": "luggage",
+      "ipa": "/ˈlʌɡɪdʒ/",
+      "meaning": "짐; 수하물",
+      "level": 5
+    },
+    {
+      "word": "passport",
+      "ipa": "/ˈpæspɔːrt/",
+      "meaning": "여권",
+      "level": 5
+    },
+    {
+      "word": "advantage",
+      "ipa": "/ədˈvæntɪdʒ/",
+      "meaning": "장점",
+      "level": 6
+    },
+    {
+      "word": "disadvantage",
+      "ipa": "/ˌdɪsədˈvæntɪdʒ/",
+      "meaning": "단점",
+      "level": 6
+    },
+    {
+      "word": "suggestion",
+      "ipa": "/səˈdʒestʃən/",
+      "meaning": "제안",
+      "level": 6
+    },
+    {
+      "word": "goal",
+      "ipa": "/ɡoʊl/",
+      "meaning": "목표",
+      "level": 6
+    },
+    {
+      "word": "priority",
+      "ipa": "/praɪˈɔːrəti/",
+      "meaning": "우선순위",
+      "level": 6
+    },
+    {
+      "word": "basis",
+      "ipa": "/ˈbeɪsɪs/",
+      "meaning": "기초; 근거",
+      "level": 6
+    },
+    {
+      "word": "factor",
+      "ipa": "/ˈfæktər/",
+      "meaning": "요인",
+      "level": 6
+    },
+    {
+      "word": "relation",
+      "ipa": "/rɪˈleɪʃn/",
+      "meaning": "관계",
+      "level": 6
+    },
+    {
+      "word": "view",
+      "ipa": "/vjuː/",
+      "meaning": "견해; 관점",
+      "level": 6
+    },
+    {
+      "word": "type",
+      "ipa": "/taɪp/",
+      "meaning": "유형; 종류",
+      "level": 6
+    },
+    {
+      "word": "ecosystem",
+      "ipa": "/ˈiːkoʊsɪstəm/",
+      "meaning": "생태계",
+      "level": 7
+    },
+    {
+      "word": "environmental",
+      "ipa": "/ɪnˌvaɪrənˈmentl/",
+      "meaning": "환경의",
+      "level": 7
+    },
+    {
+      "word": "garbage",
+      "ipa": "/ˈɡɑːrbɪdʒ/",
+      "meaning": "쓰레기",
+      "level": 7
+    },
+    {
+      "word": "reuse",
+      "ipa": "/ˌriːˈjuːz/",
+      "meaning": "재사용하다",
+      "level": 7
+    },
+    {
+      "word": "solar",
+      "ipa": "/ˈsoʊlər/",
+      "meaning": "태양의; 태양열의",
+      "level": 7
+    },
+    {
+      "word": "recycle",
+      "ipa": "/ˌriːˈsaɪkl/",
+      "meaning": "재활용하다",
+      "level": 7
+    },
+    {
+      "word": "drought",
+      "ipa": "/draʊt/",
+      "meaning": "가뭄",
+      "level": 7
+    },
+    {
+      "word": "habitat",
+      "ipa": "/ˈhæbɪtæt/",
+      "meaning": "서식지",
+      "level": 7
+    },
+    {
+      "word": "emission",
+      "ipa": "/ɪˈmɪʃn/",
+      "meaning": "배출; 배출물",
+      "level": 7
+    },
+    {
+      "word": "wildlife",
+      "ipa": "/ˈwaɪldlaɪf/",
+      "meaning": "야생 동물",
+      "level": 7
+    },
+    {
+      "word": "advertisement",
+      "ipa": "/ˌædvərˈtaɪzmənt/",
+      "meaning": "광고",
+      "level": 8
+    },
+    {
+      "word": "headline",
+      "ipa": "/ˈhedlaɪn/",
+      "meaning": "신문 제목; 주요 뉴스",
+      "level": 8
+    },
+    {
+      "word": "information",
+      "ipa": "/ˌɪnfərˈmeɪʃn/",
+      "meaning": "정보",
+      "level": 8
+    },
+    {
+      "word": "online",
+      "ipa": "/ˌɑːnˈlaɪn/",
+      "meaning": "온라인의",
+      "level": 8
+    },
+    {
+      "word": "website",
+      "ipa": "/ˈwebsaɪt/",
+      "meaning": "웹사이트",
+      "level": 8
+    },
+    {
+      "word": "article",
+      "ipa": "/ˈɑːrtɪkl/",
+      "meaning": "기사; 글",
+      "level": 8
+    },
+    {
+      "word": "channel",
+      "ipa": "/ˈtʃænl/",
+      "meaning": "채널",
+      "level": 8
+    },
+    {
+      "word": "upload",
+      "ipa": "/ˈʌploʊd/",
+      "meaning": "업로드하다; 업로드",
+      "level": 8
+    },
+    {
+      "word": "download",
+      "ipa": "/ˈdaʊnloʊd/",
+      "meaning": "다운로드하다; 다운로드",
+      "level": 8
+    },
+    {
+      "word": "privacy",
+      "ipa": "/ˈpraɪvəsi/",
+      "meaning": "개인정보 보호; 사생활",
+      "level": 8
+    },
+    {
+      "word": "citizenship",
+      "ipa": "/ˈsɪtɪzənʃɪp/",
+      "meaning": "시민권; 시민 의식",
+      "level": 9
+    },
+    {
+      "word": "democracy",
+      "ipa": "/dɪˈmɑːkrəsi/",
+      "meaning": "민주주의",
+      "level": 9
+    },
+    {
+      "word": "equality",
+      "ipa": "/iˈkwɑːləti/",
+      "meaning": "평등",
+      "level": 9
+    },
+    {
+      "word": "law",
+      "ipa": "/lɔː/",
+      "meaning": "법",
+      "level": 9
+    },
+    {
+      "word": "responsibility",
+      "ipa": "/rɪˌspɑːnsəˈbɪləti/",
+      "meaning": "책임",
+      "level": 9
+    },
+    {
+      "word": "rights",
+      "ipa": "/raɪts/",
+      "meaning": "권리",
+      "level": 9
+    },
+    {
+      "word": "election",
+      "ipa": "/ɪˈlekʃn/",
+      "meaning": "선거",
+      "level": 9
+    },
+    {
+      "word": "policy",
+      "ipa": "/ˈpɑːləsi/",
+      "meaning": "정책",
+      "level": 9
+    },
+    {
+      "word": "economy",
+      "ipa": "/ɪˈkɑːnəmi/",
+      "meaning": "경제",
+      "level": 9
+    },
+    {
+      "word": "diversity",
+      "ipa": "/daɪˈvɜːrsəti/",
+      "meaning": "다양성",
+      "level": 9
+    },
+    {
+      "word": "alternative",
+      "ipa": "/ɔːlˈtɜːrnətɪv/",
+      "meaning": "대안; 대체의",
+      "level": 10
+    },
+    {
+      "word": "efficient",
+      "ipa": "/ɪˈfɪʃnt/",
+      "meaning": "효율적인",
+      "level": 10
+    },
+    {
+      "word": "perspective",
+      "ipa": "/pərˈspektɪv/",
+      "meaning": "관점",
+      "level": 10
+    },
+    {
+      "word": "significant",
+      "ipa": "/sɪɡˈnɪfɪkənt/",
+      "meaning": "중요한; 상당한",
+      "level": 10
+    },
+    {
+      "word": "evaluate",
+      "ipa": "/ɪˈvæljueɪt/",
+      "meaning": "평가하다",
+      "level": 10
+    },
+    {
+      "word": "interpret",
+      "ipa": "/ɪnˈtɜːrprət/",
+      "meaning": "해석하다",
+      "level": 10
+    },
+    {
+      "word": "justify",
+      "ipa": "/ˈdʒʌstɪfaɪ/",
+      "meaning": "정당화하다",
+      "level": 10
+    },
+    {
+      "word": "maintain",
+      "ipa": "/meɪnˈteɪn/",
+      "meaning": "유지하다",
+      "level": 10
+    },
+    {
+      "word": "differentiate",
+      "ipa": "/ˌdɪfəˈrenʃieɪt/",
+      "meaning": "구별하다",
+      "level": 10
+    },
+    {
+      "word": "mitigate",
+      "ipa": "/ˈmɪtɪɡeɪt/",
+      "meaning": "완화하다",
+      "level": 10
+    }
+  ]
+}
