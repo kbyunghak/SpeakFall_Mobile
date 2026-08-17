@@ -531,6 +531,8 @@ export function SpeakFallGame() {
   const [bestCombo, setBestCombo] = useState(0);
   const [best, setBest] = useState(0);
   const [heard, setHeard] = useState("");
+  /** 인식 세션을 초기화해도 유지되는 가장 최근 오답 피드백 */
+  const [feedbackTranscript, setFeedbackTranscript] = useState("");
   const [flash, setFlash] = useState<"hit" | "miss" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [strictness, setStrictness] = useState<Strictness>("normal");
@@ -1137,21 +1139,25 @@ export function SpeakFallGame() {
   const muteUntilRef = useRef(0);
   /** 같은 시도에서 동일한 최종 결과가 중복 처리되는 것을 막는 값 */
   const lastFinalRef = useRef("");
-  /** 틀린 발음 뒤 인식기를 새 세션으로 전환하기 위한 지연 타이머 */
-  const retrySpeechTimerRef = useRef<number | null>(null);
+  /** Android가 final을 보내지 않을 때 마지막 interim을 발화 종료로 확정하는 타이머 */
+  const utteranceTimerRef = useRef<number | null>(null);
+  const pendingTranscriptRef = useRef("");
+  const utteranceHandledRef = useRef(false);
 
   /**
    * 모든 시도 전에 음성 인식 결과를 완전히 초기화합니다.
    * 화면 표시 문구, 중복 판정 기록, 엔진 내부 누적 버퍼까지 함께 비웁니다.
    */
   const resetSpeech = useCallback(() => {
-    if (retrySpeechTimerRef.current !== null) {
-      window.clearTimeout(retrySpeechTimerRef.current);
-      retrySpeechTimerRef.current = null;
+    if (utteranceTimerRef.current !== null) {
+      window.clearTimeout(utteranceTimerRef.current);
+      utteranceTimerRef.current = null;
     }
     setHeard("");
     lastFinalRef.current = "";
-    muteUntilRef.current = Date.now() + 400;
+    pendingTranscriptRef.current = "";
+    utteranceHandledRef.current = false;
+    muteUntilRef.current = Date.now() + 200;
     speechRef.current?.reset();
   }, []);
 
@@ -1167,6 +1173,7 @@ export function SpeakFallGame() {
           levelUp();
           return;
         }
+        setFeedbackTranscript("");
         resetSpeech();
         recentRef.current.push(upcoming.word);
         if (recentRef.current.length > 6) recentRef.current.shift();
@@ -1179,7 +1186,14 @@ export function SpeakFallGame() {
   /** Correct answer: parachute opens, star earned. */
   const rescue = useCallback(
     (target: Faller) => {
-      resetSpeech();
+      if (utteranceTimerRef.current !== null) {
+        window.clearTimeout(utteranceTimerRef.current);
+        utteranceTimerRef.current = null;
+      }
+      utteranceHandledRef.current = true;
+      pendingTranscriptRef.current = "";
+      setHeard("");
+      setFeedbackTranscript("");
       playRescue();
       playCoin();
       spawnParticles(10);
@@ -1230,12 +1244,12 @@ export function SpeakFallGame() {
       // 레벨업 조건: 20명 구조 또는 큐가 비었을 때
       const willLevelUp =
         levelRescued + 1 >= RESCUES_PER_LEVEL_UP || wordQueueRef.current.length === 0;
-      queueNext(willLevelUp ? 1600 : 1000);
+      queueNext(willLevelUp ? 1600 : 700);
       if (willLevelUp) {
         window.setTimeout(() => levelUp(), 1500);
       }
     },
-    [queueNext, showToast, levelRescued, levelUp, spawnParticles, resetSpeech],
+    [queueNext, showToast, levelRescued, levelUp, spawnParticles],
   );
 
   /** Misrecognition: slow down, then offer a Pass button after 3 misses. */
@@ -1297,6 +1311,9 @@ export function SpeakFallGame() {
       const cur = activeRef.current;
       const text = transcript.trim();
       if (!text) return;
+      if (utteranceHandledRef.current) return;
+      pendingTranscriptRef.current = text;
+      setFeedbackTranscript("");
       setHeard(text);
       setVoiceLevel(1);
       if (voiceTimer.current) window.clearTimeout(voiceTimer.current);
@@ -1310,33 +1327,49 @@ export function SpeakFallGame() {
         trackLeniency: getTrack(trackRef.current).leniency,
       });
       if (evaluation.accepted) {
-        if (retrySpeechTimerRef.current !== null) {
-          window.clearTimeout(retrySpeechTimerRef.current);
-          retrySpeechTimerRef.current = null;
+        if (utteranceTimerRef.current !== null) {
+          window.clearTimeout(utteranceTimerRef.current);
+          utteranceTimerRef.current = null;
         }
+        utteranceHandledRef.current = true;
         rescue(cur);
         return;
       }
-
-      // Android에서는 틀린 결과가 중간 결과로만 끝나는 경우가 있습니다.
-      // 사용자가 계속 말하는 동안에는 기다리고, 결과가 잠잠해지면 새 세션으로
-      // 전환해 이전 단어의 인식 버퍼가 다음 시도를 방해하지 않게 합니다.
-      if (retrySpeechTimerRef.current !== null) {
-        window.clearTimeout(retrySpeechTimerRef.current);
-      }
-      retrySpeechTimerRef.current = window.setTimeout(() => {
-        retrySpeechTimerRef.current = null;
-        lastFinalRef.current = "";
-        muteUntilRef.current = Date.now() + 400;
-        speechRef.current?.reset();
-      }, 800);
 
       if (isFinal) {
         // 같은 최종 결과가 두 번 들어오면 판정/토스트를 중복 처리하지 않습니다.
         if (lastFinalRef.current === text) return;
         lastFinalRef.current = text;
+        utteranceHandledRef.current = true;
+        setFeedbackTranscript(text);
         miss();
+        return;
       }
+
+      // Android가 final을 보내지 않더라도 마지막 결과 이후 600ms가 지나면
+      // 한 번의 발화가 끝난 것으로 보고 반드시 오답 피드백을 제공합니다.
+      if (utteranceTimerRef.current !== null) {
+        window.clearTimeout(utteranceTimerRef.current);
+      }
+      const targetId = cur.id;
+      utteranceTimerRef.current = window.setTimeout(() => {
+        utteranceTimerRef.current = null;
+        const current = activeRef.current;
+        if (
+          phaseRef.current !== "playing" ||
+          !current ||
+          current.id !== targetId ||
+          current.state !== "falling" ||
+          utteranceHandledRef.current
+        ) {
+          return;
+        }
+        const pending = pendingTranscriptRef.current.trim();
+        if (!pending) return;
+        utteranceHandledRef.current = true;
+        setFeedbackTranscript(pending);
+        miss();
+      }, 600);
     },
     [miss, rescue],
   );
@@ -1953,24 +1986,30 @@ export function SpeakFallGame() {
                       "다음 친구를 준비하는 중…"
                     )}
                   </p>
-                  {heard && speech.supported && (
+                  {(feedbackTranscript || heard) && speech.supported && (
                     <div
                       className={`text-xs ${
-                        containsProfanity(heard) ? "text-destructive" : "text-muted-foreground"
+                        containsProfanity(feedbackTranscript || heard)
+                          ? "text-destructive"
+                          : "text-muted-foreground"
                       }`}
                     >
-                      {containsProfanity(heard) ? (
+                      {containsProfanity(feedbackTranscript || heard) ? (
                         "앗! 다시 또박또박 말해볼까요?"
                       ) : (
                         <>
-                          <p className="truncate">“{heard}”으로 들었어요 · 다시 말해보세요</p>
+                          <p className="truncate">
+                            “{feedbackTranscript || heard}”으로 들었어요
+                            {feedbackTranscript && " · 다시 말해보세요"}
+                          </p>
                           {active?.state === "falling" && (
                             <p className="mt-0.5 truncate font-ui">
                               목표 <b className="text-primary">{active.ipa}</b>
                               <span className="px-1">↔</span>
                               인식{" "}
                               <b className="text-destructive">
-                                {findTranscriptIpa(heard) ?? "발음기호 정보 없음"}
+                                {findTranscriptIpa(feedbackTranscript || heard) ??
+                                  "발음기호 정보 없음"}
                               </b>
                             </p>
                           )}
