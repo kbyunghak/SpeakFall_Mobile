@@ -47,8 +47,10 @@ function PrivacyPage() {
           <ul className="list-disc space-y-2 pl-5 text-slate-300 leading-relaxed">
             <li>
               <span className="font-semibold text-white">음성(마이크) 데이터:</span> 게임 플레이 중
-              단어 발음을 인식하기 위해 실시간으로 사용됩니다. 음성 데이터는 기기 내에서만 처리되며,
-              녹음 파일이나 텍스트로 서버에 전송되지 않습니다.
+              단어 발음을 인식하기 위해 실시간으로 사용됩니다. 음성 입력은 사용자의 기기에서 선택된
+              음성 인식 서비스에 의해 처리되며, 기기 설정과 서비스 제공업체에 따라 외부 서버로 전송될
+              수 있습니다. 앱 개발자는 음성 녹음 파일을 별도로 저장하지 않으며, 반환된 인식 결과
+              텍스트를 게임 판정에 사용한 뒤 별도 서버에 저장하지 않습니다.
             </li>
             <li>
               <span className="font-semibold text-white">기기 저장소:</span> 게임 진행도, 코인,
@@ -81,8 +83,9 @@ function PrivacyPage() {
         <section className="mb-10">
           <h2 className="mb-3 text-xl font-bold text-sky-300">3. 보관 및 삭제</h2>
           <p className="text-slate-300 leading-relaxed">
-            음성 데이터는 실시간 처리 후 즉시 폐기됩니다. 게임 진행도 등은 기기 내부에 저장되며,
-            앱을 삭제하면 함께 삭제됩니다. 별도의 서버에 개인정보를 보관하지 않습니다.
+            앱 개발자는 음성 녹음 파일과 음성 인식 결과를 별도 서버에 보관하지 않습니다. 음성 인식
+            서비스 제공업체의 데이터 처리 및 보관에는 해당 업체의 개인정보처리방침이 적용될 수
+            있습니다. 게임 진행도 등은 기기 내부에 저장되며, 앱을 삭제하면 함께 삭제됩니다.
           </p>
         </section>
 
@@ -99,8 +102,9 @@ function PrivacyPage() {
           <h2 className="mb-3 text-xl font-bold text-sky-300">5. 아동 개인정보 보호 (COPPA)</h2>
           <p className="text-slate-300 leading-relaxed">
             본 앱은 어린이를 포함한 모든 연령이 이용할 수 있도록 설계되었습니다. 13세 미만 아동의
-            개인정보를 의도적으로 수집하지 않으며, 음성 인식 데이터도 기기 내에서만 처리됩니다.
-            COPPA 및 관련 법규를 준수합니다.
+            개인정보를 앱 개발자가 의도적으로 별도 수집하거나 보관하지 않습니다. 음성 입력은 기기의
+            음성 인식 서비스를 통해 처리될 수 있으며, 광고에는 아동 대상, 동의 연령 미만,
+            비개인화 광고 및 전체 이용가 콘텐츠 설정을 적용합니다. COPPA 및 관련 법규를 준수합니다.
           </p>
         </section>
 
@@ -121,8 +125,7 @@ function PrivacyPage() {
           <p className="text-slate-300 leading-relaxed">
             개인정보처리방침에 대한 문의는 아래 이메일로 부탁드립니다.
           </p>
-          <p className="mt-2 font-semibold text-white">support@speakfall.example.com</p>
-          <p className="mt-2 text-sm text-slate-400">(실제 운영 이메일로 교체해 주세요.)</p>
+          <p className="mt-2 font-semibold text-white">joygle.dev@gmail.com</p>
         </section>
 
         <section className="mb-10">

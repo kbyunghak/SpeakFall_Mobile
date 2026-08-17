@@ -9,13 +9,16 @@ import {
   Flame,
   Heart,
   Lock,
+  Languages,
   Map as MapIcon,
   Mic,
+  Music2,
   Palette,
   Play,
   RotateCcw,
   ShoppingBag,
   Sprout,
+  Sparkles,
   Star,
   Volume2,
   VolumeX,
@@ -77,7 +80,11 @@ import {
   playStart,
   playTick,
   resumeAudio,
-  setSoundEnabled as setSoundModuleEnabled,
+  setBackgroundMusic,
+  setBackgroundMusicEnabled,
+  setBackgroundMusicVolume,
+  setSoundEffectsEnabled,
+  setSoundEffectsVolume,
 } from "@/lib/speakfall/sound";
 import { DEFAULT_SKIN_ID, SKINS, getSkin, isSkinOwned, type Skin } from "@/lib/speakfall/skins";
 import {
@@ -207,6 +214,7 @@ type Faller = WordItem & {
   y: number;
   speed: number;
   hue: number;
+  jellyId: string;
   state: "falling" | "saved" | "crying";
   retried: boolean;
   missCount: number;
@@ -235,6 +243,7 @@ const MAX_HP = 5;
 /** 실패로 감속되더라도 젤리가 멈추지 않도록 하는 최소 낙하 속도 */
 const MIN_FALL_SPEED = 0.022;
 const IS_DEV = import.meta.env.DEV;
+const MUSIC_ENABLED_STORAGE_KEY = "speakfall:music-enabled";
 
 function JellyIcon({ className }: { className?: string }) {
   return (
@@ -546,7 +555,15 @@ export function SpeakFallGame() {
   const [hp, setHp] = useState(MAX_HP);
   const [progress, setProgress] = useState<Progress>(emptyProgress());
   const [result, setResult] = useState<RoundResult | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [musicEnabled, setMusicEnabled] = useState(true);
+  const [sfxEnabled, setSfxEnabled] = useState(true);
+  /** 플레이 게임에서 영어 발음 사용 여부 */
+  const [pronunciationEnabled, setPronunciationEnabled] = useState(true);
+  const [musicVolume, setMusicVolume] = useState(0.16);
+  const [sfxVolume, setSfxVolume] = useState(0.35);
+  const [pronunciationVolume, setPronunciationVolume] = useState(1);
+  const [soundSettingsOpen, setSoundSettingsOpen] = useState(false);
+  const [pronunciationConfirmOpen, setPronunciationConfirmOpen] = useState(false);
   const [particles, setParticles] = useState<
     { id: number; x: number; y: number; hue: number; tx: number; ty: number }[]
   >([]);
@@ -571,11 +588,12 @@ export function SpeakFallGame() {
   const [rewardAdConfirmation, setRewardAdConfirmation] = useState<RewardAdConfirmation | null>(
     null,
   );
-
+  
   const activeRef = useRef<Faller | null>(null);
   const hiddenLabTapRef = useRef({ count: 0, lastTap: 0 });
   const pendingRewardActionRef = useRef<(() => void | Promise<void>) | null>(null);
   const idRef = useRef(0);
+  const jellySequenceRef = useRef(0);
   const elapsed = useRef(0);
   const phaseRef = useRef<Phase>("idle");
   const strictRef = useRef<Strictness>("normal");
@@ -608,9 +626,52 @@ export function SpeakFallGame() {
     setProgress(loadProgress());
   }, []);
 
+  /** 저장값이 없으면 BGM을 기본 ON으로, 이후에는 사용자의 마지막 선택을 복원합니다. */
   useEffect(() => {
-    setSoundModuleEnabled(soundEnabled);
-  }, [soundEnabled]);
+    let next = true;
+    try {
+      const saved = window.localStorage.getItem(MUSIC_ENABLED_STORAGE_KEY);
+      if (saved !== null) next = saved === "true";
+    } catch {
+      // 저장소를 사용할 수 없는 환경에서는 기본값 ON을 유지합니다.
+    }
+    setMusicEnabled(next);
+    setBackgroundMusicEnabled(next);
+  }, []);
+
+  useEffect(() => {
+    setSoundEffectsEnabled(sfxEnabled);
+  }, [sfxEnabled]);
+
+  useEffect(() => {
+    setBackgroundMusicVolume(musicVolume);
+  }, [musicVolume]);
+
+  useEffect(() => {
+    setSoundEffectsVolume(sfxVolume);
+  }, [sfxVolume]);
+
+  useEffect(() => {
+    if (phase === "over") {
+      setBackgroundMusic("result");
+      return;
+    }
+
+    if (phase === "countdown" || phase === "playing") {
+      setBackgroundMusic("game");
+      return;
+    }
+
+    if (phase === "paused") {
+      setBackgroundMusic(null);
+      return;
+    }
+
+    setBackgroundMusic("main");
+  }, [phase]);
+
+  /** SpeakFall 라우트를 벗어나면 이 게임이 요청한 BGM을 정지합니다. */
+  useEffect(() => () => setBackgroundMusic(null), []);
 
   useEffect(() => {
     if (phase === "shop") {
@@ -645,6 +706,13 @@ export function SpeakFallGame() {
   const equippedJelly = useMemo(
     () => getSpecialJelly(progress.equippedJelly),
     [progress.equippedJelly],
+  );
+  const equippedJellySet = useMemo(
+    () =>
+      SPECIAL_JELLIES.filter(
+        (jelly) => jelly.category === equippedJelly.category,
+      ),
+    [equippedJelly.category],
   );
   /** 현재 게임 트랙에서 다운로드가 끝난 추가 단어. 기본 단어와 출제 시점에 합칩니다. */
   const playArchiveWords = useMemo(
@@ -739,6 +807,19 @@ export function SpeakFallGame() {
     }
   }, [rewardingCoins, showShopToast]);
 
+  const handleInsufficientCoins = useCallback(() => {
+    showShopToast("코인이 부족해요");
+
+    requestRewardedAd(
+      {
+        title: "코인이 부족해요",
+        description: "보상형 광고를 보고 100코인을 모으시겠어요?",
+        reward: "100코인",
+      },
+      earnCoinsWithAd,
+    );
+  }, [earnCoinsWithAd, requestRewardedAd, showShopToast]);
+
   const receiveNextArchiveSet = useCallback(async () => {
     if (archiveBusy) return;
     const descriptors = archiveManifest?.tracks[colTrack] ?? [];
@@ -830,42 +911,94 @@ export function SpeakFallGame() {
     [progress, showShopToast, testUnlockSkins],
   );
 
-  const buyJelly = useCallback(
-    (id: string) => {
-      const jelly = getSpecialJelly(id);
-      if (isJellyOwned(progress.ownedJellies, id)) {
-        showShopToast("이미 보유 중인 젤리예요");
+  const buyJellySet = useCallback(
+    (category: JellyCategory) => {
+      const setJellies = SPECIAL_JELLIES.filter(
+        (jelly) => jelly.category === category,
+      );
+
+      if (setJellies.length === 0) return;
+
+      const representative =
+        setJellies.find(
+          (jelly) =>
+            jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
+        ) ?? setJellies[0]!;
+
+      const alreadyOwned =
+        category === "default" ||
+        setJellies.some((jelly) =>
+          isJellyOwned(progress.ownedJellies, jelly.id),
+        );
+
+      if (alreadyOwned) {
+        showShopToast("이미 보유 중인 젤리 SET이에요");
         return;
       }
-      if (progress.coins < jelly.price) {
+
+      if (progress.coins < representative.price) {
         showShopToast("코인이 부족해요");
         return;
       }
+
       const next: Progress = {
         ...progress,
-        coins: progress.coins - jelly.price,
-        ownedJellies: [...new Set([...progress.ownedJellies, id])],
-        equippedJelly: id,
+        coins: progress.coins - representative.price,
+        ownedJellies: [
+          ...new Set([
+            ...progress.ownedJellies,
+            ...setJellies.map((jelly) => jelly.id),
+          ]),
+        ],
+        equippedJelly: representative.id,
       };
+
       setProgress(next);
       saveProgress(next);
       playCoin();
-      showShopToast(`${jelly.name} 구매 완료!`);
+      showShopToast(
+        `${JELLY_CATEGORY_LABELS[category]} 구매 완료!`,
+      );
     },
     [progress, showShopToast],
   );
 
-  const equipJelly = useCallback(
-    (id: string) => {
-      if (!testUnlockSkins && !isJellyOwned(progress.ownedJellies, id)) {
+  const equipJellySet = useCallback(
+    (category: JellyCategory) => {
+      const setJellies = SPECIAL_JELLIES.filter(
+        (jelly) => jelly.category === category,
+      );
+
+      if (setJellies.length === 0) return;
+
+      const representative =
+        setJellies.find(
+          (jelly) =>
+            jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
+        ) ?? setJellies[0]!;
+
+      const owned =
+        category === "default" ||
+        setJellies.some((jelly) =>
+          isJellyOwned(progress.ownedJellies, jelly.id),
+        );
+
+      if (!testUnlockSkins && !owned) {
         showShopToast("먼저 구매해야 해요");
         return;
       }
-      const next: Progress = { ...progress, equippedJelly: id };
+
+      const next: Progress = {
+        ...progress,
+        equippedJelly: representative.id,
+      };
+
       setProgress(next);
       saveProgress(next);
       playClick();
-      showShopToast("젤리를 장착했어요");
+      showShopToast(
+        `${JELLY_CATEGORY_LABELS[category]}를 장착했어요`,
+      );
     },
     [progress, showShopToast, testUnlockSkins],
   );
@@ -911,9 +1044,16 @@ export function SpeakFallGame() {
     },
     [level, playArchiveWords, track],
   );
-
+  
   const makeFaller = useCallback(
     (item: WordItem): Faller => {
+      const jelly =
+        equippedJellySet[
+          jellySequenceRef.current % equippedJellySet.length
+        ] ?? equippedJelly;
+
+      jellySequenceRef.current += 1;
+
       return {
         ...item,
         id: ++idRef.current,
@@ -921,18 +1061,14 @@ export function SpeakFallGame() {
         y: 0,
         speed: fallSpeedForLevel(level),
         hue: HUES[Math.floor(Math.random() * HUES.length)]!,
+        jellyId: jelly.id,
         state: "falling",
         retried: false,
         missCount: 0,
       };
     },
-    [level],
+    [equippedJelly, equippedJellySet, level],
   );
-
-  const peekNext = useCallback(() => {
-    const q = wordQueueRef.current;
-    return q.length > 0 ? q[0] : null;
-  }, []);
 
   const popNext = useCallback(() => {
     const q = wordQueueRef.current;
@@ -1064,6 +1200,7 @@ export function SpeakFallGame() {
           y: _y,
           speed: _s,
           hue: _h,
+          jellyId: _jellyId,
           state: _st,
           retried: _r,
           missCount: _m,
@@ -1213,7 +1350,6 @@ export function SpeakFallGame() {
     const target = activeRef.current;
     if (!target || target.state !== "falling") return;
 
-    resumeAudio();
     speechRef.current.stop();
 
     const resumeRecognition = () => {
@@ -1238,7 +1374,7 @@ export function SpeakFallGame() {
             lang: "en-US",
             rate: 0.82,
             pitch: 1,
-            volume: 1,
+            volume: pronunciationVolume,
           });
           return;
         }
@@ -1251,6 +1387,7 @@ export function SpeakFallGame() {
         utterance.lang = "en-US";
         utterance.rate = 0.82;
         utterance.pitch = 1;
+        utterance.volume = pronunciationVolume;
         const englishVoice = window.speechSynthesis
           .getVoices()
           .find((voice) => voice.lang.toLowerCase().startsWith("en-us"));
@@ -1268,7 +1405,7 @@ export function SpeakFallGame() {
     };
 
     window.setTimeout(() => void play(), 150);
-  }, [showToast]);
+  }, [pronunciationVolume, showToast]);
 
   /** 앱 실행 시 마이크 권한 상태를 확인하고, 처음이면 안내 시트를 띄웁니다. */
   useEffect(() => {
@@ -1341,6 +1478,7 @@ export function SpeakFallGame() {
   const beginRound = useCallback(
     (startLevel = 1, startTrack: TrackType = "basic") => {
       idRef.current = 0;
+      jellySequenceRef.current = 0;
       elapsed.current = 0;
       setScore(0);
       setRescued(0);
@@ -1467,7 +1605,16 @@ export function SpeakFallGame() {
     return () => cancelAnimationFrame(raf);
   }, [phase, queueNext, stopGame]);
 
-  useEffect(() => () => speechRef.current.stop(), []);
+  useEffect(() => {
+    return () => {
+      speechRef.current.stop();
+      setBackgroundMusic(null);
+    };
+  }, []);
+
+  const activeJelly = active
+    ? getSpecialJelly(active.jellyId)
+    : equippedJelly;
 
   const near = active?.state === "falling" && active.y > 0.72;
   const accuracy = attempts ? Math.round((rescued / attempts) * 100) : 0;
@@ -1511,7 +1658,7 @@ export function SpeakFallGame() {
 
   return (
     <div
-      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md touch-pan-y flex-col overflow-hidden overscroll-none text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
+      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md min-[600px]:w-[90vw] min-[600px]:max-w-[1200px] touch-pan-y flex-col overflow-hidden overscroll-none text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
     >
       {/* drifting clouds */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -1583,19 +1730,11 @@ export function SpeakFallGame() {
             </div>
             <button
               type="button"
-              onClick={() => {
-                resumeAudio();
-                const next = !soundEnabled;
-                setSoundEnabled(next);
-              }}
+              onClick={() => setSoundSettingsOpen(true)}
               className="flex size-9 items-center justify-center rounded-full bg-card/85 shadow-soft active:scale-95"
-              aria-label={soundEnabled ? "소리 끄기" : "소리 켜기"}
+              aria-label="사운드 설정 열기"
             >
-              {soundEnabled ? (
-                <Volume2 className="size-4 text-foreground" />
-              ) : (
-                <VolumeX className="size-4 text-muted-foreground" />
-              )}
+              <Volume2 className="size-4 text-foreground" />
             </button>
           </header>
 
@@ -1626,7 +1765,7 @@ export function SpeakFallGame() {
                   left: "50%",
                   top: `${active.y * 82}%`,
                   transform: "translateX(-50%)",
-                  ["--sway" as string]: `${swayAmp}vw`,
+                  ["--sway" as string]: `min(${swayAmp}vw, 52px)`,
                   ["--tilt" as string]: `${swayTilt}deg`,
                   animation:
                     swayAmp > 0 && active.state === "falling"
@@ -1689,9 +1828,9 @@ export function SpeakFallGame() {
                     active.state === "saved" ? "animate-vanish-pop" : ""
                   } ${active.state === "crying" ? "animate-cry" : ""}`}
                 >
-                  {equippedJelly.image ? (
+                  {activeJelly.image ? (
                     <img
-                      src={equippedJelly.image}
+                      src={activeJelly.image}
                       alt=""
                       draggable={false}
                       className="pointer-events-none size-full select-none object-contain drop-shadow-[0_7px_7px_rgba(23,63,120,0.22)]"
@@ -1699,8 +1838,8 @@ export function SpeakFallGame() {
                   ) : (
                     <DefaultJellyVisual
                       className="size-14"
-                      hue={equippedJelly.hue ?? active.hue}
-                      rainbow={equippedJelly.rainbow}
+                      hue={activeJelly.hue ?? active.hue}
+                      rainbow={activeJelly.rainbow}
                     />
                   )}
                   {active.state === "crying" && (
@@ -1843,7 +1982,14 @@ export function SpeakFallGame() {
                 </div>
                 <button
                   type="button"
-                  onClick={playTargetPronunciation}
+                  onClick={() => {
+                    if (!pronunciationEnabled) {
+                      setPronunciationConfirmOpen(true);
+                      return;
+                    }
+
+                    playTargetPronunciation();
+                  }}
                   disabled={!active || active.state !== "falling"}
                   className="flex h-11 w-[6.4rem] shrink-0 items-center justify-center transition active:translate-y-0.5 active:scale-[0.98] disabled:opacity-40"
                   aria-label={`${active?.word ?? "단어"} 발음 듣기`}
@@ -1888,12 +2034,21 @@ export function SpeakFallGame() {
               <span className="relative inline-flex rounded-full bg-white/75 px-4 py-1 font-display text-[10px] tracking-[0.24em] text-[#3d8ef0] shadow-sm">
                 PAUSE
               </span>
-              <div className="relative mx-auto mt-4 grid size-20 place-items-center rounded-[42%] bg-gradient-to-br from-[#b9ef80] to-[#6fc95f] shadow-[0_10px_22px_-10px_rgba(23,63,120,0.45)]">
-                <span className="absolute -top-2 left-4 size-5 rounded-full bg-[#8edc68]" />
-                <span className="absolute -top-2 right-4 size-5 rounded-full bg-[#8edc68]" />
-                <span className="absolute left-5 top-8 size-2.5 rounded-full bg-[#173f78]" />
-                <span className="absolute right-5 top-8 size-2.5 rounded-full bg-[#173f78]" />
-                <span className="absolute bottom-5 h-2 w-4 rounded-b-full bg-[#173f78]/75" />
+              <div className="relative mx-auto mt-4 flex size-24 items-center justify-center">
+                {activeJelly.image ? (
+                  <img
+                    src={activeJelly.image}
+                    alt=""
+                    draggable={false}
+                    className="size-full object-contain drop-shadow-[0_10px_18px_rgba(23,63,120,0.28)]"
+                  />
+                ) : (
+                  <DefaultJellyVisual
+                    className="size-20"
+                    hue={activeJelly.hue}
+                    rainbow={activeJelly.rainbow}
+                  />
+                )}
               </div>
               <h2 className="relative mt-4 font-display text-2xl text-[#173f78]">
                 잠깐 쉬어갈까요?
@@ -1952,9 +2107,15 @@ export function SpeakFallGame() {
             />
           )}
           {phase === "idle" && (
-            <div className="relative z-10 flex h-full w-full max-w-md flex-col px-3">
-              <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-y-auto overscroll-contain">
-                <div className="flex w-full flex-col items-center py-5 tall-screen:py-10 short-screen:py-3">
+            <div 
+              onPointerDown={() => {
+              if (musicEnabled) {
+                resumeAudio();
+                }
+              }}
+              className="relative z-10 flex h-full w-full max-w-none flex-col px-3 min-[600px]:px-6">
+              <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-2">
+                <div className="flex w-full flex-col items-center -mt-[40px]">
                   {/* floating jelly on cloud */}
                   <div
                     className="pointer-events-none absolute left-3 top-3 z-20 w-16 drop-shadow-[0_10px_12px_rgba(12,58,124,0.22)] short-screen:left-2 short-screen:top-2 short-screen:w-12"
@@ -2037,12 +2198,12 @@ export function SpeakFallGame() {
                     <img
                       src={titleLockup}
                       alt="말해봐!영단어 구조대"
-                      className="relative z-10 mx-auto w-[116%] max-w-96 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)] short-screen:w-[108%] short-screen:max-w-60"
+                      className="relative z-10 mx-auto w-[116%] max-w-96 md:max-w-xl -translate-x-4 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)] short-screen:w-[108%] short-screen:max-w-60"
                     />
                   </div>
 
                   {/* game settings group */}
-                  <div className="flex w-full flex-1 flex-col items-center justify-start gap-4 short-screen:gap-3">
+                  <div className="mt-0 flex w-full flex-1 flex-col items-center justify-start gap-4 short-screen:gap-3">
                     {/* top banner */}
                     <div className="flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 shadow-[0_10px_24px_-10px_rgba(23,63,120,0.35)] backdrop-blur-sm short-screen:py-2">
                       <p className="font-display text-base leading-tight text-[#2a74d8] short-screen:text-sm">
@@ -2068,7 +2229,7 @@ export function SpeakFallGame() {
                                 playClick();
                                 setStrictness(key);
                               }}
-                              className={`flex aspect-square min-h-[94px] flex-col items-center justify-center gap-1.5 rounded-2xl border-2 px-2 py-3 text-center transition-all active:scale-[0.96] short-screen:min-h-[83px] ${
+                              className={`flex aspect-square min-h-[94px] flex-col items-center justify-center gap-1.5 rounded-2xl border-2 px-2 py-3 text-center transition-all active:scale-[0.90] short-screen:min-h-[83px] ${
                                 selected
                                   ? "border-dashed border-white/70 bg-[#173f78] text-white shadow-[0_8px_0_#0f2a5e,0_14px_24px_-8px_rgba(13,45,94,0.45)]"
                                   : "border-transparent bg-white/95 text-[#173f78] shadow-[0_4px_0_#c9dff8,0_10px_20px_-8px_rgba(23,63,120,0.3)]"
@@ -2104,36 +2265,30 @@ export function SpeakFallGame() {
                     </button>
                   </div>
                 </div>
-              </div>
-
+              </div>            
               {/* 테스트 빌드에서는 화면 높이와 관계없이 항상 노출 */}
-              <label className="relative z-30 mb-1 flex shrink-0 cursor-pointer items-center justify-center gap-2 self-center rounded-full bg-white/85 px-4 py-2 font-ui text-xs text-[#173f78]/70 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)]">
-                <input
-                  type="checkbox"
-                  checked={testUnlockSkins}
-                  onChange={(event) => {
-                    const checked = event.target.checked;
-                    setTestUnlockSkins(checked);
-                    if (!checked) {
-                      setProgress((current) => {
-                        const next: Progress = {
-                          ...current,
-                          equippedSkin: isSkinOwned(current.ownedSkins, current.equippedSkin)
-                            ? current.equippedSkin
-                            : DEFAULT_SKIN_ID,
-                          equippedJelly: isJellyOwned(current.ownedJellies, current.equippedJelly)
-                            ? current.equippedJelly
-                            : DEFAULT_JELLY_ID,
-                        };
-                        saveProgress(next);
-                        return next;
-                      });
-                    }
-                  }}
-                  className="size-4 accent-[#e84d8a]"
-                />
-                <span>스킨 해금 for 테스트버젼</span>
-              </label>
+              <div className="relative z-30 mb-1 flex shrink-0 items-center justify-center gap-2 self-center">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white/85 px-4 py-2 font-ui text-xs text-[#173f78]/70 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)]">
+                  <input
+                    type="checkbox"
+                    checked={testUnlockSkins}
+                    onChange={(event) => {
+                      setTestUnlockSkins(event.target.checked);
+                    }}
+                    className="size-4 accent-[#e84d8a]"
+                  />
+                  <span>스킨 해금 for 테스트버젼</span>
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setSoundSettingsOpen(true)}
+                  aria-label="사운드 설정 열기"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/85 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)] active:scale-95"
+                >
+                  <Volume2 className="size-4 text-[#173f78]" />
+                </button>
+              </div>
 
               {/* 홈 하단 제작자 및 버전 */}
               <footer className="safe-bottom relative z-40 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center px-4 pb-2 pt-1 font-ui text-[10px] text-[#173f78]/45">
@@ -2239,7 +2394,7 @@ export function SpeakFallGame() {
                   영어 발음을 듣고 친구를 구하는 게임이에요. 마이크 권한을 허용하면 바로 놀 수
                   있어요.
                   <br />
-                  목소리는 기기 안에서만 판정에 사용되고 저장되지 않아요.
+                  목소리는 발음 판정에만 사용되며 앱에서 별도로 녹음하거나 저장하지 않아요.
                 </p>
                 {(permissionDenied || micStatus === "denied") && (
                   <p className="mt-3 rounded-xl bg-[#fff1f1] p-3 text-left font-ui text-xs text-[#a33]">
@@ -2750,10 +2905,10 @@ export function SpeakFallGame() {
               <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl bg-white/55 p-1.5">
                 <button
                   type="button"
-                  onClick={() => setShopTab("parachute")}
-                  className={`rounded-xl py-2 font-display text-sm ${
-                    shopTab === "parachute" ? "bg-[#3d8ef0] text-white" : "text-[#173f78]/60"
-                  }`}
+                  onClick={() => {
+                    setShopTab("parachute");
+                    setShopPreviewId(progress.equippedSkin);
+                  }}
                 >
                   낙하산 스킨
                 </button>
@@ -2761,8 +2916,8 @@ export function SpeakFallGame() {
                   type="button"
                   onClick={() => {
                     setShopTab("jelly");
-                    setShopJellyCategory(null);
-                    setShopJellyPreviewId(null);
+                    setShopJellyCategory(equippedJelly.category);
+                    setShopJellyPreviewId(progress.equippedJelly);
                   }}
                   className={`rounded-xl py-2 font-display text-sm ${
                     shopTab === "jelly" ? "bg-[#e84d8a] text-white" : "text-[#173f78]/60"
@@ -2782,12 +2937,7 @@ export function SpeakFallGame() {
                   <ShopJellyGridPreview
                     jellies={SPECIAL_JELLIES.filter(
                       (jelly) => jelly.category === shopJellyCategory,
-                    )}
-                    selectedId={shopJellyPreviewId ?? progress.equippedJelly}
-                    onSelect={(jelly) => {
-                      playClick();
-                      setShopJellyPreviewId(jelly.id);
-                    }}
+                    )}                    
                     title={JELLY_CATEGORY_LABELS[shopJellyCategory]}
                   />
                 ) : (
@@ -2801,7 +2951,7 @@ export function SpeakFallGame() {
               </div>
 
               <div
-                key={`${shopTab}-${shopJellyCategory ?? "categories"}`}
+                key={shopTab}
                 className="flex-1 space-y-3 overflow-y-auto px-1"
               >
                 {shopTab === "parachute"
@@ -2818,12 +2968,10 @@ export function SpeakFallGame() {
                             playClick();
                             setShopPreviewId(skin.id);
                           }}
-                          className={`flex w-full items-center gap-4 rounded-3xl bg-white/95 p-4 text-left shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] backdrop-blur-sm transition-all ${
-                            equipped
-                              ? "ring-2 ring-[#3d8ef0]"
-                              : isPreview
-                                ? "ring-2 ring-[#f0a323]"
-                                : ""
+                          className={`flex w-full items-center gap-4 rounded-3xl p-4 text-left shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] backdrop-blur-sm transition-all ${
+                            isPreview
+                              ? "ring-2 ring-inset ring-[#3d8ef0] bg-[#e3f2ff]"
+                              : "bg-white/95"
                           }`}
                         >
                           <div className="shrink-0 rounded-2xl bg-[#eaf3ff] p-2">
@@ -2864,7 +3012,11 @@ export function SpeakFallGame() {
                             <span
                               onClick={(e) => {
                                 e.stopPropagation();
-                                buySkin(skin.id);
+                                if (canBuy) {
+                                  buySkin(skin.id);
+                                } else {
+                                  handleInsufficientCoins();
+                                }
                               }}
                               className={`flex min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 py-2 font-display text-sm active:translate-y-0.5 ${
                                 canBuy
@@ -2886,29 +3038,36 @@ export function SpeakFallGame() {
                         categoryJellies.find(
                           (jelly) => jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
                         ) ?? categoryJellies[0]!;
-                      const previewedInCategory = categoryJellies.find(
-                        (jelly) => jelly.id === shopJellyPreviewId,
-                      );
-                      const equippedInCategory = categoryJellies.find(
-                        (jelly) => jelly.id === progress.equippedJelly,
-                      );
-                      const selectedJelly =
-                        previewedInCategory ?? equippedInCategory ?? representative;
-                      const actuallyOwned = isJellyOwned(progress.ownedJellies, selectedJelly.id);
+                      const actuallyOwned =
+                        category === "default" ||
+                        categoryJellies.some((jelly) =>
+                          isJellyOwned(progress.ownedJellies, jelly.id),
+                        );
+
                       const owned = testUnlockSkins || actuallyOwned;
-                      const equipped = progress.equippedJelly === selectedJelly.id;
-                      const canBuy = progress.coins >= selectedJelly.price;
+
+                      const equipped =
+                        equippedJelly.category === category;
+
+                      const canBuy =
+                        progress.coins >= representative.price;
 
                       const activatePreview = () => {
                         setShopJellyCategory(category);
-                        setShopJellyPreviewId(selectedJelly.id);
+                        setShopJellyPreviewId(representative.id);
                       };
-
                       return (
                         <section
                           key={category}
-                          className={`rounded-3xl bg-white/95 p-3 shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] ${
-                            shopJellyCategory === category ? "ring-2 ring-[#e84d8a]" : ""
+                           onClick={() => {
+                            playClick();
+                            setShopJellyCategory(category);
+                            setShopJellyPreviewId(representative.id);
+                          }}
+                          className={`cursor-pointer rounded-3xl p-3 ${
+                            shopJellyCategory === category
+                              ? "bg-[#fff5f9] shadow-[inset_0_0_0_2px_#e84d8a,0_8px_20px_-12px_rgba(23,63,120,0.45)]"
+                              : "bg-white/95 shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)]"
                           }`}
                         >
                           <div className="mb-2 flex items-center justify-between gap-3 px-1">
@@ -2931,21 +3090,11 @@ export function SpeakFallGame() {
                           </div>
 
                           <div className="grid grid-cols-8 gap-1.5">
-                            {categoryJellies.map((jelly) => {
-                              const selected = selectedJelly.id === jelly.id;
+                            {categoryJellies.map((jelly) => {                              
                               return (
-                                <button
-                                  type="button"
+                                <div
                                   key={jelly.id}
-                                  onClick={() => {
-                                    playClick();
-                                    setShopJellyCategory(category);
-                                    setShopJellyPreviewId(jelly.id);
-                                  }}
-                                  aria-label={`${jelly.name} 미리보기`}
-                                  className={`flex aspect-square min-w-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf3ff] p-0.5 ${
-                                    selected ? "ring-2 ring-[#e84d8a]" : "ring-1 ring-white"
-                                  }`}
+                                  className="flex aspect-square min-w-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf3ff] p-0.5 ring-1 ring-white"
                                 >
                                   {getJellyThumbnail(jelly) ? (
                                     <img
@@ -2960,7 +3109,7 @@ export function SpeakFallGame() {
                                       rainbow={jelly.rainbow}
                                     />
                                   )}
-                                </button>
+                                </div>
                               );
                             })}
                           </div>
@@ -2970,19 +3119,15 @@ export function SpeakFallGame() {
                             onClick={() => {
                               playClick();
                               activatePreview();
+
                               if (equipped) return;
-                              if (owned) equipJelly(selectedJelly.id);
-                              else if (canBuy) buyJelly(selectedJelly.id);
-                              else {
-                                showShopToast("코인이 부족해요");
-                                requestRewardedAd(
-                                  {
-                                    title: "코인이 부족해요",
-                                    description: "보상형 광고를 보고 100코인을 모으시겠어요?",
-                                    reward: "100코인",
-                                  },
-                                  earnCoinsWithAd,
-                                );
+
+                              if (owned) {
+                                equipJellySet(category);
+                              } else if (canBuy) {
+                                buyJellySet(category);
+                              } else {
+                                handleInsufficientCoins();
                               }
                             }}
                             className={`mt-3 flex w-full items-center justify-center rounded-full py-2.5 font-display text-sm active:translate-y-0.5 ${
@@ -3139,6 +3284,304 @@ export function SpeakFallGame() {
         </div>
       )}
 
+      {soundSettingsOpen && (
+        <div
+          className="absolute inset-0 z-[160] flex items-center justify-center bg-[#17375f]/35 px-5 backdrop-blur-[2px]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sound-settings-title"
+        >
+          <div className="w-full max-w-[390px] rounded-[32px] border-2 border-white/90 bg-gradient-to-b from-white to-[#eef9ff] p-5 shadow-[0_18px_50px_rgba(18,74,125,0.28)]">
+            <div className="flex flex-col items-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e5f4ff] text-[#287ee7] shadow-inner">
+                <Volume2 className="h-7 w-7" />
+              </div>
+              <h2
+                id="sound-settings-title"
+                className="mt-2 text-[24px] font-black text-[#17477f]"
+              >
+                사운드 설정
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !(musicEnabled && sfxEnabled && pronunciationEnabled);
+                  setMusicEnabled(next);
+                  setSfxEnabled(next);
+                  setPronunciationEnabled(next);
+                  setBackgroundMusicEnabled(next);
+                  setSoundEffectsEnabled(next);
+                  try {
+                    window.localStorage.setItem(
+                      MUSIC_ENABLED_STORAGE_KEY,
+                      String(next),
+                    );
+                  } catch {
+                    // Storage can be unavailable in restricted webviews.
+                  }
+                  if (next) {
+                    resumeAudio();
+                    playClick();
+                  }
+                }}
+                className={`mt-3 flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-black transition ${
+                  musicEnabled && sfxEnabled && pronunciationEnabled
+                    ? "bg-[#dfeeff] text-[#287ee7]"
+                    : "bg-[#3d8ef0] text-white shadow-sm"
+                }`}
+                aria-pressed={musicEnabled && sfxEnabled && pronunciationEnabled}
+              >
+                {musicEnabled && sfxEnabled && pronunciationEnabled ? (
+                  <VolumeX className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+                {musicEnabled && sfxEnabled && pronunciationEnabled
+                  ? "전체 끄기"
+                  : "전체 켜기"}
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <section className="rounded-[22px] border border-[#d9edfb] bg-white/90 p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#eaf4ff] text-[#347fdf]">
+                      <Music2 className="h-5 w-5" />
+                    </div>
+                    <span className="font-extrabold text-[#17477f]">배경 음악</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !musicEnabled;
+                      setMusicEnabled(next);
+                      setBackgroundMusicEnabled(next);
+                      try {
+                        window.localStorage.setItem(
+                          MUSIC_ENABLED_STORAGE_KEY,
+                          String(next),
+                        );
+                      } catch {
+                        // Storage can be unavailable in restricted webviews.
+                      }
+                    }}
+                    className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
+                      musicEnabled
+                        ? "bg-[#3d8ef0] text-white"
+                        : "bg-[#dfe8f0] text-[#7890aa]"
+                    }`}
+                    aria-pressed={musicEnabled}
+                  >
+                    {musicEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+                <div
+                  className={`mt-3 flex items-center gap-2 transition-opacity ${
+                    musicEnabled ? "opacity-100" : "opacity-35"
+                  }`}
+                >
+                  <VolumeX className="h-4 w-4 shrink-0 text-[#7a9bbc]" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={musicVolume}
+                    disabled={!musicEnabled}
+                    onChange={(event) =>
+                      setMusicVolume(Number(event.target.value))
+                    }
+                    aria-label="배경 음악 볼륨"
+                    className="h-2 min-w-0 flex-1 cursor-pointer accent-[#3d8ef0] disabled:cursor-not-allowed"
+                  />
+                  <Volume2 className="h-5 w-5 shrink-0 text-[#347fdf]" />
+                </div>
+              </section>
+
+              <section className="rounded-[22px] border border-[#d9edfb] bg-white/90 p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fff4d9] text-[#f0a21b]">
+                      <Sparkles className="h-5 w-5" />
+                    </div>
+                    <span className="font-extrabold text-[#17477f]">효과음</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !sfxEnabled;
+                      setSfxEnabled(next);
+                      setSoundEffectsEnabled(next);
+                      if (next) {
+                        resumeAudio();
+                        playClick();
+                      }
+                    }}
+                    className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
+                      sfxEnabled
+                        ? "bg-[#ffb52e] text-white"
+                        : "bg-[#dfe8f0] text-[#7890aa]"
+                    }`}
+                    aria-pressed={sfxEnabled}
+                  >
+                    {sfxEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+                <div
+                  className={`mt-3 flex items-center gap-2 transition-opacity ${
+                    sfxEnabled ? "opacity-100" : "opacity-35"
+                  }`}
+                >
+                  <VolumeX className="h-4 w-4 shrink-0 text-[#7a9bbc]" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={sfxVolume}
+                    disabled={!sfxEnabled}
+                    onChange={(event) =>
+                      setSfxVolume(Number(event.target.value))
+                    }
+                    aria-label="효과음 볼륨"
+                    className="h-2 min-w-0 flex-1 cursor-pointer accent-[#ffb52e] disabled:cursor-not-allowed"
+                  />
+                  <Volume2 className="h-5 w-5 shrink-0 text-[#f0a21b]" />
+                </div>
+              </section>
+
+              <section className="rounded-[22px] border border-[#d9edfb] bg-white/90 p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ebf9f2] text-[#35a876]">
+                      <Languages className="h-5 w-5" />
+                    </div>
+                    <span className="font-extrabold text-[#17477f]">영어 발음</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPronunciationEnabled((current) => !current)
+                    }
+                    className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
+                      pronunciationEnabled
+                        ? "bg-[#42bd87] text-white"
+                        : "bg-[#dfe8f0] text-[#7890aa]"
+                    }`}
+                    aria-pressed={pronunciationEnabled}
+                  >
+                    {pronunciationEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+                <div
+                  className={`mt-3 flex items-center gap-2 transition-opacity ${
+                    pronunciationEnabled ? "opacity-100" : "opacity-35"
+                  }`}
+                >
+                  <VolumeX className="h-4 w-4 shrink-0 text-[#7a9bbc]" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={pronunciationVolume}
+                    disabled={!pronunciationEnabled}
+                    onChange={(event) =>
+                      setPronunciationVolume(Number(event.target.value))
+                    }
+                    aria-label="영어 발음 볼륨"
+                    className="h-2 min-w-0 flex-1 cursor-pointer accent-[#42bd87] disabled:cursor-not-allowed"
+                  />
+                  <Volume2 className="h-5 w-5 shrink-0 text-[#35a876]" />
+                </div>
+              </section>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                playClick();
+                setSoundSettingsOpen(false);
+              }}
+              className="mt-5 w-full rounded-[20px] bg-[#3d8ef0] py-3.5 text-lg font-black text-white shadow-[0_6px_0_#216bc4] active:translate-y-1 active:shadow-[0_2px_0_#216bc4]"
+            >
+              완료
+            </button>
+          </div>
+        </div>
+      )}
+
+      {pronunciationConfirmOpen && (
+        <div
+          className="absolute inset-0 z-[140] flex items-center justify-center bg-[#102d5e]/45 px-6 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pronunciation-confirm-title"
+        >
+          <div className="w-full max-w-sm rounded-[2rem] border border-white/80 bg-gradient-to-b from-white to-[#eef7ff] p-5 text-center shadow-[0_24px_60px_-18px_rgba(13,45,94,0.65)]">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#e8f2ff] text-[#3d8ef0]">
+              <Volume2 className="size-8" />
+            </div>
+
+            <h2
+              id="pronunciation-confirm-title"
+              className="mt-5 font-display text-2xl text-[#173f78]"
+            >
+              발음을 들어볼까요?
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-xs font-ui text-sm leading-5 text-[#3f6699]">
+              현재 발음 듣기가 꺼져 있어요.
+              <br />
+              이 단어의 발음을 들을까요?
+            </p>
+
+            <div className="mt-5 flex flex-col gap-2.5">
+              {/* 1회만 */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPronunciationConfirmOpen(false);
+
+                  // pronunciationEnabled는 false 그대로 유지
+                  playTargetPronunciation();
+                }}
+                className="w-full rounded-full bg-[#3d8ef0] py-3.5 font-display text-base text-white shadow-[0_5px_0_#2a6fd0] active:translate-y-0.5"
+              >
+                예, 한 번만 들을게요
+              </button>
+
+              {/* 계속 허용 */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPronunciationEnabled(true);
+                  setPronunciationConfirmOpen(false);
+
+                  // 현재 단어도 바로 재생
+                  playTargetPronunciation();
+                }}
+                className="w-full rounded-full bg-[#e4f2ff] py-3.5 font-display text-base text-[#2469b5] shadow-[0_4px_12px_-8px_rgba(23,63,120,0.45)] active:scale-[0.98]"
+              >
+                예, 발음은 계속 들을게요
+              </button>
+
+              {/* 취소 */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPronunciationConfirmOpen(false);
+                }}
+                className="w-full rounded-full py-3 font-display text-sm text-[#55749b] active:scale-[0.98]"
+              >
+                아니요
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {rewardAdConfirmation && (
         <div
           className="absolute inset-0 z-[120] flex items-center justify-center bg-[#102d5e]/45 px-6 backdrop-blur-sm"
@@ -3193,9 +3636,9 @@ function DefaultJellyVisual({
   hue = 145,
   rainbow = false,
 }: {
-  className?: string;
-  hue?: number;
-  rainbow?: boolean;
+  className?: string | undefined;
+  hue?: number | undefined;
+  rainbow?: boolean | undefined;
 }) {
   const bodyBackground = rainbow
     ? "linear-gradient(135deg, #ff6b8b 4%, #ffbf3f 22%, #c9ed49 39%, #55dbad 55%, #55bdf3 72%, #9d6bef 88%, #ef6fc6 100%)"
@@ -3232,43 +3675,38 @@ function DefaultJellyVisual({
 
 function ShopJellyGridPreview({
   jellies,
-  selectedId,
-  onSelect,
   title,
 }: {
   jellies: SpecialJelly[];
-  selectedId: string;
-  onSelect: (jelly: SpecialJelly) => void;
   title: string;
 }) {
   return (
     <div className="w-full px-4 py-3 short-screen:py-2">
-      <p className="mb-2 text-center font-display text-sm text-[#173f78]">{title}</p>
+      <p className="mb-2 text-center font-display text-sm text-[#173f78]">
+        {title}
+      </p>
+
       <div className="grid grid-cols-4 gap-2">
-        {jellies.slice(0, 8).map((jelly) => {
-          const selected = selectedId === jelly.id;
-          return (
-            <button
-              type="button"
-              key={jelly.id}
-              onClick={() => onSelect(jelly)}
-              aria-label={`${jelly.name} 미리보기`}
-              className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-[#eaf3ff] p-1 transition-all ${
-                selected ? "ring-2 ring-[#e84d8a]" : "ring-1 ring-white"
-              }`}
-            >
-              {getJellyThumbnail(jelly) ? (
-                <img
-                  src={getJellyThumbnail(jelly)}
-                  alt=""
-                  className="size-full object-contain drop-shadow-sm"
-                />
-              ) : (
-                <DefaultJellyVisual className="size-10" hue={jelly.hue} rainbow={jelly.rainbow} />
-              )}
-            </button>
-          );
-        })}
+        {jellies.slice(0, 8).map((jelly) => (
+          <div
+            key={jelly.id}
+            className="flex aspect-square min-w-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf3ff] p-0.5 ring-1 ring-white"
+          >
+            {getJellyThumbnail(jelly) ? (
+              <img
+                src={getJellyThumbnail(jelly)}
+                alt=""
+                className="size-full object-contain"
+              />
+            ) : (
+              <DefaultJellyVisual
+                className="size-12"
+                hue={jelly.hue}
+                rainbow={jelly.rainbow}
+              />
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
