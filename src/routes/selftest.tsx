@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdBanner } from "@/components/ads/AdBanner";
-import {
-  CHECKS,
-  buildReport,
-  summarize,
-  type CheckResult,
-} from "@/lib/speakfall/selftest";
+import { CHECKS, buildReport, summarize, type CheckResult } from "@/lib/speakfall/selftest";
 
 const title = "사전 설치 테스트 — 말해봐!영단어 구조대";
 const description =
@@ -132,9 +127,8 @@ function SelfTestPage() {
           사전 설치 테스트
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-400">
-          릴리즈 APK를 설치한 기기에서 이 페이지를 열고 아래 순서대로 확인하세요.
-          자동 항목은 진입 즉시 실행되며, 마이크 권한·입력 항목은 버튼을 눌러 직접
-          확인해야 합니다.
+          릴리즈 APK를 설치한 기기에서 이 페이지를 열고 아래 순서대로 확인하세요. 자동 항목은 진입
+          즉시 실행되며, 마이크 권한·입력 항목은 버튼을 눌러 직접 확인해야 합니다.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -169,10 +163,7 @@ function SelfTestPage() {
 
         <ul className="mt-6 space-y-3">
           {results.map((r) => (
-            <li
-              key={r.id}
-              className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4"
-            >
+            <li key={r.id} className="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="font-bold text-white">{r.label}</p>

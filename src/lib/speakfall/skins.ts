@@ -132,6 +132,11 @@ export function getSkin(id: string): Skin {
   return SKINS.find((s) => s.id === id) ?? SKINS[0]!;
 }
 
+/** 미리보기와 실제 플레이가 동일하게 사용하는 최종 효과입니다. */
+export function getEffectiveSkinEffect(skin: Skin): SkinEffect {
+  return skin.rainbow && skin.effect === "none" ? "rain" : skin.effect;
+}
+
 export function isSkinOwned(ownedSkins: string[] | undefined, id: string): boolean {
   if (id === DEFAULT_SKIN_ID) return true;
   return ownedSkins?.includes(id) ?? false;

@@ -4,7 +4,10 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "archive:manifest": "node --experimental-strip-types --eval \"import('./scripts/generateArchiveManifest.ts').then(({ generateArchiveManifest }) => generateArchiveManifest())\"",
     "dev": "vite dev",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
@@ -20,6 +23,7 @@
     "build:android": "MOBILE=1 vite build && cap sync android"
   },
   "dependencies": {
+    "@capacitor-community/admob": "8",
     "@capacitor-community/speech-recognition": "^7.0.1",
     "@capacitor-community/text-to-speech": "8.0.2",
     "@capacitor/android": "^8.5.0",

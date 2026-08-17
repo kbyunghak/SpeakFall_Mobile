@@ -375,8 +375,14 @@ button {
 
 /* --- soften the start screen --- */
 @keyframes breathe {
-  0%, 100% { transform: scale(1) rotate(-1deg); }
-  50% { transform: scale(1.025) rotate(-0.4deg); }
+  0%, 100% { transform: scale(0.98); }
+  50% { transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-breathe {
+    animation: none !important;
+  }
 }
 
 @keyframes sway {
@@ -535,6 +541,99 @@ button {
   50% {
     opacity: 1;
     transform: scale(1.25);
+  }
+}
+
+/* 별과 반짝이가 이동 경로 뒤에 잠시 남았다가 아래로 흩어지는 잔상 */
+@keyframes sfx-star-trail {
+  0% { opacity: 0; transform: translate(0, -4px) scale(0.35) rotate(0deg); }
+  18% { opacity: 1; transform: translate(-4px, 12px) scale(1.2) rotate(45deg); }
+  65% { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(18px, 108px) scale(0.55) rotate(210deg); }
+}
+
+@keyframes sfx-sparkle-trail {
+  0% { opacity: 0; transform: translate(0, -2px) scale(0.35) rotate(45deg); }
+  20% { opacity: 1; transform: translate(5px, 14px) scale(1.35) rotate(90deg); }
+  62% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(-18px, 104px) scale(0.45) rotate(260deg); }
+}
+
+/* ── 스킨 상점: 젤리 왕복 미리보기와 10K 스킨 이동 잔상 ────── */
+@keyframes shop-preview-flight {
+  0%,
+  100% {
+    transform: translateX(-72px) translateY(2px) rotate(-3deg);
+  }
+  50% {
+    transform: translateX(72px) translateY(-3px) rotate(3deg);
+  }
+}
+
+.shop-preview-flight {
+  animation: shop-preview-flight 4.8s ease-in-out infinite;
+  transform-origin: center top;
+}
+
+@keyframes shop-preview-trail {
+  0%,
+  12% {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.45) rotate(0deg);
+  }
+  24%,
+  58% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(24px) scale(1.05) rotate(190deg);
+  }
+}
+
+.shop-preview-trail {
+  position: absolute;
+  display: grid;
+  width: 8px;
+  height: 8px;
+  place-items: center;
+  border-radius: 2px;
+  color: white;
+  font-size: 10px;
+  line-height: 1;
+  animation: shop-preview-trail 3.6s ease-out infinite;
+}
+
+.shop-preview-trail--petals {
+  width: 9px;
+  height: 6px;
+  border-radius: 70% 30% 70% 30%;
+}
+
+.shop-preview-trail--sparkle {
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.shop-preview-trail--stars {
+  width: 12px;
+  height: 12px;
+  background: transparent !important;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.shop-preview-trail--rain {
+  width: 5px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shop-preview-flight,
+  .shop-preview-trail {
+    animation: none;
   }
 }
 

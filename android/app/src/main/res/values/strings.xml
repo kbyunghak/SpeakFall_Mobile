@@ -4,4 +4,6 @@
     <string name="title_activity_main">말해봐!영단어 구조대</string>
     <string name="package_name">com.joygle.speakfall</string>
     <string name="custom_url_scheme">com.joygle.speakfall</string>
+    <!-- Google 공식 테스트 App ID. 출시 전 SpeakFall AdMob App ID로 교체합니다. -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>

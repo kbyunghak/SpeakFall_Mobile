@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   BookOpen,
@@ -26,12 +27,10 @@ import {
   MAX_WORDS_PER_LEVEL,
   RESCUES_PER_LEVEL_UP,
   WORDS_PER_LEVEL,
+  createLevelWordQueue,
   findTranscriptIpa,
   getWordsByLevel,
   getPronunciationFocus,
-  PRONUNCIATION_FOCUSES,
-  randomWord,
-  scoreTranscript,
   STRICTNESS,
   type Strictness,
   type WordItem,
@@ -45,18 +44,28 @@ import {
   getTitle,
   isLevelUnlocked,
   isTrackPlayable,
-  isWorldUnlocked,
   loadProgress,
+  markArchiveSetDownloaded,
   saveProgress,
   starsForResult,
   trackStars,
+  unlockArchiveSet,
+  unlockTrack,
   type Progress,
   type RoundResult,
 } from "@/lib/speakfall/progress";
 import { containsProfanity } from "@/lib/speakfall/profanity";
 import { TRACKS, WORLD_TRACKS, getTrack, trackHasWords } from "@/lib/speakfall/tracks";
 import type { TrackType } from "@/data/words";
-import { AdSenseBanner } from "@/components/ads/AdSenseBanner";
+import type { ArchiveManifest, ArchiveWord } from "@/data/archive";
+import {
+  cacheArchiveSet,
+  downloadArchiveSet,
+  fetchArchiveManifest,
+  readCachedArchiveWords,
+} from "@/lib/archive/repository";
+import { APP_VERSION } from "@/lib/app/version";
+import { formatCompactNumber } from "@/lib/format/compactNumber";
 import {
   playClick,
   playCoin,
@@ -71,8 +80,22 @@ import {
   setSoundEnabled as setSoundModuleEnabled,
 } from "@/lib/speakfall/sound";
 import { DEFAULT_SKIN_ID, SKINS, getSkin, isSkinOwned, type Skin } from "@/lib/speakfall/skins";
-import { SkinCanopy, SkinEffects, SkinShopPreview } from "@/components/speakfall/SkinVisuals";
+import {
+  SkinCanopy,
+  SkinEffects,
+  SkinPreviewTrail,
+  SkinShopPreview,
+} from "@/components/speakfall/SkinVisuals";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { evaluatePronunciation } from "@/lib/speech/pronunciationEvaluator";
+import type { SpeechResult } from "@/lib/speech/types";
+import { showRewardedUnlockAd } from "@/lib/ads/rewarded";
+import {
+  fallSpeedForLevel,
+  swayDistanceForLevel,
+  swayDurationForLevel,
+} from "@/lib/speakfall/difficulty";
+import { backDestinationForPhase } from "@/lib/speakfall/navigation";
 import {
   checkMicPermission,
   getPlatform,
@@ -85,6 +108,98 @@ import {
 
 import titleLockup from "@/assets/title-lockup.png";
 import parachuteJelly from "@/assets/parachute-jelly.png";
+import speakButton from "@/assets/speak-button.png";
+import {
+  DEFAULT_JELLY_ID,
+  JELLY_CATEGORY_LABELS,
+  JELLY_CATEGORY_ORDER,
+  SPECIAL_JELLIES,
+  getSpecialJelly,
+  isJellyOwned,
+  type JellyCategory,
+  type JellyColor,
+  type SpecialJelly,
+} from "@/lib/speakfall/specialJellies";
+
+const jellyThumbnailModules = import.meta.glob("../../assets/jelly/*.png", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+
+const JELLY_THUMBNAIL_NAMES: Partial<Record<JellyCategory, Partial<Record<JellyColor, string>>>> = {
+  color: {
+    pink: "jelly-pink.png",
+    purple: "jelly-purple.png",
+    green: "jelly-green.png",
+    mint: "jelly-mint.png",
+    rainbow: "jelly-rainbow.png",
+    blue: "jelly-blue.png",
+    orange: "jelly-orange.png",
+  },
+  glitter: {
+    pink: "glitter-jelly-pink.png",
+    purple: "glitter-jelly-blue-purple.png",
+    green: "glitter-jelly-green.png",
+    mint: "glitter-jelly-cyan.png",
+    rainbow: "glitter-jelly-rainbow.png",
+    yellow: "glitter-jelly-gold.png",
+    orange: "glitter-jelly-orange.png",
+  },
+  pudding: {
+    pink: "pudding-jelly-pink.png",
+    purple: "pudding-jelly-purple.png",
+    green: "pudding-jelly-lime.png",
+    mint: "pudding-jelly-mint.png",
+    rainbow: "pudding-jelly-rainbow.png",
+    blue: "pudding-jelly-blue.png",
+    orange: "pudding-jelly-orange.png",
+  },
+  fruit: {
+    pink: "fruit-jelly-peach.png",
+    purple: "fruit-jelly-grapes.png",
+    green: "fruit-jelly-green.png",
+    rainbow: "fruit-jelly-rainbow-grapes.png",
+    blue: "fruit-jelly-blueberry-cluster.png",
+    yellow: "fruit-jelly-lemon.png",
+    orange: "fruit-jelly-orange-slice.png",
+  },
+  bear: {
+    pink: "jelly-bear-pink.png",
+    purple: "jelly-bear-purple.png",
+    green: "jelly-bear-lime.png",
+    mint: "jelly-bear-mint.png",
+    rainbow: "jelly-bear-rainbow.png",
+    blue: "jelly-bear-blue.png",
+    orange: "jelly-bear-orange.png",
+  },
+  dragon: {
+    pink: "dragon-jelly-pink.png",
+    purple: "dragon-jelly-purple.png",
+    green: "dragon-jelly-glime.png",
+    mint: "dragon-jelly-mint.png",
+    rainbow: "dragon-jelly-rainbow.png",
+    blue: "dragon-jelly-blue.png",
+    orange: "dragon-jelly-orange.png",
+  },
+};
+
+const JELLY_REPRESENTATIVE_COLORS: Record<JellyCategory, JellyColor> = {
+  default: "pink",
+  color: "blue",
+  glitter: "pink",
+  pudding: "pink",
+  fruit: "pink",
+  bear: "pink",
+  dragon: "pink",
+};
+
+function getJellyThumbnail(jelly: SpecialJelly): string | undefined {
+  const filename = JELLY_THUMBNAIL_NAMES[jelly.category]?.[jelly.color];
+  return filename
+    ? (jellyThumbnailModules[`../../assets/jelly/${filename}`] ?? jelly.image)
+    : jelly.image;
+}
 
 type Faller = WordItem & {
   id: number;
@@ -106,7 +221,14 @@ type Phase =
   | "permission"
   | "countdown"
   | "playing"
+  | "paused"
   | "over";
+
+type RewardAdConfirmation = {
+  title: string;
+  description: string;
+  reward: string;
+};
 
 const HUES = [10, 45, 145, 200, 255, 300];
 const MAX_HP = 5;
@@ -282,7 +404,7 @@ function SkyClouds() {
     <svg
       viewBox="0 0 390 780"
       preserveAspectRatio="xMidYMid slice"
-      className="pointer-events-none absolute inset-0 -z-10 size-full drop-shadow-[0_12px_14px_rgba(12,58,124,0.12)]"
+      className="pointer-events-none absolute inset-0 z-0 size-full drop-shadow-[0_12px_14px_rgba(12,58,124,0.12)]"
       aria-hidden="true"
     >
       <g style={{ animation: "cloud-float 18s ease-in-out infinite" }}>
@@ -331,39 +453,32 @@ function RibbonBanner({ children }: { children: React.ReactNode }) {
 }
 
 /** 상점에서 선택한 스킨을 젤리 친구에게 미리 입혀보는 무대 */
-function ShopSkinPreview({ skin }: { skin: Skin }) {
+function ShopSkinPreview({ skin, jelly }: { skin: Skin; jelly: SpecialJelly }) {
   return (
     <div
-      className="relative flex min-h-[210px] w-full flex-col items-center justify-center py-5"
+      className="relative flex min-h-[210px] w-full flex-col items-center justify-center overflow-hidden py-5 short-screen:min-h-[165px] short-screen:py-3"
       aria-hidden
     >
-      <div className="relative mx-auto flex flex-col items-center">
-        <SkinEffects skin={skin} />
-        <div className="relative -mb-2 flex flex-col items-center">
-          <SkinCanopy skin={skin} />
-        </div>
+      <SkinPreviewTrail skin={skin} />
+      <div className="shop-preview-flight relative z-10 mx-auto flex flex-col items-center">
+        <div className="relative flex flex-col items-center">
+          <SkinEffects skin={skin} />
+          <div className="relative z-10 -mb-5 flex flex-col items-center">
+            <SkinCanopy skin={skin} />
+          </div>
 
-        <div
-          className="relative flex size-14 items-center justify-center rounded-[45%] shadow-soft"
-          style={{
-            background: `radial-gradient(circle at 35% 30%, oklch(0.95 0.09 145), oklch(0.72 0.17 145))`,
-          }}
-        >
-          <span
-            className="absolute -top-1.5 left-2.5 size-3 rounded-full"
-            style={{ background: `oklch(0.82 0.15 145)` }}
-          />
-          <span
-            className="absolute -top-1.5 right-2.5 size-3 rounded-full"
-            style={{ background: `oklch(0.82 0.15 145)` }}
-          />
-          <span className="absolute left-3.5 top-5 size-2 rounded-full bg-foreground/70">
-            <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-          </span>
-          <span className="absolute right-3.5 top-5 size-2 rounded-full bg-foreground/70">
-            <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-          </span>
-          <span className="absolute bottom-3 h-2 w-3.5 rounded-b-full bg-foreground/70" />
+          <div className="relative z-20 flex size-16 items-center justify-center">
+            {jelly.image ? (
+              <img
+                src={jelly.image}
+                alt=""
+                draggable={false}
+                className="pointer-events-none size-full select-none object-contain drop-shadow-lg"
+              />
+            ) : (
+              <DefaultJellyVisual className="size-14" hue={jelly.hue} rainbow={jelly.rainbow} />
+            )}
+          </div>
         </div>
       </div>
       <p className="ribbon-title mx-auto mt-3 w-full text-center text-lg text-[#173f78]">
@@ -372,6 +487,25 @@ function ShopSkinPreview({ skin }: { skin: Skin }) {
       <p className="mx-auto w-full text-center font-ui text-xs text-[#173f78]/60">
         {skin.effectLabel}
       </p>
+    </div>
+  );
+}
+
+function ShopJellySinglePreview({ jelly, equipped }: { jelly: SpecialJelly; equipped: boolean }) {
+  return (
+    <div className="flex min-h-[190px] flex-col items-center justify-center py-4 short-screen:min-h-[150px] short-screen:py-2">
+      {jelly.image ? (
+        <img
+          src={jelly.image}
+          alt=""
+          draggable={false}
+          className="size-28 object-contain drop-shadow-lg short-screen:size-20"
+        />
+      ) : (
+        <DefaultJellyVisual className="size-24" hue={jelly.hue} rainbow={jelly.rainbow} />
+      )}
+      <p className="mt-2 font-display text-lg text-[#173f78]">{jelly.name}</p>
+      <p className="font-ui text-xs text-[#173f78]/55">{equipped ? "현재 장착 중" : "미리보기"}</p>
     </div>
   );
 }
@@ -403,10 +537,8 @@ export function SpeakFallGame() {
   const [voiceLevel, setVoiceLevel] = useState(0);
   const [level, setLevel] = useState(1);
   const [track, setTrack] = useState<TrackType>("basic");
-  /** 구조 지도 탭: 기초 지도 / 전문 월드 */
-  const [mapTab, setMapTab] = useState<"basic" | "world">("basic");
-  /** 전문 월드에서 선택한 섬 (null이면 섬 목록) */
-  const [worldTrack, setWorldTrack] = useState<TrackType | null>(null);
+  /** 구조 지도에서 보고 있는 섬 */
+  const [mapTrack, setMapTrack] = useState<TrackType>("basic");
   /** 도감에서 보고 있는 트랙 */
   const [colTrack, setColTrack] = useState<TrackType>("basic");
   const [wordsRemaining, setWordsRemaining] = useState(WORDS_PER_LEVEL);
@@ -421,13 +553,28 @@ export function SpeakFallGame() {
   const [shopToast, setShopToast] = useState<string | null>(null);
   /** 상점에서 미리보기 중인 스킨 ID */
   const [shopPreviewId, setShopPreviewId] = useState<string | null>(null);
+  const [shopJellyPreviewId, setShopJellyPreviewId] = useState<string | null>(null);
+  const [shopJellyCategory, setShopJellyCategory] = useState<JellyCategory | null>(null);
+  const [shopTab, setShopTab] = useState<"parachute" | "jelly">("parachute");
+  const [testUnlockSkins, setTestUnlockSkins] = useState(false);
   /** 구조 성공 시 젤리 위에 뜨는 "+1" 표시 */
   const [plusOne, setPlusOne] = useState<number | null>(null);
   const [plusOneMsg, setPlusOneMsg] = useState("야호!");
   /** 도감에서 펼쳐진 레벨 (null이면 모두 접힘) */
   const [openCollectionLevel, setOpenCollectionLevel] = useState<number | null>(null);
+  const [hiddenLabUnlocked, setHiddenLabUnlocked] = useState(false);
+  const [rewardingTrack, setRewardingTrack] = useState<TrackType | null>(null);
+  const [rewardingCoins, setRewardingCoins] = useState(false);
+  const [archiveManifest, setArchiveManifest] = useState<ArchiveManifest | null>(null);
+  const [archiveWords, setArchiveWords] = useState<ArchiveWord[]>([]);
+  const [archiveBusy, setArchiveBusy] = useState(false);
+  const [rewardAdConfirmation, setRewardAdConfirmation] = useState<RewardAdConfirmation | null>(
+    null,
+  );
 
   const activeRef = useRef<Faller | null>(null);
+  const hiddenLabTapRef = useRef({ count: 0, lastTap: 0 });
+  const pendingRewardActionRef = useRef<(() => void | Promise<void>) | null>(null);
   const idRef = useRef(0);
   const elapsed = useRef(0);
   const phaseRef = useRef<Phase>("idle");
@@ -466,20 +613,182 @@ export function SpeakFallGame() {
   }, [soundEnabled]);
 
   useEffect(() => {
-    if (phase === "shop") setShopPreviewId(null);
+    if (phase === "shop") {
+      setShopPreviewId(null);
+      setShopJellyPreviewId(null);
+      setShopJellyCategory(null);
+    }
   }, [phase]);
 
+  useEffect(() => {
+    if (phase !== "collection") return;
+    let cancelled = false;
+    fetchArchiveManifest()
+      .then((manifest) => {
+        if (!cancelled) setArchiveManifest(manifest);
+      })
+      .catch((cause) => {
+        console.warn("Archive manifest load failed", cause);
+        if (!cancelled) setArchiveManifest(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [phase]);
+
+  useEffect(() => {
+    const setIds = progress.archive.downloadedSets[colTrack] ?? [];
+    setArchiveWords(readCachedArchiveWords(colTrack, setIds));
+  }, [colTrack, progress.archive.downloadedSets]);
+
   const equippedSkin = useMemo(() => getSkin(progress.equippedSkin), [progress.equippedSkin]);
+  const equippedJelly = useMemo(
+    () => getSpecialJelly(progress.equippedJelly),
+    [progress.equippedJelly],
+  );
+  /** 현재 게임 트랙에서 다운로드가 끝난 추가 단어. 기본 단어와 출제 시점에 합칩니다. */
+  const playArchiveWords = useMemo(
+    () => readCachedArchiveWords(track, progress.archive.downloadedSets[track] ?? []),
+    [progress.archive.downloadedSets, track],
+  );
 
   /** 레벨이 낮을수록 좌우로 크게 흔들리고, 레벨 10은 일자로 내려옵니다. */
-  const swayAmp = useMemo(() => Math.max(0, 10 - level) * 5, [level]);
+  const swayAmp = useMemo(() => swayDistanceForLevel(level), [level]);
   const swayTilt = useMemo(() => Math.max(0, 10 - level) * 1.2, [level]);
-  const swayDur = useMemo(() => 3.4 - Math.min(level, 10) * 0.12, [level]);
+  const swayDur = useMemo(() => swayDurationForLevel(level), [level]);
 
   const showShopToast = useCallback((msg: string) => {
     setShopToast(msg);
     window.setTimeout(() => setShopToast((t) => (t === msg ? null : t)), 1400);
   }, []);
+
+  const requestRewardedAd = useCallback(
+    (confirmation: RewardAdConfirmation, action: () => void | Promise<void>) => {
+      pendingRewardActionRef.current = action;
+      setRewardAdConfirmation(confirmation);
+    },
+    [],
+  );
+
+  const cancelRewardedAd = useCallback(() => {
+    pendingRewardActionRef.current = null;
+    setRewardAdConfirmation(null);
+  }, []);
+
+  const confirmRewardedAd = useCallback(() => {
+    const action = pendingRewardActionRef.current;
+    pendingRewardActionRef.current = null;
+    setRewardAdConfirmation(null);
+    if (action) void action();
+  }, []);
+
+  const unlockTrackWithAd = useCallback(
+    async (trackId: TrackType) => {
+      const meta = TRACKS[trackId];
+      if (!trackHasWords(trackId)) {
+        showShopToast("곧 만나요! 준비중인 섬이에요");
+        return;
+      }
+      setRewardingTrack(trackId);
+      try {
+        const rewarded = await showRewardedUnlockAd();
+        if (!rewarded) {
+          showShopToast("광고 보상을 받지 못했어요. Android 앱에서 다시 시도해주세요.");
+          return;
+        }
+        setProgress((current) => {
+          const next = unlockTrack(current, trackId);
+          saveProgress(next);
+          return next;
+        });
+        playCoin();
+        showShopToast(`${meta.island} 잠금 해제!`);
+      } catch (cause) {
+        const detail = cause instanceof Error ? cause.message : String(cause);
+        console.warn("Rewarded ad failed", detail);
+        showShopToast("광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
+      } finally {
+        setRewardingTrack(null);
+      }
+    },
+    [showShopToast],
+  );
+
+  const earnCoinsWithAd = useCallback(async () => {
+    if (rewardingCoins) return;
+    setRewardingCoins(true);
+    try {
+      const rewarded = await showRewardedUnlockAd();
+      if (!rewarded) {
+        showShopToast("광고 보상을 받지 못했어요. Android 앱에서 다시 시도해주세요.");
+        return;
+      }
+      setProgress((current) => {
+        const next = { ...current, coins: current.coins + 100 };
+        saveProgress(next);
+        return next;
+      });
+      playCoin();
+      showShopToast("보상 완료! 100코인을 받았어요");
+    } catch (cause) {
+      const detail = cause instanceof Error ? cause.message : String(cause);
+      console.warn("Rewarded coin ad failed", detail);
+      showShopToast("광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setRewardingCoins(false);
+    }
+  }, [rewardingCoins, showShopToast]);
+
+  const receiveNextArchiveSet = useCallback(async () => {
+    if (archiveBusy) return;
+    const descriptors = archiveManifest?.tracks[colTrack] ?? [];
+    if (descriptors.length === 0) {
+      showShopToast("추가 단어 Set이 아직 준비되지 않았어요.");
+      return;
+    }
+
+    const unlocked = progress.archive.unlockedSets[colTrack] ?? [];
+    const downloaded = progress.archive.downloadedSets[colTrack] ?? [];
+    const retry = descriptors.find(
+      ({ setId }) => unlocked.includes(setId) && !downloaded.includes(setId),
+    );
+    const descriptor = retry ?? descriptors.find(({ setId }) => !unlocked.includes(setId));
+    if (!descriptor) {
+      showShopToast("이 트랙의 추가 단어 Set을 모두 받았어요!");
+      return;
+    }
+
+    setArchiveBusy(true);
+    try {
+      let nextProgress = progress;
+      if (!unlocked.includes(descriptor.setId)) {
+        const rewarded = await showRewardedUnlockAd();
+        if (!rewarded) {
+          showShopToast("광고 보상을 받지 못했어요. Android 앱에서 다시 시도해주세요.");
+          return;
+        }
+        nextProgress = unlockArchiveSet(nextProgress, colTrack, descriptor.setId);
+        setProgress(nextProgress);
+        saveProgress(nextProgress);
+      }
+
+      const archiveSet = await downloadArchiveSet(colTrack, descriptor);
+      cacheArchiveSet(archiveSet);
+      nextProgress = markArchiveSetDownloaded(nextProgress, colTrack, descriptor.setId);
+      setProgress(nextProgress);
+      saveProgress(nextProgress);
+      setArchiveWords(
+        readCachedArchiveWords(colTrack, nextProgress.archive.downloadedSets[colTrack] ?? []),
+      );
+      playCoin();
+      showShopToast(`${descriptor.title} · ${archiveSet.words.length}단어 저장 완료!`);
+    } catch (cause) {
+      console.warn("Archive Set download failed", cause);
+      showShopToast("Set 저장에 실패했어요. 광고 없이 다시 받을 수 있어요.");
+    } finally {
+      setArchiveBusy(false);
+    }
+  }, [archiveBusy, archiveManifest, colTrack, progress, showShopToast]);
 
   const buySkin = useCallback(
     (id: string) => {
@@ -508,7 +817,7 @@ export function SpeakFallGame() {
 
   const equipSkin = useCallback(
     (id: string) => {
-      if (!isSkinOwned(progress.ownedSkins, id)) {
+      if (!testUnlockSkins && !isSkinOwned(progress.ownedSkins, id)) {
         showShopToast("먼저 구매해야 해요");
         return;
       }
@@ -518,7 +827,47 @@ export function SpeakFallGame() {
       playClick();
       showShopToast("스킨을 장착했어요");
     },
+    [progress, showShopToast, testUnlockSkins],
+  );
+
+  const buyJelly = useCallback(
+    (id: string) => {
+      const jelly = getSpecialJelly(id);
+      if (isJellyOwned(progress.ownedJellies, id)) {
+        showShopToast("이미 보유 중인 젤리예요");
+        return;
+      }
+      if (progress.coins < jelly.price) {
+        showShopToast("코인이 부족해요");
+        return;
+      }
+      const next: Progress = {
+        ...progress,
+        coins: progress.coins - jelly.price,
+        ownedJellies: [...new Set([...progress.ownedJellies, id])],
+        equippedJelly: id,
+      };
+      setProgress(next);
+      saveProgress(next);
+      playCoin();
+      showShopToast(`${jelly.name} 구매 완료!`);
+    },
     [progress, showShopToast],
+  );
+
+  const equipJelly = useCallback(
+    (id: string) => {
+      if (!testUnlockSkins && !isJellyOwned(progress.ownedJellies, id)) {
+        showShopToast("먼저 구매해야 해요");
+        return;
+      }
+      const next: Progress = { ...progress, equippedJelly: id };
+      setProgress(next);
+      saveProgress(next);
+      playClick();
+      showShopToast("젤리를 장착했어요");
+    },
+    [progress, showShopToast, testUnlockSkins],
   );
 
   const spawnParticles = useCallback((count = 8) => {
@@ -547,31 +896,20 @@ export function SpeakFallGame() {
   /** 현재 레벨의 단어 풀에서 count개의 새로운 단어를 만듭니다. */
   const makeLevelWords = useCallback(
     (count: number) => {
-      const added = new Set<string>();
-      const result: WordItem[] = [];
-      const existing = new Set(wordQueueRef.current.map((w) => w.word));
-      const cleared = clearedRef.current;
-
-      let safety = 0;
-      while (result.length < count && safety < count * 30) {
-        safety++;
-        const w = randomWord(
-          level,
-          [...existing, ...added, ...cleared, ...usedRef.current],
-          recentRef.current,
-          track,
-          strictRef.current === "hard"
-            ? PRONUNCIATION_FOCUSES[result.length % PRONUNCIATION_FOCUSES.length]!
-            : null,
-        );
-        if (!added.has(w.word) && !existing.has(w.word) && !usedRef.current.has(w.word)) {
-          added.add(w.word);
-          result.push(w);
-        }
-      }
-      return result;
+      return createLevelWordQueue(
+        level,
+        track,
+        playArchiveWords,
+        count,
+        [
+          ...wordQueueRef.current.map(({ word }) => word),
+          ...clearedRef.current,
+          ...usedRef.current,
+        ],
+        recentRef.current,
+      );
     },
-    [level, track],
+    [level, playArchiveWords, track],
   );
 
   const makeFaller = useCallback(
@@ -581,7 +919,7 @@ export function SpeakFallGame() {
         id: ++idRef.current,
         x: 0.5,
         y: 0,
-        speed: 0.055 + Math.min(level, 10) * 0.004,
+        speed: fallSpeedForLevel(level),
         hue: HUES[Math.floor(Math.random() * HUES.length)]!,
         state: "falling",
         retried: false,
@@ -814,15 +1152,8 @@ export function SpeakFallGame() {
   }, [addPenaltyWords, showToast, queueNext, resetSpeech]);
 
   const handleTranscript = useCallback(
-    ({
-      transcript,
-      alternatives,
-      isFinal,
-    }: {
-      transcript: string;
-      alternatives: string[];
-      isFinal: boolean;
-    }) => {
+    (result: SpeechResult) => {
+      const { transcript, isFinal } = result;
       if (phaseRef.current !== "playing") return;
       // 초기화 직후 도착한 이전 세션의 잔여 결과는 버립니다.
       if (Date.now() < muteUntilRef.current) return;
@@ -835,20 +1166,13 @@ export function SpeakFallGame() {
       voiceTimer.current = window.setTimeout(() => setVoiceLevel(0), 700);
       if (!cur || cur.state !== "falling") return;
 
-      // 화면에는 가장 가능성이 높은 첫 결과만 보여주되, 정답 판정에는
-      // Android/브라우저가 제공한 여러 후보를 사용해 발음 인식 누락을 줄입니다.
-      const candidates = alternatives.length > 0 ? alternatives : [transcript];
-      const forgiveSingleSoundDifference = strictRef.current !== "hard";
-      const s = Math.max(
-        ...candidates.map((candidate) =>
-          scoreTranscript(cur, candidate, forgiveSingleSoundDifference),
-        ),
-      );
-      const threshold = Math.max(
-        0.45,
-        STRICTNESS[strictRef.current].threshold - getTrack(trackRef.current).leniency,
-      );
-      if (s >= threshold) {
+      const evaluation = evaluatePronunciation({
+        target: cur,
+        result,
+        strictness: strictRef.current,
+        trackLeniency: getTrack(trackRef.current).leniency,
+      });
+      if (evaluation.accepted) {
         if (retrySpeechTimerRef.current !== null) {
           window.clearTimeout(retrySpeechTimerRef.current);
           retrySpeechTimerRef.current = null;
@@ -899,9 +1223,11 @@ export function SpeakFallGame() {
     };
 
     const play = async () => {
-      const isNative = !!(window as typeof window & {
-        Capacitor?: { isNativePlatform?: () => boolean };
-      }).Capacitor?.isNativePlatform?.();
+      const isNative = !!(
+        window as typeof window & {
+          Capacitor?: { isNativePlatform?: () => boolean };
+        }
+      ).Capacitor?.isNativePlatform?.();
 
       try {
         if (isNative) {
@@ -1145,9 +1471,6 @@ export function SpeakFallGame() {
 
   const near = active?.state === "falling" && active.y > 0.72;
   const accuracy = attempts ? Math.round((rescued / attempts) * 100) : 0;
-  /** 지도에서 보고 있는 트랙 */
-  const mapTrack: TrackType = mapTab === "basic" ? "basic" : (worldTrack ?? "basic");
-  const worldUnlocked = useMemo(() => isWorldUnlocked(progress), [progress]);
   const title = useMemo(() => getTitle(progress), [progress]);
   const totalStars = useMemo(
     () =>
@@ -1156,7 +1479,7 @@ export function SpeakFallGame() {
         .reduce((sum, [, l]) => sum + l.stars, 0),
     [progress, mapTrack],
   );
-  const collectedSet = useMemo(() => new Set(progress.collected), [progress]);
+  const collectedSet = useMemo(() => new Set(progress.collected), [progress.collected]);
   const collectionByLevel = useMemo(
     () =>
       Array.from({ length: TOTAL_LEVELS }, (_, i) => {
@@ -1171,14 +1494,24 @@ export function SpeakFallGame() {
     () => (["basic", ...WORLD_TRACKS] as TrackType[]).filter((t) => trackHasWords(t)),
     [],
   );
+  const archiveDescriptors = archiveManifest?.tracks[colTrack] ?? [];
+  const archiveAvailableWords = archiveDescriptors.reduce(
+    (total, descriptor) => total + descriptor.wordCount,
+    0,
+  );
+  const archiveUnlocked = progress.archive.unlockedSets[colTrack] ?? [];
+  const archiveDownloaded = progress.archive.downloadedSets[colTrack] ?? [];
+  const pendingArchive = archiveDescriptors.find(
+    ({ setId }) => archiveUnlocked.includes(setId) && !archiveDownloaded.includes(setId),
+  );
+  const nextArchive =
+    pendingArchive ?? archiveDescriptors.find(({ setId }) => !archiveUnlocked.includes(setId));
 
-  const inPlay = phase === "playing" || phase === "countdown";
+  const inPlay = phase === "playing" || phase === "countdown" || phase === "paused";
 
   return (
     <div
-      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md flex-col ${
-        phase === "idle" ? "overflow-visible" : "overflow-hidden"
-      } text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
+      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md touch-pan-y flex-col overflow-hidden overscroll-none text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
     >
       {/* drifting clouds */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -1208,19 +1541,35 @@ export function SpeakFallGame() {
       {inPlay && (
         <>
           {/* HUD — 하트 / 레벨 / 남은 단어 (타이틀 제거, 정보 단일화) */}
-          <header className="relative z-10 grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 px-5 pt-[clamp(0.75rem,2.5dvh,1.5rem)]">
-            <span className="flex min-w-0 items-center gap-1" aria-label={`남은 하트 ${hp}개`}>
-              {Array.from({ length: MAX_HP }).map((_, i) => (
-                <Heart
-                  key={i}
-                  className={`size-5 shrink-0 ${
-                    i < hp
-                      ? "fill-destructive text-destructive drop-shadow-[0_2px_3px_rgba(220,60,70,0.35)]"
-                      : "fill-foreground/10 text-foreground/20"
-                  }`}
-                />
-              ))}
-            </span>
+          <header className="relative z-10 grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 px-4 pt-[clamp(0.75rem,2.5dvh,1.5rem)]">
+            <div className="flex min-w-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (phase !== "playing") return;
+                  playClick();
+                  speech.stop();
+                  setPhase("paused");
+                }}
+                disabled={phase !== "playing"}
+                className="flex size-9 shrink-0 items-center justify-center rounded-full bg-card/85 text-[#173f78] shadow-soft active:scale-95 disabled:opacity-40"
+                aria-label="게임 일시정지 및 뒤로가기"
+              >
+                <ArrowLeft className="size-5" />
+              </button>
+              <span className="flex min-w-0 items-center gap-0.5" aria-label={`남은 하트 ${hp}개`}>
+                {Array.from({ length: MAX_HP }).map((_, i) => (
+                  <Heart
+                    key={i}
+                    className={`size-[18px] shrink-0 ${
+                      i < hp
+                        ? "fill-destructive text-destructive drop-shadow-[0_2px_3px_rgba(220,60,70,0.35)]"
+                        : "fill-foreground/10 text-foreground/20"
+                    }`}
+                  />
+                ))}
+              </span>
+            </div>
             <div className="flex shrink-0 items-center gap-2">
               {combo > 1 && (
                 <span className="animate-pop rounded-full bg-accent px-2.5 py-1 font-display text-sm text-accent-foreground">
@@ -1277,7 +1626,7 @@ export function SpeakFallGame() {
                   left: "50%",
                   top: `${active.y * 82}%`,
                   transform: "translateX(-50%)",
-                  ["--sway" as string]: `${swayAmp}px`,
+                  ["--sway" as string]: `${swayAmp}vw`,
                   ["--tilt" as string]: `${swayTilt}deg`,
                   animation:
                     swayAmp > 0 && active.state === "falling"
@@ -1291,7 +1640,7 @@ export function SpeakFallGame() {
                 {/* parachute — 스킨 모양(낙하산/우산/꽃/풍선), 구조되면 활짝 펼쳐짐 */}
                 {active.state !== "crying" && (
                   <div
-                    className={`relative -mb-2 flex flex-col items-center transition-all duration-500 ${
+                    className={`relative z-10 -mb-5 flex flex-col items-center transition-all duration-500 ${
                       active.state === "saved" ? "animate-vanish-pop" : ""
                     }`}
                     aria-hidden
@@ -1334,27 +1683,30 @@ export function SpeakFallGame() {
 
                 {/* jelly friend */}
                 <div
-                  className={`relative flex size-14 items-center justify-center rounded-[45%] shadow-soft ${
+                  className={`relative z-20 flex size-20 items-center justify-center ${
                     active.state === "falling" && !near ? "animate-bob" : ""
                   } ${active.state === "falling" && near ? "animate-scared-shake" : ""} ${
                     active.state === "saved" ? "animate-vanish-pop" : ""
                   } ${active.state === "crying" ? "animate-cry" : ""}`}
-                  style={{
-                    background: `radial-gradient(circle at 35% 30%, oklch(0.95 0.09 ${active.hue}), oklch(0.72 0.17 ${active.hue}))`,
-                  }}
                 >
-                  <span
-                    className="absolute -top-1.5 left-2.5 size-3 rounded-full"
-                    style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
-                  />
-                  <span
-                    className="absolute -top-1.5 right-2.5 size-3 rounded-full"
-                    style={{ background: `oklch(0.82 0.15 ${active.hue})` }}
-                  />
+                  {equippedJelly.image ? (
+                    <img
+                      src={equippedJelly.image}
+                      alt=""
+                      draggable={false}
+                      className="pointer-events-none size-full select-none object-contain drop-shadow-[0_7px_7px_rgba(23,63,120,0.22)]"
+                    />
+                  ) : (
+                    <DefaultJellyVisual
+                      className="size-14"
+                      hue={equippedJelly.hue ?? active.hue}
+                      rainbow={equippedJelly.rainbow}
+                    />
+                  )}
                   {active.state === "crying" && (
                     <>
-                      <span className="absolute left-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
-                      <span className="absolute right-3 top-6 size-1.5 rounded-full bg-sky-400 animate-tear" />
+                      <span className="absolute left-[31%] top-[42%] size-1.5 rounded-full bg-sky-400 animate-tear" />
+                      <span className="absolute right-[31%] top-[42%] size-1.5 rounded-full bg-sky-400 animate-tear" />
                     </>
                   )}
                   {/* scared sweat drops when near hazard */}
@@ -1362,37 +1714,6 @@ export function SpeakFallGame() {
                     <>
                       <span className="absolute -right-1 top-2 size-1.5 rounded-full bg-sky-300/80" />
                       <span className="absolute -left-0.5 top-3 size-1 rounded-full bg-sky-300/80" />
-                    </>
-                  )}
-                  {active.state === "saved" ? (
-                    <>
-                      {/* 행복한 ^ ^ 눈 */}
-                      <span className="absolute left-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
-                      <span className="absolute right-3 top-5 h-2 w-3 rounded-t-full border-t-2 border-foreground/70" />
-                      <span className="absolute bottom-4 left-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
-                      <span className="absolute bottom-4 right-1.5 h-1.5 w-2.5 rounded-full bg-destructive/45" />
-                      {/* 활짝 웃는 입 */}
-                      <span className="absolute bottom-2.5 h-2.5 w-4 rounded-b-full bg-foreground/70" />
-                    </>
-                  ) : (
-                    <>
-                      <span className="absolute left-3.5 top-5 size-2 rounded-full bg-foreground/70">
-                        <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-                      </span>
-                      <span className="absolute right-3.5 top-5 size-2 rounded-full bg-foreground/70">
-                        <span className="absolute right-0 top-0 size-[3px] rounded-full bg-card" />
-                      </span>
-                      <span className="absolute bottom-4 left-2 h-1 w-2 rounded-full bg-destructive/30" />
-                      <span className="absolute bottom-4 right-2 h-1 w-2 rounded-full bg-destructive/30" />
-                      <span
-                        className={`absolute bottom-3 rounded-full ${
-                          active.state === "crying"
-                            ? "h-1.5 w-3 rounded-t-full bg-foreground/40"
-                            : active.state === "falling" && near
-                              ? "h-0.5 w-3 bg-foreground/60"
-                              : "h-1.5 w-3 rounded-b-full bg-foreground/60"
-                        }`}
-                      />
                     </>
                   )}
                 </div>
@@ -1524,10 +1845,10 @@ export function SpeakFallGame() {
                   type="button"
                   onClick={playTargetPronunciation}
                   disabled={!active || active.state !== "falling"}
-                  className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary transition active:scale-95 disabled:opacity-40"
+                  className="flex h-11 w-[6.4rem] shrink-0 items-center justify-center transition active:translate-y-0.5 active:scale-[0.98] disabled:opacity-40"
                   aria-label={`${active?.word ?? "단어"} 발음 듣기`}
                 >
-                  <Volume2 className="size-5" />
+                  <img src={speakButton} alt="" aria-hidden className="h-auto w-full" />
                 </button>
               </div>
             )}
@@ -1556,20 +1877,87 @@ export function SpeakFallGame() {
         </div>
       )}
 
+      {phase === "paused" && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#0d2d5e]/55 px-6 backdrop-blur-[5px]">
+          <div className="animate-pop relative w-full max-w-sm overflow-hidden rounded-[2.5rem] border-4 border-white/80 bg-[#f8fcff] text-center shadow-[0_24px_70px_-18px_rgba(13,45,94,0.65)]">
+            <div className="relative overflow-hidden bg-gradient-to-b from-[#72d4ff] via-[#a9e7ff] to-[#e8f8ff] px-6 pb-8 pt-6">
+              <span className="absolute left-7 top-7 text-xl text-white/80">★</span>
+              <span className="absolute right-8 top-12 text-sm text-[#ffc93c]">★</span>
+              <span className="absolute -left-6 bottom-1 h-14 w-28 rounded-[50%] bg-white/75" />
+              <span className="absolute -right-8 bottom-0 h-16 w-32 rounded-[50%] bg-white/80" />
+              <span className="relative inline-flex rounded-full bg-white/75 px-4 py-1 font-display text-[10px] tracking-[0.24em] text-[#3d8ef0] shadow-sm">
+                PAUSE
+              </span>
+              <div className="relative mx-auto mt-4 grid size-20 place-items-center rounded-[42%] bg-gradient-to-br from-[#b9ef80] to-[#6fc95f] shadow-[0_10px_22px_-10px_rgba(23,63,120,0.45)]">
+                <span className="absolute -top-2 left-4 size-5 rounded-full bg-[#8edc68]" />
+                <span className="absolute -top-2 right-4 size-5 rounded-full bg-[#8edc68]" />
+                <span className="absolute left-5 top-8 size-2.5 rounded-full bg-[#173f78]" />
+                <span className="absolute right-5 top-8 size-2.5 rounded-full bg-[#173f78]" />
+                <span className="absolute bottom-5 h-2 w-4 rounded-b-full bg-[#173f78]/75" />
+              </div>
+              <h2 className="relative mt-4 font-display text-2xl text-[#173f78]">
+                잠깐 쉬어갈까요?
+              </h2>
+              <p className="relative mt-1 font-ui text-sm text-[#173f78]/65">
+                친구도 안전하게 기다리고 있어요
+              </p>
+            </div>
+            <div className="relative bg-[#f8fcff] px-6 pb-6 pt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  resumeAudio();
+                  playClick();
+                  setPhase("playing");
+                  window.setTimeout(() => speech.start(), 150);
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-b from-[#55a8ff] to-[#3d8ef0] py-4 font-display text-lg text-white shadow-[0_6px_0_#2a6fd0,0_12px_20px_-12px_rgba(42,111,208,0.8)] transition active:translate-y-1 active:shadow-[0_2px_0_#2a6fd0]"
+              >
+                <Play className="size-5 fill-current" /> 계속 모험하기
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick();
+                  speech.stop();
+                  setActive(null);
+                  setPhase("idle");
+                }}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-full py-2.5 font-display text-sm text-[#173f78]/60 transition hover:bg-[#173f78]/5 active:scale-[0.98]"
+              >
+                <ArrowLeft className="size-4" /> 모험을 끝내고 홈으로
+              </button>
+              <p className="mt-1 font-ui text-[11px] text-[#173f78]/40">
+                홈으로 가면 현재 라운드는 저장되지 않아요
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!inPlay && (
         <div
-          className={`absolute inset-0 z-20 flex flex-col items-center px-6 text-center ${
+          className={`absolute inset-0 z-20 isolate flex flex-col items-center px-4 text-center ${
             phase === "idle" ? "bg-sky-start" : "bg-sky-glow/90"
           }`}
         >
           {phase === "idle" && <SkyClouds />}
           {phase === "idle" && (
-            <div className="flex h-full w-full max-w-sm flex-col px-5">
-              <div className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto">
+            <img
+              src={parachuteJelly}
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute right-0 top-18 z-20 w-28 drop-shadow-[0_16px_18px_rgba(12,58,124,0.32)] short-screen:top-14 short-screen:w-20"
+              style={{ animation: "float-y 4.5s ease-in-out infinite" }}
+            />
+          )}
+          {phase === "idle" && (
+            <div className="relative z-10 flex h-full w-full max-w-md flex-col px-3">
+              <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-y-auto overscroll-contain">
                 <div className="flex w-full flex-col items-center py-5 tall-screen:py-10 short-screen:py-3">
                   {/* floating jelly on cloud */}
                   <div
-                    className="pointer-events-none absolute left-3 top-3 w-16 drop-shadow-[0_10px_12px_rgba(12,58,124,0.22)] short-screen:w-12 short-screen:left-2 short-screen:top-2"
+                    className="pointer-events-none absolute left-3 top-3 z-20 w-16 drop-shadow-[0_10px_12px_rgba(12,58,124,0.22)] short-screen:left-2 short-screen:top-2 short-screen:w-12"
                     style={{ animation: "float-y 6s ease-in-out infinite" }}
                     aria-hidden
                   >
@@ -1615,7 +2003,7 @@ export function SpeakFallGame() {
                     {/* decorative stars */}
                     <svg
                       viewBox="0 0 24 24"
-                      className="pointer-events-none absolute left-4 top-0 size-7 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:size-5 short-screen:left-3 short-screen:top-0"
+                      className="pointer-events-none absolute left-4 top-0 z-20 size-7 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:left-3 short-screen:top-0 short-screen:size-5"
                       style={{ animation: "float-y 3.5s ease-in-out infinite" }}
                       aria-hidden
                     >
@@ -1623,7 +2011,7 @@ export function SpeakFallGame() {
                     </svg>
                     <svg
                       viewBox="0 0 24 24"
-                      className="pointer-events-none absolute right-6 top-2 size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:size-4 short-screen:right-5 short-screen:top-1"
+                      className="pointer-events-none absolute right-6 top-2 z-20 size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:right-5 short-screen:top-1 short-screen:size-4"
                       style={{ animation: "float-y 4s ease-in-out infinite 0.3s" }}
                       aria-hidden
                     >
@@ -1631,7 +2019,7 @@ export function SpeakFallGame() {
                     </svg>
                     <svg
                       viewBox="0 0 24 24"
-                      className="pointer-events-none absolute left-8 top-[4.5rem] size-5 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:size-4 short-screen:left-7 short-screen:top-16"
+                      className="pointer-events-none absolute left-8 top-[4.5rem] z-20 size-5 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:left-7 short-screen:top-16 short-screen:size-4"
                       style={{ animation: "float-y 3.2s ease-in-out infinite 0.6s" }}
                       aria-hidden
                     >
@@ -1639,7 +2027,7 @@ export function SpeakFallGame() {
                     </svg>
                     <svg
                       viewBox="0 0 24 24"
-                      className="pointer-events-none absolute right-4 top-[5rem] size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:size-4 short-screen:right-3 short-screen:top-[4.5rem]"
+                      className="pointer-events-none absolute right-4 top-[5rem] z-20 size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:right-3 short-screen:top-[4.5rem] short-screen:size-4"
                       style={{ animation: "float-y 3.8s ease-in-out infinite 0.9s" }}
                       aria-hidden
                     >
@@ -1649,8 +2037,7 @@ export function SpeakFallGame() {
                     <img
                       src={titleLockup}
                       alt="말해봐!영단어 구조대"
-                      className="relative z-10 mx-auto w-full max-w-[21.6rem] short-screen:max-w-52 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)]"
-                      style={{ animation: "breathe 6s ease-in-out infinite" }}
+                      className="relative z-10 mx-auto w-[116%] max-w-96 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)] short-screen:w-[108%] short-screen:max-w-60"
                     />
                   </div>
 
@@ -1710,7 +2097,7 @@ export function SpeakFallGame() {
                         playClick();
                         setPhase("island");
                       }}
-                      className="relative z-50 flex w-full items-center justify-center gap-3 rounded-full bg-[#3d8ef0] py-5 font-display text-2xl text-white shadow-[0_8px_0_#2a6fd0,0_18px_30px_-8px_rgba(14,70,150,0.45)] transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-1 active:scale-[0.98] short-screen:py-4 short-screen:text-xl"
+                      className="relative z-10 flex w-full items-center justify-center gap-3 rounded-full bg-[#3d8ef0] py-5 font-display text-2xl text-white shadow-[0_8px_0_#2a6fd0,0_18px_30px_-8px_rgba(14,70,150,0.45)] transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-1 active:scale-[0.98] short-screen:py-4 short-screen:text-xl"
                     >
                       <Play className="size-7 fill-white short-screen:size-6" />
                       모험 시작
@@ -1719,8 +2106,41 @@ export function SpeakFallGame() {
                 </div>
               </div>
 
-              {/* 홈 하단 광고 배너 */}
-              <AdSenseBanner className="safe-bottom shrink-0" />
+              {/* 테스트 빌드에서는 화면 높이와 관계없이 항상 노출 */}
+              <label className="relative z-30 mb-1 flex shrink-0 cursor-pointer items-center justify-center gap-2 self-center rounded-full bg-white/85 px-4 py-2 font-ui text-xs text-[#173f78]/70 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)]">
+                <input
+                  type="checkbox"
+                  checked={testUnlockSkins}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setTestUnlockSkins(checked);
+                    if (!checked) {
+                      setProgress((current) => {
+                        const next: Progress = {
+                          ...current,
+                          equippedSkin: isSkinOwned(current.ownedSkins, current.equippedSkin)
+                            ? current.equippedSkin
+                            : DEFAULT_SKIN_ID,
+                          equippedJelly: isJellyOwned(current.ownedJellies, current.equippedJelly)
+                            ? current.equippedJelly
+                            : DEFAULT_JELLY_ID,
+                        };
+                        saveProgress(next);
+                        return next;
+                      });
+                    }
+                  }}
+                  className="size-4 accent-[#e84d8a]"
+                />
+                <span>스킨 해금 for 테스트버젼</span>
+              </label>
+
+              {/* 홈 하단 제작자 및 버전 */}
+              <footer className="safe-bottom relative z-40 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center px-4 pb-2 pt-1 font-ui text-[10px] text-[#173f78]/45">
+                <span aria-hidden />
+                <span className="text-center tracking-wide">Design by JOYgle Studio</span>
+                <span className="justify-self-end whitespace-nowrap">Ver: {APP_VERSION}</span>
+              </footer>
             </div>
           )}
 
@@ -1859,7 +2279,7 @@ export function SpeakFallGame() {
                   onClick={() => {
                     resumeAudio();
                     playClick();
-                    setPhase("idle");
+                    setPhase(backDestinationForPhase("island"));
                   }}
                   className="flex size-11 items-center justify-center rounded-full bg-white/90 text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]"
                   aria-label="뒤로"
@@ -1884,7 +2304,7 @@ export function SpeakFallGame() {
                 {(["basic", ...WORLD_TRACKS] as TrackType[]).map((id) => {
                   const meta = TRACKS[id];
                   const ready = trackHasWords(id);
-                  const locked = id !== "basic" && (!worldUnlocked || !ready);
+                  const locked = id !== "basic" && !isTrackPlayable(progress, id);
                   return (
                     <button
                       key={id}
@@ -1892,20 +2312,17 @@ export function SpeakFallGame() {
                         resumeAudio();
                         playClick();
                         if (locked) {
-                          showShopToast(
-                            !ready
-                              ? "곧 만나요! 준비 중인 섬이에요"
-                              : "기초 지도 Lv.10을 완파하면 열려요!",
+                          requestRewardedAd(
+                            {
+                              title: `${meta.island}을 열까요?`,
+                              description: "보상형 광고를 끝까지 보면 이 섬이 영구적으로 열려요.",
+                              reward: `${meta.island} 잠금 해제`,
+                            },
+                            () => unlockTrackWithAd(id),
                           );
                           return;
                         }
-                        if (id === "basic") {
-                          setMapTab("basic");
-                          setWorldTrack(null);
-                        } else {
-                          setMapTab("world");
-                          setWorldTrack(id);
-                        }
+                        setMapTrack(id);
                         setPhase("map");
                       }}
                       className={`relative flex items-center gap-3 rounded-[1.5rem] bg-gradient-to-br ${meta.gradient} px-4 py-4 text-left shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] transition-all ${
@@ -1918,7 +2335,13 @@ export function SpeakFallGame() {
                           {meta.island}
                         </span>
                         <span className="block font-ui text-xs text-[#173f78]/70">
-                          {ready ? meta.desc : "곧 만나요! 준비 중인 섬이에요"}
+                          {rewardingTrack === id
+                            ? "보상형 광고를 준비하고 있어요..."
+                            : locked && ready
+                              ? "눌러서 광고를 보고 이 섬 열기"
+                              : ready
+                                ? meta.desc
+                                : "곧 만나요! 준비중인 섬이에요"}
                         </span>
                       </span>
                       <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/70 px-2 py-1 font-display text-xs text-[#173f78]">
@@ -1934,6 +2357,41 @@ export function SpeakFallGame() {
                     </button>
                   );
                 })}
+                {!hiddenLabUnlocked && (
+                  <button
+                    type="button"
+                    className="h-8 w-full shrink-0 bg-transparent"
+                    aria-label="숨겨진 공간"
+                    onClick={() => {
+                      const now = Date.now();
+                      const previous = hiddenLabTapRef.current;
+                      const count = now - previous.lastTap <= 1200 ? previous.count + 1 : 1;
+                      hiddenLabTapRef.current = { count, lastTap: now };
+                      if (count >= 5) {
+                        hiddenLabTapRef.current = { count: 0, lastTap: 0 };
+                        setHiddenLabUnlocked(true);
+                        playClick();
+                        setShopToast("숨겨진 영어 받아쓰기 연구실을 발견했어요!");
+                      }
+                    }}
+                  />
+                )}
+                {hiddenLabUnlocked && (
+                  <Link
+                    to="/dictation"
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                    }}
+                    className="group flex items-center justify-center gap-2 rounded-2xl border border-dashed border-[#173f78]/20 bg-white/25 px-4 py-2.5 text-center opacity-55 transition hover:bg-white/45 hover:opacity-90 active:scale-[0.98]"
+                    aria-label="숨겨진 영어 받아쓰기 연구실 열기"
+                  >
+                    <Mic className="size-3.5 text-[#173f78]/60" />
+                    <span className="font-ui text-[11px] font-bold tracking-[0.18em] text-[#173f78]/60">
+                      HIDDEN · 영어 받아쓰기 연구실
+                    </span>
+                  </Link>
+                )}
               </div>
 
               {/* 도감 / 상점 / 코인 */}
@@ -1961,16 +2419,36 @@ export function SpeakFallGame() {
                     <ShoppingBag className="size-5 text-[#e84d8a] short-screen:size-4" />
                     스킨 상점
                   </button>
-                  <span className="flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-3.5 font-display text-lg text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)] backdrop-blur-sm short-screen:px-3 short-screen:py-3 short-screen:text-sm whitespace-nowrap">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      requestRewardedAd(
+                        {
+                          title: "100코인을 받을까요?",
+                          description: "보상형 광고를 끝까지 보면 코인이 바로 지급돼요.",
+                          reward: "100코인",
+                        },
+                        earnCoinsWithAd,
+                      );
+                    }}
+                    disabled={rewardingCoins}
+                    className="flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-3.5 font-display text-lg text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)] backdrop-blur-sm active:scale-[0.97] disabled:opacity-60 short-screen:px-3 short-screen:py-3 short-screen:text-sm whitespace-nowrap"
+                    aria-label="보상형 광고를 보고 100코인 받기"
+                  >
                     <Coins className="size-5 text-[#f0a323] short-screen:size-4" />
-                    {progress.coins}
-                  </span>
+                    <span>{rewardingCoins ? "..." : formatCompactNumber(progress.coins)}</span>
+                    <span className="rounded-full bg-[#fff2bf] px-1.5 py-0.5 font-ui text-[9px] text-[#b77700]">
+                      AD +100
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* ---------- 구조 지도 (기초 지도 / 전문 월드) ---------- */}
+          {/* ---------- 선택한 섬의 구조 지도 ---------- */}
           {phase === "map" && (
             <div className="absolute inset-0 overflow-y-auto bg-sky-start px-5 pb-10 pt-6 text-left">
               <div className="mb-4 flex items-center justify-between">
@@ -1978,8 +2456,7 @@ export function SpeakFallGame() {
                   onClick={() => {
                     resumeAudio();
                     playClick();
-                    if (mapTab === "world" && worldTrack) setWorldTrack(null);
-                    else setPhase("island");
+                    setPhase(backDestinationForPhase("map"));
                   }}
                   className="flex size-11 items-center justify-center rounded-full bg-white/90 text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]"
                   aria-label="뒤로"
@@ -2000,138 +2477,52 @@ export function SpeakFallGame() {
                 {title.emoji} {title.label}
               </p>
 
-              {/* 탭 전환 */}
-              <div className="mb-4 grid grid-cols-2 gap-1 rounded-full bg-white/70 p-1">
-                {[
-                  { id: "basic" as const, label: "🌱 기초 지도" },
-                  { id: "world" as const, label: "🗺️ 전문 월드" },
-                ].map((tab) => {
-                  const locked = tab.id === "world" && !worldUnlocked;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => {
-                        resumeAudio();
-                        playClick();
-                        if (locked) {
-                          showShopToast("기초 지도 Lv.10을 완파하면 열려요!");
-                          return;
-                        }
-                        setMapTab(tab.id);
-                        setWorldTrack(null);
-                      }}
-                      className={`flex items-center justify-center gap-1 rounded-full py-2.5 font-display text-sm transition-all ${
-                        mapTab === tab.id
-                          ? "bg-[#3d8ef0] text-white shadow-[0_4px_0_#2a6fd0]"
-                          : locked
-                            ? "text-[#173f78]/35"
-                            : "text-[#173f78]/70"
-                      }`}
-                    >
-                      {locked && <Lock className="size-3.5" />}
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* 전문 월드 — 테마 섬 선택 */}
-              {mapTab === "world" && !worldTrack && (
-                <div className="flex flex-col gap-3">
-                  <p className="text-center font-ui text-xs text-[#173f78]/60">
-                    탐험할 대륙을 골라주세요
-                  </p>
-                  {WORLD_TRACKS.map((id) => {
-                    const meta = TRACKS[id];
-                    const playable = isTrackPlayable(progress, id);
+              {/* 레벨 그리드 */}
+              <>
+                <p className="mb-3 text-center font-display text-lg text-[#173f78]">
+                  {getTrack(mapTrack).emoji} {getTrack(mapTrack).island}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1).map((lv) => {
+                    const record = getRecord(progress, lv, mapTrack);
+                    const unlocked = isLevelUnlocked(progress, lv, mapTrack);
                     return (
                       <button
-                        key={id}
-                        disabled={!playable}
+                        key={lv}
+                        disabled={!unlocked}
                         onClick={() => {
                           resumeAudio();
                           playClick();
-                          setWorldTrack(id);
+                          beginRound(lv, mapTrack);
                         }}
-                        className={`relative flex items-center gap-3 rounded-[1.5rem] bg-gradient-to-br ${meta.gradient} px-4 py-4 text-left shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] transition-all ${
-                          playable ? "active:scale-[0.98]" : "opacity-45 grayscale"
+                        className={`relative flex flex-col items-center gap-1.5 rounded-[1.5rem] px-3 py-5 transition-all ${
+                          unlocked
+                            ? "bg-white/95 text-[#173f78] shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] active:scale-[0.97]"
+                            : "bg-white/45 text-[#173f78]/40"
                         }`}
                       >
-                        <span className="text-4xl leading-none">{meta.emoji}</span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block font-display text-xl text-[#173f78]">
-                            {meta.island}
-                          </span>
-                          <span className="block font-ui text-xs text-[#173f78]/70">
-                            {trackHasWords(id) ? meta.desc : "곧 만나요! 준비 중인 대륙이에요"}
-                          </span>
+                        {!unlocked && <Lock className="absolute right-3 top-3 size-4" />}
+                        <span className="font-display text-3xl leading-none">Lv.{lv}</span>
+                        <span className="flex gap-0.5">
+                          {[1, 2, 3].map((s) => (
+                            <Star
+                              key={s}
+                              className={`size-4 ${
+                                (record?.stars ?? 0) >= s
+                                  ? "fill-[#ffc93c] text-[#ffc93c]"
+                                  : "fill-[#173f78]/10 text-[#173f78]/20"
+                              }`}
+                            />
+                          ))}
                         </span>
-                        <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/70 px-2 py-1 font-display text-xs text-[#173f78]">
-                          {playable ? (
-                            <>
-                              <Star className="size-3.5 fill-[#ffc93c] text-[#ffc93c]" />
-                              {trackStars(progress, id)}/30
-                            </>
-                          ) : (
-                            <Lock className="size-3.5" />
-                          )}
+                        <span className="font-ui text-xs text-[#173f78]/60">
+                          {record ? `최고 ${record.best}점` : unlocked ? "도전!" : "잠김"}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-              )}
-
-              {/* 레벨 그리드 */}
-              {(mapTab === "basic" || worldTrack) && (
-                <>
-                  {mapTab === "world" && worldTrack && (
-                    <p className="mb-3 text-center font-display text-lg text-[#173f78]">
-                      {getTrack(worldTrack).emoji} {getTrack(worldTrack).island}
-                    </p>
-                  )}
-                  <div className="grid grid-cols-2 gap-3">
-                    {Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1).map((lv) => {
-                      const record = getRecord(progress, lv, mapTrack);
-                      const unlocked = isLevelUnlocked(progress, lv, mapTrack);
-                      return (
-                        <button
-                          key={lv}
-                          disabled={!unlocked}
-                          onClick={() => {
-                            resumeAudio();
-                            playClick();
-                            beginRound(lv, mapTrack);
-                          }}
-                          className={`relative flex flex-col items-center gap-1.5 rounded-[1.5rem] px-3 py-5 transition-all ${
-                            unlocked
-                              ? "bg-white/95 text-[#173f78] shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] active:scale-[0.97]"
-                              : "bg-white/45 text-[#173f78]/40"
-                          }`}
-                        >
-                          {!unlocked && <Lock className="absolute right-3 top-3 size-4" />}
-                          <span className="font-display text-3xl leading-none">Lv.{lv}</span>
-                          <span className="flex gap-0.5">
-                            {[1, 2, 3].map((s) => (
-                              <Star
-                                key={s}
-                                className={`size-4 ${
-                                  (record?.stars ?? 0) >= s
-                                    ? "fill-[#ffc93c] text-[#ffc93c]"
-                                    : "fill-[#173f78]/10 text-[#173f78]/20"
-                                }`}
-                              />
-                            ))}
-                          </span>
-                          <span className="font-ui text-xs text-[#173f78]/60">
-                            {record ? `최고 ${record.best}점` : unlocked ? "도전!" : "잠김"}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+              </>
             </div>
           )}
 
@@ -2143,7 +2534,7 @@ export function SpeakFallGame() {
                   onClick={() => {
                     resumeAudio();
                     playClick();
-                    setPhase("idle");
+                    setPhase(backDestinationForPhase("collection"));
                   }}
                   className="flex size-11 items-center justify-center rounded-full bg-white/90 text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]"
                   aria-label="뒤로"
@@ -2155,7 +2546,7 @@ export function SpeakFallGame() {
                   단어 도감
                 </p>
                 <span className="rounded-full bg-white/90 px-3 py-2 font-display text-base text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]">
-                  {progress.collected.length}
+                  {collectedSet.size}
                 </span>
               </div>
 
@@ -2183,6 +2574,96 @@ export function SpeakFallGame() {
                     ))}
                   </div>
                 </div>
+              )}
+
+              <div className="mb-4 rounded-[1.5rem] border border-white/80 bg-white/75 p-4 shadow-[0_8px_20px_-14px_rgba(23,63,120,0.45)] backdrop-blur-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-display text-base text-[#173f78]">
+                      {TRACKS[colTrack].emoji} {TRACKS[colTrack].name}
+                    </p>
+                    <p className="mt-0.5 font-ui text-xs text-[#173f78]/55">
+                      {archiveDescriptors.length === 0
+                        ? "추가 보관함 · 준비중"
+                        : `추가 보관함 ${archiveAvailableWords}단어 · Set ${archiveDescriptors.length}개`}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      if (pendingArchive) {
+                        void receiveNextArchiveSet();
+                        return;
+                      }
+                      if (nextArchive) {
+                        requestRewardedAd(
+                          {
+                            title: `Set ${nextArchive.setId}을 받을까요?`,
+                            description: "보상형 광고를 끝까지 보면 추가 단어 Set이 잠금 해제돼요.",
+                            reward: `${nextArchive.title} · ${nextArchive.wordCount}단어`,
+                          },
+                          receiveNextArchiveSet,
+                        );
+                      }
+                    }}
+                    disabled={archiveBusy || !nextArchive}
+                    className="shrink-0 rounded-full bg-gradient-to-b from-[#55a8ff] to-[#3d8ef0] px-4 py-2.5 font-display text-xs text-white shadow-[0_4px_0_#2a6fd0] active:translate-y-0.5"
+                  >
+                    {archiveBusy
+                      ? "받는 중..."
+                      : !nextArchive
+                        ? archiveDescriptors.length === 0
+                          ? "준비중"
+                          : "모두 받음"
+                        : pendingArchive
+                          ? `Set ${nextArchive.setId} 다시 받기`
+                          : `광고 보고 Set ${nextArchive.setId} 받기`}
+                  </button>
+                </div>
+                <p className="mt-3 font-ui text-[11px] leading-4 text-[#173f78]/50">
+                  기본 단어는 그대로 유지됩니다. 추가 Set은 광고 보상으로 잠금 해제한 뒤 이 기기에
+                  저장되며, 다운로드가 실패해도 광고를 다시 볼 필요가 없습니다.
+                </p>
+                {archiveDescriptors.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {archiveDescriptors.map((set) => {
+                      const downloaded = archiveDownloaded.includes(set.setId);
+                      const unlocked = archiveUnlocked.includes(set.setId);
+                      return (
+                        <span
+                          key={set.setId}
+                          className={`rounded-full px-2.5 py-1 font-ui text-[11px] ${
+                            downloaded
+                              ? "bg-emerald-100 text-emerald-700"
+                              : unlocked
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-[#173f78]/5 text-[#173f78]/45"
+                          }`}
+                        >
+                          Set {set.setId} · {downloaded ? "저장됨" : unlocked ? "재시도" : "잠김"}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {archiveWords.length > 0 && (
+                <section className="mb-4 rounded-3xl bg-white/90 p-4 backdrop-blur-sm">
+                  <h3 className="font-display text-base text-[#173f78]">추가로 받은 단어</h3>
+                  <div className="mt-3 flex max-h-28 flex-wrap gap-1.5 overflow-y-auto">
+                    {archiveWords.map((word) => (
+                      <span
+                        key={word.word}
+                        className="rounded-full bg-emerald-50 px-2.5 py-1 font-ui text-xs text-emerald-800"
+                      >
+                        {word.word} · {word.meaning}
+                      </span>
+                    ))}
+                  </div>
+                </section>
               )}
 
               <div className="flex flex-col gap-3">
@@ -2249,7 +2730,7 @@ export function SpeakFallGame() {
                   onClick={() => {
                     resumeAudio();
                     playClick();
-                    setPhase("idle");
+                    setPhase(backDestinationForPhase("shop"));
                   }}
                   className="flex size-11 items-center justify-center rounded-full bg-white/90 text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]"
                   aria-label="뒤로"
@@ -2262,86 +2743,264 @@ export function SpeakFallGame() {
                 </p>
                 <span className="flex items-center gap-1 rounded-full bg-white/90 px-3 py-2 font-display text-base text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)]">
                   <Coins className="size-4 text-[#f0a323]" />
-                  {progress.coins}
+                  {progress.coins.toLocaleString("ko-KR")}
                 </span>
               </div>
 
-              {/* 미리보기 무대 */}
-              <div className="mb-4 overflow-hidden rounded-3xl bg-white/90 shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)]">
-                <ShopSkinPreview skin={getSkin(shopPreviewId ?? progress.equippedSkin)} />
+              <div className="mb-3 grid grid-cols-2 gap-2 rounded-2xl bg-white/55 p-1.5">
+                <button
+                  type="button"
+                  onClick={() => setShopTab("parachute")}
+                  className={`rounded-xl py-2 font-display text-sm ${
+                    shopTab === "parachute" ? "bg-[#3d8ef0] text-white" : "text-[#173f78]/60"
+                  }`}
+                >
+                  낙하산 스킨
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShopTab("jelly");
+                    setShopJellyCategory(null);
+                    setShopJellyPreviewId(null);
+                  }}
+                  className={`rounded-xl py-2 font-display text-sm ${
+                    shopTab === "jelly" ? "bg-[#e84d8a] text-white" : "text-[#173f78]/60"
+                  }`}
+                >
+                  젤리 스킨
+                </button>
               </div>
 
-              <div className="flex-1 space-y-3 overflow-y-auto pr-1">
-                {SKINS.map((skin) => {
-                  const owned = isSkinOwned(progress.ownedSkins, skin.id);
-                  const equipped = progress.equippedSkin === skin.id;
-                  const canBuy = progress.coins >= skin.price;
-                  const isPreview = (shopPreviewId ?? progress.equippedSkin) === skin.id;
-                  return (
-                    <button
-                      key={skin.id}
-                      onClick={() => {
-                        playClick();
-                        setShopPreviewId(skin.id);
-                      }}
-                      className={`flex w-full items-center gap-4 rounded-3xl bg-white/95 p-4 text-left shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] backdrop-blur-sm transition-all ${
-                        equipped
-                          ? "ring-2 ring-[#3d8ef0]"
-                          : isPreview
-                            ? "ring-2 ring-[#f0a323]"
-                            : ""
-                      }`}
-                    >
-                      <div className="shrink-0 rounded-2xl bg-[#eaf3ff] p-2">
-                        <SkinShopPreview skin={skin} size={64} />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-display text-lg text-[#173f78]">{skin.name}</p>
-                        <p className="font-ui text-xs text-[#173f78]/60">
-                          {skin.id === DEFAULT_SKIN_ID
-                            ? "기본 스킨"
-                            : equipped
-                              ? "현재 장착 중"
-                              : owned
-                                ? "보유 중"
-                                : `${skin.price.toLocaleString()} 코인`}
-                        </p>
-                        <p className="mt-0.5 truncate font-ui text-[11px] text-[#3d8ef0]">
-                          {skin.effectLabel}
-                        </p>
-                      </div>
-                      {equipped ? (
-                        <span className="flex min-w-[72px] shrink-0 items-center justify-center gap-1 rounded-full bg-[#3d8ef0]/10 px-3 py-2 font-display text-sm text-[#3d8ef0]">
-                          <Check className="size-4" /> 장착
-                        </span>
-                      ) : owned ? (
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            equipSkin(skin.id);
+              <div className="mb-4 overflow-hidden rounded-3xl bg-white/90 shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] short-screen:mb-3">
+                {shopTab === "parachute" ? (
+                  <ShopSkinPreview
+                    skin={getSkin(shopPreviewId ?? progress.equippedSkin)}
+                    jelly={equippedJelly}
+                  />
+                ) : shopJellyCategory ? (
+                  <ShopJellyGridPreview
+                    jellies={SPECIAL_JELLIES.filter(
+                      (jelly) => jelly.category === shopJellyCategory,
+                    )}
+                    selectedId={shopJellyPreviewId ?? progress.equippedJelly}
+                    onSelect={(jelly) => {
+                      playClick();
+                      setShopJellyPreviewId(jelly.id);
+                    }}
+                    title={JELLY_CATEGORY_LABELS[shopJellyCategory]}
+                  />
+                ) : (
+                  <ShopJellySinglePreview
+                    jelly={getSpecialJelly(shopJellyPreviewId ?? progress.equippedJelly)}
+                    equipped={
+                      (shopJellyPreviewId ?? progress.equippedJelly) === progress.equippedJelly
+                    }
+                  />
+                )}
+              </div>
+
+              <div
+                key={`${shopTab}-${shopJellyCategory ?? "categories"}`}
+                className="flex-1 space-y-3 overflow-y-auto px-1"
+              >
+                {shopTab === "parachute"
+                  ? SKINS.map((skin) => {
+                      const actuallyOwned = isSkinOwned(progress.ownedSkins, skin.id);
+                      const owned = testUnlockSkins || actuallyOwned;
+                      const equipped = progress.equippedSkin === skin.id;
+                      const canBuy = progress.coins >= skin.price;
+                      const isPreview = (shopPreviewId ?? progress.equippedSkin) === skin.id;
+                      return (
+                        <button
+                          key={skin.id}
+                          onClick={() => {
+                            playClick();
+                            setShopPreviewId(skin.id);
                           }}
-                          className="flex min-w-[72px] shrink-0 items-center justify-center rounded-full bg-[#3d8ef0] px-4 py-2 font-display text-sm text-white shadow-[0_4px_0_#2a6fd0] active:translate-y-0.5"
-                        >
-                          장착
-                        </span>
-                      ) : (
-                        <span
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            buySkin(skin.id);
-                          }}
-                          className={`flex min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 py-2 font-display text-sm active:translate-y-0.5 ${
-                            canBuy
-                              ? "bg-[#f0a323] text-white shadow-[0_4px_0_#d48a1a]"
-                              : "bg-[#173f78]/10 text-[#173f78]/40"
+                          className={`flex w-full items-center gap-4 rounded-3xl bg-white/95 p-4 text-left shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] backdrop-blur-sm transition-all ${
+                            equipped
+                              ? "ring-2 ring-[#3d8ef0]"
+                              : isPreview
+                                ? "ring-2 ring-[#f0a323]"
+                                : ""
                           }`}
                         >
-                          구매
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+                          <div className="shrink-0 rounded-2xl bg-[#eaf3ff] p-2">
+                            <SkinShopPreview skin={skin} size={64} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-display text-lg text-[#173f78]">{skin.name}</p>
+                            <p className="font-ui text-xs text-[#173f78]/60">
+                              {skin.id === DEFAULT_SKIN_ID
+                                ? "기본 스킨"
+                                : equipped
+                                  ? "현재 장착 중"
+                                  : owned
+                                    ? testUnlockSkins && !actuallyOwned
+                                      ? "테스트 해금"
+                                      : "보유 중"
+                                    : `${skin.price.toLocaleString("ko-KR")} 코인`}
+                            </p>
+                            <p className="mt-0.5 truncate font-ui text-[11px] text-[#3d8ef0]">
+                              {skin.effectLabel}
+                            </p>
+                          </div>
+                          {equipped ? (
+                            <span className="flex min-w-[72px] shrink-0 items-center justify-center gap-1 rounded-full bg-[#3d8ef0]/10 px-3 py-2 font-display text-sm text-[#3d8ef0]">
+                              <Check className="size-4" /> 장착
+                            </span>
+                          ) : owned ? (
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                equipSkin(skin.id);
+                              }}
+                              className="flex min-w-[72px] shrink-0 items-center justify-center rounded-full bg-[#3d8ef0] px-4 py-2 font-display text-sm text-white shadow-[0_4px_0_#2a6fd0] active:translate-y-0.5"
+                            >
+                              장착
+                            </span>
+                          ) : (
+                            <span
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                buySkin(skin.id);
+                              }}
+                              className={`flex min-w-[72px] shrink-0 items-center justify-center rounded-full px-4 py-2 font-display text-sm active:translate-y-0.5 ${
+                                canBuy
+                                  ? "bg-[#f0a323] text-white shadow-[0_4px_0_#d48a1a]"
+                                  : "bg-[#173f78]/10 text-[#173f78]/40"
+                              }`}
+                            >
+                              구매
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })
+                  : JELLY_CATEGORY_ORDER.map((category) => {
+                      const categoryJellies = SPECIAL_JELLIES.filter(
+                        (jelly) => jelly.category === category,
+                      );
+                      const representative =
+                        categoryJellies.find(
+                          (jelly) => jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
+                        ) ?? categoryJellies[0]!;
+                      const previewedInCategory = categoryJellies.find(
+                        (jelly) => jelly.id === shopJellyPreviewId,
+                      );
+                      const equippedInCategory = categoryJellies.find(
+                        (jelly) => jelly.id === progress.equippedJelly,
+                      );
+                      const selectedJelly =
+                        previewedInCategory ?? equippedInCategory ?? representative;
+                      const actuallyOwned = isJellyOwned(progress.ownedJellies, selectedJelly.id);
+                      const owned = testUnlockSkins || actuallyOwned;
+                      const equipped = progress.equippedJelly === selectedJelly.id;
+                      const canBuy = progress.coins >= selectedJelly.price;
+
+                      const activatePreview = () => {
+                        setShopJellyCategory(category);
+                        setShopJellyPreviewId(selectedJelly.id);
+                      };
+
+                      return (
+                        <section
+                          key={category}
+                          className={`rounded-3xl bg-white/95 p-3 shadow-[0_8px_20px_-12px_rgba(23,63,120,0.45)] ${
+                            shopJellyCategory === category ? "ring-2 ring-[#e84d8a]" : ""
+                          }`}
+                        >
+                          <div className="mb-2 flex items-center justify-between gap-3 px-1">
+                            <div>
+                              <p className="font-display text-lg text-[#173f78]">
+                                {JELLY_CATEGORY_LABELS[category]}
+                              </p>
+                              <p className="font-ui text-xs text-[#173f78]/55">
+                                {categoryJellies.length}가지 색상 ·{" "}
+                                {category === "default"
+                                  ? "무료"
+                                  : `${representative.price.toLocaleString("ko-KR")} 코인`}
+                              </p>
+                            </div>
+                            {equipped && (
+                              <span className="flex items-center gap-1 rounded-full bg-[#e84d8a]/10 px-3 py-1.5 font-display text-xs text-[#e84d8a]">
+                                <Check className="size-3.5" /> 장착 중
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-8 gap-1.5">
+                            {categoryJellies.map((jelly) => {
+                              const selected = selectedJelly.id === jelly.id;
+                              return (
+                                <button
+                                  type="button"
+                                  key={jelly.id}
+                                  onClick={() => {
+                                    playClick();
+                                    setShopJellyCategory(category);
+                                    setShopJellyPreviewId(jelly.id);
+                                  }}
+                                  aria-label={`${jelly.name} 미리보기`}
+                                  className={`flex aspect-square min-w-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf3ff] p-0.5 ${
+                                    selected ? "ring-2 ring-[#e84d8a]" : "ring-1 ring-white"
+                                  }`}
+                                >
+                                  {getJellyThumbnail(jelly) ? (
+                                    <img
+                                      src={getJellyThumbnail(jelly)}
+                                      alt=""
+                                      className="size-full object-contain"
+                                    />
+                                  ) : (
+                                    <DefaultJellyVisual
+                                      className="size-8"
+                                      hue={jelly.hue}
+                                      rainbow={jelly.rainbow}
+                                    />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              playClick();
+                              activatePreview();
+                              if (equipped) return;
+                              if (owned) equipJelly(selectedJelly.id);
+                              else if (canBuy) buyJelly(selectedJelly.id);
+                              else {
+                                showShopToast("코인이 부족해요");
+                                requestRewardedAd(
+                                  {
+                                    title: "코인이 부족해요",
+                                    description: "보상형 광고를 보고 100코인을 모으시겠어요?",
+                                    reward: "100코인",
+                                  },
+                                  earnCoinsWithAd,
+                                );
+                              }
+                            }}
+                            className={`mt-3 flex w-full items-center justify-center rounded-full py-2.5 font-display text-sm active:translate-y-0.5 ${
+                              equipped
+                                ? "bg-[#e84d8a]/10 text-[#e84d8a]"
+                                : owned
+                                  ? "bg-[#e84d8a] text-white shadow-[0_4px_0_#c43e72]"
+                                  : canBuy
+                                    ? "bg-[#f0a323] text-white shadow-[0_4px_0_#d48a1a]"
+                                    : "bg-[#173f78]/10 text-[#173f78]/55"
+                            }`}
+                          >
+                            {JELLY_CATEGORY_LABELS[category]}{" "}
+                            {equipped ? "장착 중" : owned ? "장착" : "구매"}
+                          </button>
+                        </section>
+                      );
+                    })}
               </div>
 
               {shopToast && (
@@ -2395,8 +3054,10 @@ export function SpeakFallGame() {
               </div>
 
               <div className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-white/90 py-3 font-display text-xl text-[#173f78] backdrop-blur-sm">
-                <Coins className="size-6 text-[#f0a323]" />+{result.coins} 코인
-                <span className="font-ui text-xs text-[#173f78]/60">(보유 {progress.coins})</span>
+                <Coins className="size-6 text-[#f0a323]" />+{formatCompactNumber(result.coins)} 코인
+                <span className="font-ui text-xs text-[#173f78]/60">
+                  (보유 {formatCompactNumber(progress.coins)})
+                </span>
               </div>
 
               {result.words.length > 0 && (
@@ -2460,15 +3121,13 @@ export function SpeakFallGame() {
                   onClick={() => {
                     resumeAudio();
                     playClick();
-                    setMapTab("world");
-                    setWorldTrack(null);
-                    setPhase("map");
+                    setPhase("island");
                   }}
                   className="mt-3 flex w-full flex-col items-center gap-0.5 rounded-[1.5rem] bg-gradient-to-br from-[#ffe9a8] to-[#ffc93c] py-4 font-display text-lg text-[#173f78] shadow-[0_8px_0_#e0a417] active:translate-y-0.5"
                 >
-                  🎉 전문 구조대 자격증 획득!
+                  🎉 기초 구조대 완주!
                   <span className="font-ui text-xs text-[#173f78]/70">
-                    전문 월드가 열렸어요 — 대륙을 탐험해 보세요
+                    새로운 섬을 선택해 계속 모험해 보세요
                   </span>
                 </button>
               )}
@@ -2480,15 +3139,137 @@ export function SpeakFallGame() {
         </div>
       )}
 
-      {phase === "idle" && (
-        <img
-          src={parachuteJelly}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute right-0 top-18 z-[60] w-28 drop-shadow-[0_16px_18px_rgba(12,58,124,0.32)] short-screen:w-20 short-screen:top-14"
-          style={{ animation: "float-y 4.5s ease-in-out infinite" }}
-        />
+      {rewardAdConfirmation && (
+        <div
+          className="absolute inset-0 z-[120] flex items-center justify-center bg-[#102d5e]/45 px-6 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reward-ad-title"
+        >
+          <div className="w-full max-w-sm rounded-[2rem] border border-white/80 bg-gradient-to-b from-white to-[#eef7ff] p-5 text-center shadow-[0_24px_60px_-18px_rgba(13,45,94,0.65)]">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-[#fff1ae] to-[#ffc93c] text-[#173f78] shadow-[0_6px_0_#e0a417]">
+              <Play className="ml-1 size-7 fill-current" />
+            </div>
+            <h2 id="reward-ad-title" className="mt-5 font-display text-2xl text-[#173f78]">
+              {rewardAdConfirmation.title}
+            </h2>
+            <p className="mx-auto mt-2 max-w-xs font-ui text-sm leading-5 text-[#3f6699]">
+              {rewardAdConfirmation.description}
+            </p>
+            <div className="mt-4 rounded-2xl bg-[#e4f2ff] px-4 py-3 font-display text-sm text-[#2469b5]">
+              🎁 보상 · {rewardAdConfirmation.reward}
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  playClick();
+                  cancelRewardedAd();
+                }}
+                className="rounded-full bg-white py-3.5 font-display text-base text-[#55749b] shadow-[0_4px_14px_-8px_rgba(23,63,120,0.45)] active:scale-[0.98]"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClick();
+                  confirmRewardedAd();
+                }}
+                className="rounded-full bg-[#3d8ef0] py-3.5 font-display text-base text-white shadow-[0_5px_0_#2a6fd0] active:translate-y-0.5"
+              >
+                광고 보기
+              </button>
+            </div>
+          </div>
+        </div>
       )}
+    </div>
+  );
+}
+
+function DefaultJellyVisual({
+  className = "size-20",
+  hue = 145,
+  rainbow = false,
+}: {
+  className?: string;
+  hue?: number;
+  rainbow?: boolean;
+}) {
+  const bodyBackground = rainbow
+    ? "linear-gradient(135deg, #ff6b8b 4%, #ffbf3f 22%, #c9ed49 39%, #55dbad 55%, #55bdf3 72%, #9d6bef 88%, #ef6fc6 100%)"
+    : `radial-gradient(circle at 35% 30%, oklch(0.95 0.09 ${hue}), oklch(0.72 0.17 ${hue}))`;
+  const earBackground = rainbow
+    ? "linear-gradient(135deg, #ff7b94, #65c8f2, #a172ef)"
+    : `oklch(0.82 0.15 ${hue})`;
+
+  return (
+    <div
+      className={`relative flex items-center justify-center rounded-[45%] shadow-soft ${className}`}
+      style={{
+        background: bodyBackground,
+      }}
+    >
+      <span
+        className="absolute -top-1.5 left-[22%] size-[22%] rounded-full"
+        style={{ background: earBackground }}
+      />
+      <span
+        className="absolute -top-1.5 right-[22%] size-[22%] rounded-full"
+        style={{ background: earBackground }}
+      />
+      <span className="absolute left-[27%] top-[38%] size-[14%] rounded-full bg-foreground/70">
+        <span className="absolute right-0 top-0 size-[35%] rounded-full bg-card" />
+      </span>
+      <span className="absolute right-[27%] top-[38%] size-[14%] rounded-full bg-foreground/70">
+        <span className="absolute right-0 top-0 size-[35%] rounded-full bg-card" />
+      </span>
+      <span className="absolute bottom-[20%] h-[13%] w-[25%] rounded-b-full bg-foreground/70" />
+    </div>
+  );
+}
+
+function ShopJellyGridPreview({
+  jellies,
+  selectedId,
+  onSelect,
+  title,
+}: {
+  jellies: SpecialJelly[];
+  selectedId: string;
+  onSelect: (jelly: SpecialJelly) => void;
+  title: string;
+}) {
+  return (
+    <div className="w-full px-4 py-3 short-screen:py-2">
+      <p className="mb-2 text-center font-display text-sm text-[#173f78]">{title}</p>
+      <div className="grid grid-cols-4 gap-2">
+        {jellies.slice(0, 8).map((jelly) => {
+          const selected = selectedId === jelly.id;
+          return (
+            <button
+              type="button"
+              key={jelly.id}
+              onClick={() => onSelect(jelly)}
+              aria-label={`${jelly.name} 미리보기`}
+              className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-[#eaf3ff] p-1 transition-all ${
+                selected ? "ring-2 ring-[#e84d8a]" : "ring-1 ring-white"
+              }`}
+            >
+              {getJellyThumbnail(jelly) ? (
+                <img
+                  src={getJellyThumbnail(jelly)}
+                  alt=""
+                  className="size-full object-contain drop-shadow-sm"
+                />
+              ) : (
+                <DefaultJellyVisual className="size-10" hue={jelly.hue} rainbow={jelly.rainbow} />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

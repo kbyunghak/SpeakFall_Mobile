@@ -1,4 +1,4 @@
-import type { Skin } from "@/lib/speakfall/skins";
+import { getEffectiveSkinEffect, type Skin } from "@/lib/speakfall/skins";
 
 /** 스킨 모양별 캐노피(낙하산/우산/꽃/풍선) */
 export function SkinCanopy({ skin, saved }: { skin: Skin; saved?: boolean }) {
@@ -163,16 +163,18 @@ export function SkinCanopy({ skin, saved }: { skin: Skin; saved?: boolean }) {
   );
 }
 
-const RAIN = [-46, -30, -14, 6, 22, 40, 52];
-const PETALS = [-52, -34, -18, 4, 20, 38, 54];
+const RAIN = [-62, -50, -38, -25, -12, 2, 16, 30, 43, 55, 66];
+const PETALS = [-66, -54, -41, -28, -14, 0, 15, 29, 42, 55, 67];
 
 /** 스킨별 낙하 중 특수 효과 레이어 */
 export function SkinEffects({ skin }: { skin: Skin }) {
-  if (skin.effect === "none") return null;
+  // 무지개 우산은 미리보기뿐 아니라 실제 플레이에서도 무지개 가루 효과를 냅니다.
+  const effect = getEffectiveSkinEffect(skin);
+  if (effect === "none") return null;
 
-  if (skin.effect === "rain") {
+  if (effect === "rain") {
     return (
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-40 w-0" aria-hidden>
+      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-48 w-0" aria-hidden>
         {/* 무지개 */}
         <svg
           width="180"
@@ -206,9 +208,9 @@ export function SkinEffects({ skin }: { skin: Skin }) {
     );
   }
 
-  if (skin.effect === "petals") {
+  if (effect === "petals") {
     return (
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-40 w-0" aria-hidden>
+      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-48 w-0" aria-hidden>
         {PETALS.map((x, i) => (
           <span
             key={x}
@@ -225,17 +227,17 @@ export function SkinEffects({ skin }: { skin: Skin }) {
     );
   }
 
-  if (skin.effect === "stars") {
+  if (effect === "stars") {
     return (
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-40 w-0" aria-hidden>
+      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-48 w-0" aria-hidden>
         {PETALS.map((x, i) => (
           <span
             key={x}
-            className="absolute top-8 size-1.5 rounded-full bg-violet-200"
+            className="absolute top-8 size-2 rounded-full bg-violet-200"
             style={{
               left: `${x}px`,
               boxShadow: "0 0 8px #c9a8ff, 0 0 14px #7c3aed",
-              animation: `sfx-twinkle ${1.2 + (i % 3) * 0.3}s ease-in-out ${i * 0.18}s infinite`,
+              animation: `sfx-star-trail ${1.8 + (i % 4) * 0.25}s ease-out ${i * 0.16}s infinite`,
             }}
           />
         ))}
@@ -243,17 +245,17 @@ export function SkinEffects({ skin }: { skin: Skin }) {
     );
   }
 
-  if (skin.effect === "sparkle") {
+  if (effect === "sparkle") {
     return (
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-40 w-0" aria-hidden>
+      <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-48 w-0" aria-hidden>
         {RAIN.map((x, i) => (
           <span
             key={x}
-            className="absolute top-6 size-1.5 rotate-45 bg-amber-300"
+            className="absolute top-6 size-2 rotate-45 bg-amber-300"
             style={{
               left: `${x}px`,
               boxShadow: "0 0 8px #ffb84d",
-              animation: `sfx-twinkle ${1 + (i % 3) * 0.25}s ease-in-out ${i * 0.2}s infinite`,
+              animation: `sfx-sparkle-trail ${1.6 + (i % 4) * 0.22}s ease-out ${i * 0.18}s infinite`,
             }}
           />
         ))}
@@ -264,7 +266,7 @@ export function SkinEffects({ skin }: { skin: Skin }) {
   // confetti
   const COLORS = ["#ff6b6b", "#ffd93c", "#6bcf7f", "#4d96ff", "#9b59b6"];
   return (
-    <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-40 w-0" aria-hidden>
+    <div className="pointer-events-none absolute left-1/2 top-0 z-0 h-48 w-0" aria-hidden>
       {PETALS.map((x, i) => (
         <span
           key={x}
@@ -290,6 +292,54 @@ export function SkinShopPreview({ skin, size = 64 }: { skin: Skin; size?: number
       <div style={{ transform: `scale(${size / 116})`, transformOrigin: "center" }}>
         <SkinCanopy skin={skin} />
       </div>
+    </div>
+  );
+}
+
+const SHOP_TRAIL_POINTS = [
+  { left: 10, top: 58, delay: -0.2 },
+  { left: 18, top: 38, delay: -0.55 },
+  { left: 27, top: 68, delay: -0.9 },
+  { left: 36, top: 46, delay: -1.25 },
+  { left: 45, top: 73, delay: -1.6 },
+  { left: 55, top: 40, delay: -1.95 },
+  { left: 64, top: 64, delay: -2.3 },
+  { left: 73, top: 44, delay: -2.65 },
+  { left: 82, top: 70, delay: -3 },
+  { left: 90, top: 52, delay: -3.35 },
+] as const;
+
+/** 10K 스킨 전용: 미리보기 무대에 남는 이동 궤적 효과 */
+export function SkinPreviewTrail({ skin }: { skin: Skin }) {
+  if (skin.price < 10000) return null;
+
+  const effect = getEffectiveSkinEffect(skin);
+  const colors =
+    effect === "petals"
+      ? ["#ff9ec5", "#ffd5e5"]
+      : effect === "sparkle"
+        ? ["#ff9e55", "#ffd65a"]
+        : effect === "stars"
+          ? ["#b99aff", "#f1e9ff"]
+          : ["#ff5e5e", "#ffdd59", "#7bed9f", "#4facfe", "#a55eea"];
+
+  return (
+    <div className="pointer-events-none absolute inset-x-1 top-3 z-0 h-36 overflow-hidden" aria-hidden>
+      {SHOP_TRAIL_POINTS.map((point, index) => (
+        <span
+          key={`${skin.id}-${index}`}
+          className={`shop-preview-trail shop-preview-trail--${effect}`}
+          style={{
+            left: `${point.left}%`,
+            top: `${point.top}%`,
+            background: colors[index % colors.length],
+            boxShadow: `0 0 8px ${colors[index % colors.length]}99`,
+            animationDelay: `${point.delay}s`,
+          }}
+        >
+          {effect === "stars" ? "★" : ""}
+        </span>
+      ))}
     </div>
   );
 }
