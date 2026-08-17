@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SpeechRecognitionPlugin } from "@capacitor-community/speech-recognition";
 import type { PluginListenerHandle } from "@capacitor/core";
-
-type Result = { transcript: string; alternatives: string[]; isFinal: boolean };
+import type { SpeechEngineId, SpeechResult } from "@/lib/speech/types";
 
 type SpeechRecognitionLike = {
   lang: string;
@@ -30,11 +29,12 @@ function isNativeRuntime() {
   return !!cap?.isNativePlatform?.();
 }
 
-export function useSpeechRecognition(onResult: (r: Result) => void) {
+export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
   const [supported, setSupported] = useState(true);
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [engine, setEngine] = useState<SpeechEngineId>("web-speech");
   const recRef = useRef<SpeechRecognitionLike | null>(null);
   const wantRef = useRef(false);
   const cbRef = useRef(onResult);
@@ -64,6 +64,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     isNative.current = isNativeRuntime();
 
     if (isNative.current) {
+      setEngine("android-speech");
       let cancelled = false;
       (async () => {
         try {
@@ -78,11 +79,17 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
           nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
-              const alternatives = data?.matches?.filter(Boolean) ?? [];
-              const primaryMatch = alternatives[0];
+              const matches = data?.matches?.filter(Boolean) ?? [];
+              const primaryMatch = matches[0];
               if (!primaryMatch) return;
               markSpeaking();
-              cbRef.current({ transcript: primaryMatch, alternatives, isFinal: false });
+              cbRef.current({
+                transcript: primaryMatch,
+                alternatives: matches.slice(1).map((transcript) => ({ transcript })),
+                timestamp: Date.now(),
+                isFinal: false,
+                engine: "android-speech",
+              });
             },
           );
           nativeStateListenerRef.current = await SpeechRecognition.addListener(
@@ -133,6 +140,7 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     }
 
     const Ctor = getCtor();
+    setEngine("web-speech");
     if (!Ctor) {
       setSupported(false);
       return;
@@ -148,13 +156,19 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
         const res = e.results[i];
         const primaryResult = res[0];
         if (primaryResult) {
-          const alternatives = Array.from({ length: res.length }, (_, index) =>
-            String(res[index]?.transcript ?? ""),
-          ).filter(Boolean);
+          const alternatives = Array.from({ length: res.length }, (_, index) => ({
+            transcript: String(res[index]?.transcript ?? ""),
+            confidence:
+              typeof res[index]?.confidence === "number" ? res[index].confidence : undefined,
+          })).filter(({ transcript }) => Boolean(transcript));
           cbRef.current({
             transcript: primaryResult.transcript as string,
-            alternatives,
+            alternatives: alternatives.slice(1),
+            confidence:
+              typeof primaryResult.confidence === "number" ? primaryResult.confidence : undefined,
+            timestamp: Date.now(),
             isFinal: res.isFinal,
+            engine: "web-speech",
           });
         }
       }
@@ -303,5 +317,5 @@ export function useSpeechRecognition(onResult: (r: Result) => void) {
     setListening(false);
   }, []);
 
-  return { supported, listening, speaking, error, start, stop, reset };
+  return { supported, listening, speaking, error, engine, start, stop, reset };
 }

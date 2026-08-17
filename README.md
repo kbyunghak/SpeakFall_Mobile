@@ -47,6 +47,7 @@ SpeakFall combines speech recognition with a rescue-game loop. A learner speaks 
 - Web/PWA and Android delivery paths
 - On-device pre-submission self-test page at `/selftest`
 - Privacy information page at `/privacy`
+- Speech recognition architecture and upgrade plan in [`docs/SPEECH_ARCHITECTURE.md`](docs/SPEECH_ARCHITECTURE.md)
 
 ## How It Works
 

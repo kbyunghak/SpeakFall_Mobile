@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clipboard, Mic, MicOff, RotateCcw, Trash2 } from "lucide-react";
 
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import type { SpeechResult } from "@/lib/speech/types";
 
 const title = "English Dictation Test — SpeakFall";
 const description = "영어로 말한 내용을 실시간으로 받아쓰는 음성 인식 테스트 페이지입니다.";
@@ -49,17 +50,10 @@ function DictationPage() {
   }, []);
 
   const handleResult = useCallback(
-    ({
-      transcript,
-      alternatives: candidates,
-      isFinal,
-    }: {
-      transcript: string;
-      alternatives: string[];
-      isFinal: boolean;
-    }) => {
+    ({ transcript, alternatives, isFinal }: SpeechResult) => {
       const text = transcript.trim();
       if (!text) return;
+      const candidates = alternatives.map((candidate) => candidate.transcript);
       latestRef.current = { text, alternatives: candidates };
       setCurrent(text);
       setAlternatives(candidates.filter((candidate) => candidate !== text).slice(0, 4));
@@ -123,17 +117,12 @@ function DictationPage() {
         }}
       >
         <div className="flex items-center justify-between gap-3">
-          <Link
-            to="/"
-            className="rounded-full bg-white/90 px-4 py-2 text-sm font-bold shadow-sm"
-          >
+          <Link to="/" className="rounded-full bg-white/90 px-4 py-2 text-sm font-bold shadow-sm">
             ← 홈
           </Link>
           <span
             className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-              speech.listening
-                ? "bg-red-100 text-red-600"
-                : "bg-white/80 text-slate-500"
+              speech.listening ? "bg-red-100 text-red-600" : "bg-white/80 text-slate-500"
             }`}
           >
             {speech.listening ? "● 인식 중" : "인식 대기"}
@@ -144,8 +133,12 @@ function DictationPage() {
           <p className="text-sm font-bold text-sky-600">SpeakFall Test Lab</p>
           <h1 className="mt-1 font-display text-3xl text-[#173f78]">영어 말하기 받아쓰기</h1>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            마이크를 시작하고 영어로 말해보세요. 인식 결과는 실시간으로 표시되고,
-            약 1초 동안 말이 멈추면 아래 기록에 추가됩니다.
+            마이크를 시작하고 영어로 말해보세요. 인식 결과는 실시간으로 표시되고, 약 1초 동안 말이
+            멈추면 아래 기록에 추가됩니다.
+          </p>
+          <p className="mt-2 text-xs font-semibold text-slate-400">
+            현재 엔진:{" "}
+            {speech.engine === "android-speech" ? "Android SpeechRecognizer" : "Web Speech API"}
           </p>
         </header>
 
@@ -245,11 +238,15 @@ function DictationPage() {
             </div>
           </div>
 
-          {copied && <p className="mt-3 text-xs font-bold text-emerald-600">클립보드에 복사했습니다.</p>}
+          {copied && (
+            <p className="mt-3 text-xs font-bold text-emerald-600">클립보드에 복사했습니다.</p>
+          )}
 
           {entries.length === 0 ? (
             <div className="grid min-h-44 place-items-center text-center text-sm text-slate-400">
-              아직 기록이 없습니다.<br />마이크를 켜고 영어로 말해보세요.
+              아직 기록이 없습니다.
+              <br />
+              마이크를 켜고 영어로 말해보세요.
             </div>
           ) : (
             <ol className="mt-4 space-y-3">
