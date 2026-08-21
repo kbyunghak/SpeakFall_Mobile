@@ -18,8 +18,9 @@ const config: CapacitorConfig = {
       iosSplashResourceName: "splash",
     },
     StatusBar: {
-      style: "DARK",
-      backgroundColor: "#38BDF8",
+      style: "LIGHT",
+      overlaysWebView: true,
+      backgroundColor: "#00000000",
     },
   },
 };
