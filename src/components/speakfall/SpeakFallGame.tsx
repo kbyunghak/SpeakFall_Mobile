@@ -53,6 +53,7 @@ import {
 } from "@/lib/speakfall/progress";
 import { containsProfanity } from "@/lib/speakfall/profanity";
 import { TRACKS, WORLD_TRACKS, getTrack, trackHasWords } from "@/lib/speakfall/tracks";
+import { PronunciationTestPanel } from "./PronunciationTestPanel";
 import type { TrackType } from "@/data/words";
 import type { ArchiveManifest, ArchiveWord } from "@/data/archive";
 import {
@@ -227,6 +228,7 @@ type Phase =
   | "idle"
   | "island"
   | "map"
+  | "pronunciation-test"
   | "collection"
   | "shop"
   | "permission"
@@ -2970,8 +2972,29 @@ export function SpeakFallGame() {
                     );
                   })}
                 </div>
+
+                <section className="mt-6 border-t border-dashed border-[#173f78]/20 pt-5">
+                  <p className="mb-2 text-center font-ui text-xs text-[#173f78]/55">
+                    발음 인식 검수 도구
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      setPhase("pronunciation-test");
+                    }}
+                    className="flex w-full items-center justify-center rounded-[1.25rem] border border-white/80 bg-white/85 px-4 py-3 font-display text-base text-[#173f78] shadow-[0_8px_20px_-14px_rgba(23,63,120,0.55)] transition active:scale-[0.98]"
+                  >
+                    🔤 단어 발음 테스트
+                  </button>
+                </section>
               </>
             </div>
+          )}
+
+          {phase === "pronunciation-test" && (
+            <PronunciationTestPanel initialTrack={mapTrack} onBack={() => setPhase("map")} />
           )}
 
           {/* ---------- 단어 도감 ---------- */}
