@@ -21,7 +21,9 @@ out/
 
 # Gradle files
 .gradle/
+.kotlin/
 build/
+**/build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -88,6 +90,10 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Gradle and Kotlin local state
+.gradletasknamecache
+.lint/
 
 # Cordova plugins for Capacitor
 capacitor-cordova-android-plugins

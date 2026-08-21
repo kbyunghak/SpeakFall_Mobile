@@ -16,6 +16,36 @@ dist-ssr
 .nitro
 *.local
 
+# Lovable local project metadata
+# Existing tracked files remain in Git until they are explicitly removed later.
+.lovable/
+
+# Android / Gradle generated files
+.gradle/
+**/.gradle/
+**/.kotlin/
+android/**/build/
+android/.idea/
+android/.navigation/
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+android/local.properties
+android/keystore.properties
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+
+# Android build packages and signing secrets
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+*.jks
+*.keystore
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
