@@ -1,4 +1,5 @@
-export type MinimalPairFocus = "r / l" | "f / p" | "v / b" | "θ / s" | "ɪ / iː" | "æ / ɛ";
+export type MinimalPairFocus =
+  "r / l" | "f / p" | "v / b" | "θ / s" | "ɪ / iː" | "æ / ɛ" | "ʊ / uː";
 
 /** 단어 목록이 아닌 실제 두 단어의 최소대립쌍 단위로 관리합니다. */
 export const MINIMAL_PAIRS: Record<MinimalPairFocus, ReadonlyArray<readonly [string, string]>> = {
@@ -32,6 +33,7 @@ export const MINIMAL_PAIRS: Record<MinimalPairFocus, ReadonlyArray<readonly [str
     ["bat", "bet"],
     ["man", "men"],
   ],
+  "ʊ / uː": [["full", "fool"]],
 };
 
 const normalizeWord = (value: string) => value.toLowerCase().replace(/[^a-z]/g, "");

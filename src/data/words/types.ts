@@ -17,16 +17,13 @@ export interface WordItem {
   /** 단어 난이도 별점 */
   stars?: 1 | 2 | 3;
   meaning?: string;
-  /** ASR이 자주 혼동하는 발음 후보 */
-  accepts?: string[];
+  /** 철자는 다르지만 음성으로 구별할 수 없는 안전한 동음어 */
+  homophones?: string[];
+  /** 자연스럽게 모드에서만 허용하는 STT 보정 표현 */
+  naturalAliases?: string[];
   /** 어려움 모드에서 집중 연습할 최소대립 발음쌍 */
   pronunciationFocus?: PronunciationFocus;
 }
 
 export type PronunciationFocus =
-  | "r / l"
-  | "f / p"
-  | "v / b"
-  | "θ / s"
-  | "ɪ / iː"
-  | "æ / ɛ";
+  "r / l" | "f / p" | "v / b" | "θ / s" | "ɪ / iː" | "æ / ɛ" | "ʊ / uː";

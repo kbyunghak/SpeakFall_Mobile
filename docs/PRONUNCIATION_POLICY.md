@@ -20,15 +20,15 @@
 
 ## 용어
 
-| 용어 | 설명 |
-| --- | --- |
-| Target | 화면에 표시된 목표 단어 |
-| Top | STT가 가장 가능성이 높다고 반환한 첫 번째 후보 |
-| Alternatives | STT가 함께 반환한 나머지 후보. 최대 4개를 사용 |
-| Exact Match | 정규화 후 철자가 완전히 같은 경우 |
-| Homophone | 발음은 같지만 철자가 다른 단어 |
+| 용어          | 설명                                              |
+| ------------- | ------------------------------------------------- |
+| Target        | 화면에 표시된 목표 단어                           |
+| Top           | STT가 가장 가능성이 높다고 반환한 첫 번째 후보    |
+| Alternatives  | STT가 함께 반환한 나머지 후보. 최대 4개를 사용    |
+| Exact Match   | 정규화 후 철자가 완전히 같은 경우                 |
+| Homophone     | 발음은 같지만 철자가 다른 단어                    |
 | Natural Alias | 자연스럽게 모드에서만 허용하는 제한적인 인식 변형 |
-| Minimal Pair | 한 음소 차이로 의미가 달라지는 단어 쌍 |
+| Minimal Pair  | 한 음소 차이로 의미가 달라지는 단어 쌍            |
 
 ## 입력 데이터
 
@@ -52,10 +52,7 @@ type SpeechResult = {
 판정 후보는 매 발화마다 STT 결과에서 자동으로 생성합니다.
 
 ```ts
-const candidates = [
-  result.transcript,
-  ...result.alternatives.map(({ transcript }) => transcript),
-]
+const candidates = [result.transcript, ...result.alternatives.map(({ transcript }) => transcript)]
   .map(normalize)
   .filter(Boolean)
   .slice(0, 5);
@@ -156,13 +153,15 @@ STT가 Top 순위를 잘못 정했더라도 후보 안에서 목표 발음을 �
 
 ### 판정 순서
 
-1. Top이 Target 또는 Homophone과 Exact Match면 성공
-2. Alternatives 중 Target 또는 Homophone과 Exact Match가 있으면 성공
-3. Top 또는 Alternatives 중 Natural Alias Exact Match가 있으면 성공
-4. Exact Match가 없고 Top이 Target의 Minimal Pair 상대이면 실패
-5. Minimal Pair 충돌 후보를 제외하고 안전한 문자열 유사도를 계산
-6. 트랙별 임계값 이상이면 성공
-7. 나머지는 실패
+1. Top Target Exact Match면 성공
+2. Alternative Target Exact Match면 성공
+3. Top Homophone Exact Match면 성공
+4. Alternative Homophone Exact Match면 성공
+5. Top Natural Alias Exact Match면 성공
+6. Alternative Natural Alias Exact Match면 성공
+7. 위 일치가 없고 Top이 Target의 Minimal Pair 상대이면 실패
+8. 안전한 문자열 유사도를 계산해 트랙별 임계값 이상이면 성공
+9. 나머지는 실패
 
 핵심 규칙은 Exact Match를 Minimal Pair 검사보다 먼저 실행하는 것입니다.
 
@@ -207,21 +206,19 @@ Alternatives: chip, cheap
 Exact Match, Homophone, Natural Alias와 Minimal Pair 검사를 통과한 뒤 마지막 보조 수단으로만 사용합니다.
 
 ```ts
-similarity =
-  1 - editDistance(target, candidate)
-      / Math.max(target.length, candidate.length);
+similarity = 1 - editDistance(target, candidate) / Math.max(target.length, candidate.length);
 ```
 
 현재 트랙별 목표 임계값은 다음과 같습니다.
 
-| 트랙 | Leniency | 통과 임계값 |
-| --- | ---: | ---: |
-| 기초 | 0.00 | 0.75 |
-| 초등 | 0.02 | 0.73 |
-| 중등 | 0.04 | 0.71 |
-| 고등 | 0.07 | 0.68 |
-| 비즈니스 | 0.09 | 0.66 |
-| 전문/학술 | 0.11 | 0.64 |
+| 트랙      | Leniency | 통과 임계값 |
+| --------- | -------: | ----------: |
+| 기초      |     0.00 |        0.75 |
+| 초등      |     0.02 |        0.73 |
+| 중등      |     0.04 |        0.71 |
+| 고등      |     0.07 |        0.68 |
+| 비즈니스  |     0.09 |        0.66 |
+| 전문/학술 |     0.11 |        0.64 |
 
 Minimal Pair 상대 단어가 높은 철자 유사도만으로 성공하지 않도록 유사도 후보에서 제외합니다.
 
@@ -264,6 +261,8 @@ Alternatives: bear, beer
 
 동음어는 음성만으로 구별할 수 없으므로 꼼꼼하게 모드에서도 인정합니다. 꼼꼼함은 Top 후보만 사용하고 Natural Alias와 유사도를 허용하지 않는 방식으로 확보합니다.
 
+내부 `normal` strictness는 기존 데이터 및 진단 호환을 위한 레거시 전용 값입니다. 현재 사용자 UI에서는 `easy`를 자연스럽게, `hard`를 꼼꼼하게로 사용하며 `normal`을 선택지로 노출하지 않습니다.
+
 ## Minimal Pair 관리
 
 Minimal Pair는 실제 두 단어의 쌍으로 관리합니다.
@@ -274,15 +273,13 @@ const MINIMAL_PAIRS = {
   "f / p": [["fan", "pan"]],
   "v / b": [["vest", "best"]],
   "θ / s": [["think", "sink"]],
-  "ɪ / iː": [
-    ["ship", "sheep"],
-    ["full", "fool"],
-  ],
+  "ɪ / iː": [["ship", "sheep"]],
   "æ / ɛ": [["bad", "bed"]],
+  "ʊ / uː": [["full", "fool"]],
 };
 ```
 
-`full–fool`은 목표 정책에는 포함하지만 현재 코드에는 아직 등록되어 있지 않으므로 구현 시 추가합니다.
+`full /fʊl/–fool /fuːl/`은 `ɪ / iː`가 아니라 `ʊ / uː` 대비로 관리합니다.
 
 ## 발화 상태와 사용자 피드백
 
@@ -290,24 +287,18 @@ const MINIMAL_PAIRS = {
 
 ```ts
 type SpeechUiState =
-  | "ready"
-  | "listening"
-  | "checking"
-  | "success"
-  | "mismatch"
-  | "no-speech"
-  | "error";
+  "ready" | "listening" | "checking" | "success" | "mismatch" | "no-speech" | "error";
 ```
 
-| 상태 | 권장 색상 | 문구 |
-| --- | --- | --- |
-| `ready` | 파랑 | 말해보세요 |
-| `listening` | 빨강 | 듣고 있어요… |
-| `checking` | 노랑 | 발음을 확인하고 있어요… |
-| `success` | 초록 | 성공! 친구를 구했어요 |
-| `mismatch` | 주황 | “bad”로 들었어요. 다시 말해보세요 |
+| 상태        | 권장 색상      | 문구                                |
+| ----------- | -------------- | ----------------------------------- |
+| `ready`     | 파랑           | 말해보세요                          |
+| `listening` | 빨강           | 듣고 있어요…                        |
+| `checking`  | 노랑           | 발음을 확인하고 있어요…             |
+| `success`   | 초록           | 성공! 친구를 구했어요               |
+| `mismatch`  | 주황           | “bad”로 들었어요. 다시 말해보세요   |
 | `no-speech` | 회색 또는 보라 | 잘 못 알아들었어요. 다시 말해주세요 |
-| `error` | 진한 빨강 | 마이크 연결을 확인해주세요 |
+| `error`     | 진한 빨강      | 마이크 연결을 확인해주세요          |
 
 모든 발화는 다음 중 하나로 종료되어야 합니다.
 
@@ -324,14 +315,14 @@ type SpeechUiState =
 
 현재 동작을 기준으로 다음 값을 유지하고 실제 기기에서 조정합니다.
 
-| 항목 | 기준값 |
-| --- | ---: |
-| Android/Web 후보 수 | 최대 5개 |
-| Android partial 종료 판정 | 마지막 결과 후 600ms |
-| 음성 세션 reset guard | 200ms |
-| Android 자동 재시작 | stopped 후 250ms |
-| Android 명시적 reset 후 재시작 | 350ms |
-| 일반 성공 후 다음 단어 | 700ms |
+| 항목                           |               기준값 |
+| ------------------------------ | -------------------: |
+| Android/Web 후보 수            |             최대 5개 |
+| Android partial 종료 판정      | 마지막 결과 후 600ms |
+| 음성 세션 reset guard          |                200ms |
+| Android 자동 재시작            |     stopped 후 250ms |
+| Android 명시적 reset 후 재시작 |                350ms |
+| 일반 성공 후 다음 단어         |                700ms |
 
 무음 상태는 transcript가 없는 별도 타임아웃으로 처리하며 `mismatch`와 구분합니다.
 
@@ -345,13 +336,14 @@ type PronunciationReason =
   | "alternative-exact"
   | "top-homophone"
   | "alternative-homophone"
-  | "natural-alias"
+  | "top-natural-alias"
+  | "alternative-natural-alias"
   | "similar"
   | "minimal-pair-conflict"
-  | "no-match"
-  | "no-speech"
-  | "engine-error";
+  | "no-match";
 ```
+
+`no-speech`와 `engine-error`는 evaluator의 판정 사유가 아니라 Phase 2의 음성 UI 상태로 별도 관리합니다.
 
 ## 테스트 기준
 
@@ -402,15 +394,15 @@ think / sink
 
 ## 구현 대상 파일
 
-| 파일 | 변경 내용 |
-| --- | --- |
-| `src/lib/speech/pronunciationEvaluator.ts` | 판정 순서 및 결과 코드 변경 |
-| `src/lib/speech/minimalPairs.ts` | 누락된 최소대립쌍 추가 |
-| `src/data/words/types.ts` | Homophone/Natural Alias 타입 분리 |
-| `src/data/words/*.ts` | 안전한 허용 표현 등록 및 기존 accepts 검수 |
-| `src/hooks/useSpeechRecognition.ts` | 무음/엔진 상태 전달 보강 |
-| `src/components/speakfall/SpeakFallGame.tsx` | 상태별 마이크 색상과 피드백 표시 |
-| `src/lib/speech/pronunciationEvaluator.test.ts` | 두 모드 정책 단위 테스트 추가 |
+| 파일                                            | 변경 내용                                  |
+| ----------------------------------------------- | ------------------------------------------ |
+| `src/lib/speech/pronunciationEvaluator.ts`      | 판정 순서 및 결과 코드 변경                |
+| `src/lib/speech/minimalPairs.ts`                | 누락된 최소대립쌍 추가                     |
+| `src/data/words/types.ts`                       | Homophone/Natural Alias 타입 분리          |
+| `src/data/words/*.ts`                           | 안전한 허용 표현 등록 및 기존 accepts 검수 |
+| `src/hooks/useSpeechRecognition.ts`             | 무음/엔진 상태 전달 보강                   |
+| `src/components/speakfall/SpeakFallGame.tsx`    | 상태별 마이크 색상과 피드백 표시           |
+| `src/lib/speech/pronunciationEvaluator.test.ts` | 두 모드 정책 단위 테스트 추가              |
 
 ## 비목표
 

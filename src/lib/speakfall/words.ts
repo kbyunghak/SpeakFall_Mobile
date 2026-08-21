@@ -87,6 +87,7 @@ export const PRONUNCIATION_FOCUSES: PronunciationFocus[] = [
   "θ / s",
   "ɪ / iː",
   "æ / ɛ",
+  "ʊ / uː",
 ];
 
 /** 한국어 화자가 자주 혼동하는 최소대립 발음쌍을 반환합니다. */
@@ -99,6 +100,7 @@ export function getPronunciationFocuses(item: WordItem): PronunciationFocus[] {
   if (/[θs]/.test(pronunciation)) focuses.push("θ / s");
   if (pronunciation.includes("ɪ") || pronunciation.includes("i")) focuses.push("ɪ / iː");
   if (/[æɛ]/.test(pronunciation)) focuses.push("æ / ɛ");
+  if (pronunciation.includes("ʊ") || pronunciation.includes("uː")) focuses.push("ʊ / uː");
   return focuses;
 }
 
@@ -168,13 +170,7 @@ export function findTranscriptIpa(transcript: string): string | null {
     if (commonRecognitionIpa[token]) return commonRecognitionIpa[token];
   }
 
-  const acceptedMatch = WORDS.find((item) =>
-    (item.accepts ?? []).some((accepted) => {
-      const form = normalize(accepted);
-      return form === normalized || tokens.includes(form);
-    }),
-  );
-  return acceptedMatch?.ipa ?? null;
+  return null;
 }
 
 function editDistance(a: string, b: string): number {
@@ -211,7 +207,9 @@ export function scoreTranscript(
   forgiveSingleSoundDifference = false,
 ): number {
   const spokenTokens = normalize(transcript).split(" ").filter(Boolean);
-  const candidates = [item.word, ...(item.accepts ?? [])];
+  // 허용 정책은 pronunciationEvaluator가 담당합니다. 이 함수는 목표 단어와의
+  // 문자열 유사도만 계산하며 Homophone/Alias를 정답으로 확정하지 않습니다.
+  const candidates = [item.word];
   let best = 0;
   for (const c of candidates) {
     best = Math.max(best, similarity(c, transcript));
