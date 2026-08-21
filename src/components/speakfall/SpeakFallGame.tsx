@@ -1326,6 +1326,27 @@ export function SpeakFallGame() {
         strictness: strictRef.current,
         trackLeniency: getTrack(trackRef.current).leniency,
       });
+      if (result.engine === "android-speech") {
+        console.info(
+          `[STT Evaluation] ${JSON.stringify({
+            target: cur.word,
+            targetIpa: cur.ipa,
+            transcript: result.transcript,
+            alternatives: result.alternatives.map(({ transcript: alternative }) => alternative),
+            isFinal: result.isFinal,
+            mode:
+              strictRef.current === "easy"
+                ? "natural"
+                : strictRef.current === "hard"
+                  ? "precise"
+                  : "legacy-normal",
+            accepted: evaluation.accepted,
+            reason: evaluation.reason,
+            bestCandidate: evaluation.bestCandidate,
+            timestamp: result.timestamp,
+          })}`,
+        );
+      }
       if (evaluation.accepted) {
         if (utteranceTimerRef.current !== null) {
           window.clearTimeout(utteranceTimerRef.current);

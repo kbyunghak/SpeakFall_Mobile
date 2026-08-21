@@ -79,13 +79,24 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
           nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
-              const matches = data?.matches?.filter(Boolean) ?? [];
+              const matches = (data?.matches?.filter(Boolean) ?? []).slice(0, 5);
               const primaryMatch = matches[0];
               if (!primaryMatch) return;
+              console.info(
+                `[STT Debug] ${JSON.stringify({
+                  engine: "android-speech",
+                  matches,
+                  count: matches.length,
+                  top: primaryMatch,
+                  alternatives: matches.slice(1, 5),
+                  isFinal: false,
+                  timestamp: Date.now(),
+                })}`,
+              );
               markSpeaking();
               cbRef.current({
                 transcript: primaryMatch,
-                alternatives: matches.slice(1).map((transcript) => ({ transcript })),
+                alternatives: matches.slice(1, 5).map((transcript) => ({ transcript })),
                 timestamp: Date.now(),
                 isFinal: false,
                 engine: "android-speech",
