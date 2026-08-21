@@ -63,6 +63,8 @@ import {
 import { APP_VERSION } from "@/lib/app/version";
 import { formatCompactNumber } from "@/lib/format/compactNumber";
 import {
+  fadeOutBackgroundMusic,
+  GAMEPLAY_BGM_FADE_MS,
   playClick,
   playCoin,
   playGameOver,
@@ -662,14 +664,28 @@ export function SpeakFallGame() {
     setSoundEffectsVolume(sfxVolume);
   }, [sfxVolume]);
 
+  const gameplayBgmStoppedRef = useRef(false);
+
   useEffect(() => {
     if (phase === "over") {
+      gameplayBgmStoppedRef.current = false;
       setBackgroundMusic("result");
       return;
     }
 
-    if (phase === "countdown" || phase === "playing") {
+    if (phase === "countdown") {
+      gameplayBgmStoppedRef.current = false;
       setBackgroundMusic("game");
+      return;
+    }
+
+    if (phase === "playing") {
+      if (!gameplayBgmStoppedRef.current && active?.state === "falling") {
+        gameplayBgmStoppedRef.current = true;
+        fadeOutBackgroundMusic(GAMEPLAY_BGM_FADE_MS);
+      } else if (!gameplayBgmStoppedRef.current) {
+        setBackgroundMusic("game");
+      }
       return;
     }
 
@@ -678,8 +694,9 @@ export function SpeakFallGame() {
       return;
     }
 
+    gameplayBgmStoppedRef.current = false;
     setBackgroundMusic("main");
-  }, [phase]);
+  }, [active?.state, phase]);
 
   /** SpeakFall 라우트를 벗어나면 이 게임이 요청한 BGM을 정지합니다. */
   useEffect(() => () => setBackgroundMusic(null), []);

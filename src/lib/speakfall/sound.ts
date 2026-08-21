@@ -11,6 +11,7 @@ let backgroundMusicVolume = 0.16;
 let soundEffectsVolume = 0.35;
 
 export type BackgroundMusicTrack = "main" | "game" | "result";
+export const GAMEPLAY_BGM_FADE_MS = 400;
 
 const BACKGROUND_MUSIC_URLS: Record<BackgroundMusicTrack, string> = {
   main: "/audio/bgm/main-theme.mp3",
@@ -21,6 +22,15 @@ const BACKGROUND_MUSIC_URLS: Record<BackgroundMusicTrack, string> = {
 let backgroundMusic: HTMLAudioElement | null = null;
 let backgroundMusicTrack: BackgroundMusicTrack | null = null;
 let requestedBackgroundMusicTrack: BackgroundMusicTrack | null = null;
+let backgroundMusicFadeFrame: number | null = null;
+
+function cancelBackgroundMusicFade(): void {
+  if (typeof window !== "undefined" && backgroundMusicFadeFrame !== null) {
+    window.cancelAnimationFrame(backgroundMusicFadeFrame);
+    backgroundMusicFadeFrame = null;
+  }
+  if (backgroundMusic) backgroundMusic.volume = backgroundMusicVolume;
+}
 
 function syncBackgroundMusic(): void {
   if (typeof window === "undefined") return;
@@ -54,7 +64,9 @@ function syncBackgroundMusic(): void {
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!ctx) {
-    const Ctx = (window as any).AudioContext || (window as any).webkitAudioContext;
+    const Ctx =
+      window.AudioContext ||
+      (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctx) return null;
     const newCtx = new Ctx();
     const gain = newCtx.createGain();
@@ -98,8 +110,39 @@ export function setSoundEffectsVolume(value: number): void {
 }
 
 export function setBackgroundMusic(track: BackgroundMusicTrack | null): void {
+  cancelBackgroundMusicFade();
   requestedBackgroundMusicTrack = track;
   syncBackgroundMusic();
+}
+
+/** 현재 BGM을 부드럽게 줄인 뒤 일시정지합니다. ON/OFF과 저장 볼륨은 변경하지 않습니다. */
+export function fadeOutBackgroundMusic(durationMs = GAMEPLAY_BGM_FADE_MS): void {
+  if (typeof window === "undefined") return;
+
+  requestedBackgroundMusicTrack = null;
+  cancelBackgroundMusicFade();
+
+  const audio = backgroundMusic;
+  if (!audio || audio.paused || durationMs <= 0) {
+    audio?.pause();
+    return;
+  }
+
+  const initialVolume = audio.volume;
+  const startedAt = window.performance.now();
+  const fade = (now: number) => {
+    const progress = Math.min(1, (now - startedAt) / durationMs);
+    audio.volume = initialVolume * (1 - progress);
+    if (progress >= 1) {
+      audio.pause();
+      audio.volume = backgroundMusicVolume;
+      backgroundMusicFadeFrame = null;
+      return;
+    }
+    backgroundMusicFadeFrame = window.requestAnimationFrame(fade);
+  };
+
+  backgroundMusicFadeFrame = window.requestAnimationFrame(fade);
 }
 
 function tone(
