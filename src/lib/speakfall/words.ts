@@ -27,6 +27,11 @@ export const EXTRA_WORDS_ON_LIFE_LOST = 3;
 /** 레벨당 최대 단어 수 상한 */
 export const MAX_WORDS_PER_LEVEL = 40;
 
+/** 하트가 모두 소진되면 남은 단어 수와 관계없이 즉시 라운드를 종료합니다. */
+export function shouldEndRoundForHp(hp: number): boolean {
+  return hp <= 0;
+}
+
 /** 현재 레벨에 맞는 단어 풀을 반환합니다. */
 export function getWordsByLevel(level: number, track: TrackType = "basic"): WordItem[] {
   return getWordsByTrackLevel(level, track);

@@ -3,12 +3,19 @@ import {
   createLevelWordQueue,
   mergeLevelWords,
   RESCUES_PER_LEVEL_UP,
+  shouldEndRoundForHp,
   WORDS_PER_LEVEL,
 } from "./words";
 
 test("화면의 기본 단어 수와 레벨 종료 구조 수가 같다", () => {
   expect(WORDS_PER_LEVEL).toBe(30);
   expect(RESCUES_PER_LEVEL_UP).toBe(WORDS_PER_LEVEL);
+});
+
+test("하트가 모두 소진되면 남은 단어가 있어도 라운드를 종료한다", () => {
+  expect(shouldEndRoundForHp(1)).toBe(false);
+  expect(shouldEndRoundForHp(0)).toBe(true);
+  expect(shouldEndRoundForHp(-1)).toBe(true);
 });
 
 describe("mergeLevelWords", () => {

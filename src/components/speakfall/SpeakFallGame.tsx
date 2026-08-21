@@ -28,6 +28,7 @@ import {
   findTranscriptIpa,
   getWordsByLevel,
   getPronunciationFocus,
+  shouldEndRoundForHp,
   type Strictness,
   type WordItem,
 } from "@/lib/speakfall/words";
@@ -1740,11 +1741,15 @@ export function SpeakFallGame() {
             playMiss();
             window.setTimeout(() => setFlash(null), 220);
 
-            // 하트는 결과 별점에 반영하되, 30개 단어 처리가 끝나기 전에는 종료하지 않습니다.
+            // 오답도 처리 단어 수에는 포함하지만, 하트가 모두 소진되면 즉시 종료합니다.
             const next = Math.max(0, statsRef.current.hp - 1);
             statsRef.current.hp = next;
             setHp(next);
-            window.setTimeout(() => queueNext(0), 650);
+            if (shouldEndRoundForHp(next)) {
+              window.setTimeout(() => stopGame(), 900);
+            } else {
+              window.setTimeout(() => queueNext(0), 650);
+            }
           }
           return { ...cur, y: 1, state: "crying" };
         }
@@ -1757,7 +1762,7 @@ export function SpeakFallGame() {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [phase, queueNext]);
+  }, [phase, queueNext, stopGame]);
 
   useEffect(() => {
     return () => {
