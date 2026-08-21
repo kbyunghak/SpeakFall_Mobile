@@ -49,6 +49,30 @@ describe("evaluatePronunciation 자연스럽게", () => {
     expect(evaluation).toMatchObject({ accepted: true, reason: "top-homophone" });
   });
 
+  test("단어별 데이터가 없어도 중앙 Homophone을 성공 처리한다", () => {
+    const evaluation = evaluatePronunciation({
+      target: word("eye"),
+      result: result("I"),
+      strictness: "easy",
+    });
+    expect(evaluation).toMatchObject({ accepted: true, reason: "top-homophone" });
+  });
+
+  test("중앙 Homophone과 단어별 compatibility 값을 합쳐 사용한다", () => {
+    const central = evaluatePronunciation({
+      target: word("two", { homophones: ["deuce"] }),
+      result: result("too"),
+      strictness: "easy",
+    });
+    const compatibility = evaluatePronunciation({
+      target: word("two", { homophones: ["deuce"] }),
+      result: result("deuce"),
+      strictness: "easy",
+    });
+    expect(central).toMatchObject({ accepted: true, reason: "top-homophone" });
+    expect(compatibility).toMatchObject({ accepted: true, reason: "top-homophone" });
+  });
+
   test("Alternative Homophone을 성공 처리한다", () => {
     const evaluation = evaluatePronunciation({
       target: word("rain", { homophones: ["reign"] }),

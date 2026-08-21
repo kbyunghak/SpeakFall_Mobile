@@ -1,6 +1,8 @@
 import type { WordItem } from "@/data/words";
 import { similarity, type Strictness } from "@/lib/speakfall/words";
 import { getMinimalPairConflict } from "./minimalPairs";
+import { getCentralHomophones } from "./homophones";
+import { normalizeSpeechText } from "./normalization";
 import type { SpeechResult } from "./types";
 
 export type PronunciationReason =
@@ -31,15 +33,8 @@ type EvaluationOptions = {
   trackLeniency?: number;
 };
 
-const normalize = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z\s]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
 const normalizeForms = (values: readonly string[] | undefined) =>
-  new Set((values ?? []).map(normalize).filter(Boolean));
+  new Set((values ?? []).map(normalizeSpeechText).filter(Boolean));
 
 const findCandidate = (
   candidates: readonly string[],
@@ -59,11 +54,14 @@ export function evaluatePronunciation({
   trackLeniency = 0,
 }: EvaluationOptions): PronunciationEvaluation {
   const candidates = [result.transcript, ...result.alternatives.map(({ transcript }) => transcript)]
-    .map(normalize)
+    .map(normalizeSpeechText)
     .filter(Boolean)
     .slice(0, 5);
-  const targetForm = normalize(target.word);
-  const homophones = normalizeForms(target.homophones);
+  const targetForm = normalizeSpeechText(target.word);
+  const homophones = new Set([
+    ...getCentralHomophones(target.word),
+    ...normalizeForms(target.homophones),
+  ]);
   const naturalAliases = normalizeForms(target.naturalAliases);
   const topCandidate = candidates[0] ?? "";
   const minimalPairConflict = getMinimalPairConflict(target.word, topCandidate) ?? undefined;
