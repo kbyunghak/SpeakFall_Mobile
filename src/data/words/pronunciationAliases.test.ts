@@ -15,6 +15,11 @@ describe("pronunciation aliases", () => {
     expect(rain?.homophones).toContain("reign");
   });
 
+  test("two에 to와 too가 Homophone으로 등록되어 있다", () => {
+    const two = WORDS.find(({ word }) => word === "two");
+    expect(two?.homophones).toEqual(expect.arrayContaining(["to", "too"]));
+  });
+
   test("pig-pick은 Homophone이 아닌 Natural Alias다", () => {
     const pig = WORDS.find(({ word }) => normalize(word) === "pig");
     expect(pig?.naturalAliases).toContain("pick");

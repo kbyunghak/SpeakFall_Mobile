@@ -23,9 +23,6 @@ import {
 } from "lucide-react";
 
 import {
-  EXTRA_WORDS_ON_MISS,
-  MAX_WORDS_PER_LEVEL,
-  RESCUES_PER_LEVEL_UP,
   WORDS_PER_LEVEL,
   createLevelWordQueue,
   findTranscriptIpa,
@@ -91,7 +88,9 @@ import {
 } from "@/components/speakfall/SkinVisuals";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { evaluatePronunciation } from "@/lib/speech/pronunciationEvaluator";
-import type { SpeechResult } from "@/lib/speech/types";
+import { getUtteranceEndTimeoutMs } from "@/lib/speech/speechTiming";
+import { getSpeechUiMessage, SPEECH_MISMATCH_FEEDBACK_MS } from "@/lib/speech/speechUi";
+import type { SpeechResult, SpeechUiState } from "@/lib/speech/types";
 import { showRewardedUnlockAd } from "@/lib/ads/rewarded";
 import {
   fallSpeedForLevel,
@@ -242,7 +241,6 @@ type RewardAdConfirmation = {
 const HUES = [10, 45, 145, 200, 255, 300];
 const MAX_HP = 5;
 /** 실패로 감속되더라도 젤리가 멈추지 않도록 하는 최소 낙하 속도 */
-const MIN_FALL_SPEED = 0.022;
 const IS_DEV = import.meta.env.DEV;
 const MUSIC_ENABLED_STORAGE_KEY = "speakfall:music-enabled";
 
@@ -466,6 +464,8 @@ export function SpeakFallGame() {
   const [heard, setHeard] = useState("");
   /** 인식 세션을 초기화해도 유지되는 가장 최근 오답 피드백 */
   const [feedbackTranscript, setFeedbackTranscript] = useState("");
+  const [speechUiState, setSpeechUiState] = useState<SpeechUiState>("ready");
+  const [speechRetryPrompt, setSpeechRetryPrompt] = useState(false);
   const [flash, setFlash] = useState<"hit" | "miss" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [strictness, setStrictness] = useState<Strictness>("easy");
@@ -486,7 +486,7 @@ export function SpeakFallGame() {
   /** 도감에서 보고 있는 트랙 */
   const [colTrack, setColTrack] = useState<TrackType>("basic");
   const [wordsRemaining, setWordsRemaining] = useState(WORDS_PER_LEVEL);
-  const [levelRescued, setLevelRescued] = useState(0);
+  const [levelProcessed, setLevelProcessed] = useState(0);
   const [hp, setHp] = useState(MAX_HP);
   const [progress, setProgress] = useState<Progress>(emptyProgress());
   const [result, setResult] = useState<RoundResult | null>(null);
@@ -523,7 +523,7 @@ export function SpeakFallGame() {
   const [rewardAdConfirmation, setRewardAdConfirmation] = useState<RewardAdConfirmation | null>(
     null,
   );
-  
+
   const activeRef = useRef<Faller | null>(null);
   const hiddenLabTapRef = useRef({ count: 0, lastTap: 0 });
   const pendingRewardActionRef = useRef<(() => void | Promise<void>) | null>(null);
@@ -575,8 +575,7 @@ export function SpeakFallGame() {
     };
 
     updateScale();
-    const observer =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScale);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScale);
     observer?.observe(shell);
     window.addEventListener("resize", updateScale);
     window.addEventListener("orientationchange", updateScale);
@@ -720,10 +719,7 @@ export function SpeakFallGame() {
     [progress.equippedJelly],
   );
   const equippedJellySet = useMemo(
-    () =>
-      SPECIAL_JELLIES.filter(
-        (jelly) => jelly.category === equippedJelly.category,
-      ),
+    () => SPECIAL_JELLIES.filter((jelly) => jelly.category === equippedJelly.category),
     [equippedJelly.category],
   );
   /** 현재 게임 트랙에서 다운로드가 끝난 추가 단어. 기본 단어와 출제 시점에 합칩니다. */
@@ -925,23 +921,17 @@ export function SpeakFallGame() {
 
   const buyJellySet = useCallback(
     (category: JellyCategory) => {
-      const setJellies = SPECIAL_JELLIES.filter(
-        (jelly) => jelly.category === category,
-      );
+      const setJellies = SPECIAL_JELLIES.filter((jelly) => jelly.category === category);
 
       if (setJellies.length === 0) return;
 
       const representative =
-        setJellies.find(
-          (jelly) =>
-            jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
-        ) ?? setJellies[0]!;
+        setJellies.find((jelly) => jelly.color === JELLY_REPRESENTATIVE_COLORS[category]) ??
+        setJellies[0]!;
 
       const alreadyOwned =
         category === "default" ||
-        setJellies.some((jelly) =>
-          isJellyOwned(progress.ownedJellies, jelly.id),
-        );
+        setJellies.some((jelly) => isJellyOwned(progress.ownedJellies, jelly.id));
 
       if (alreadyOwned) {
         showShopToast("이미 보유 중인 젤리 SET이에요");
@@ -957,10 +947,7 @@ export function SpeakFallGame() {
         ...progress,
         coins: progress.coins - representative.price,
         ownedJellies: [
-          ...new Set([
-            ...progress.ownedJellies,
-            ...setJellies.map((jelly) => jelly.id),
-          ]),
+          ...new Set([...progress.ownedJellies, ...setJellies.map((jelly) => jelly.id)]),
         ],
         equippedJelly: representative.id,
       };
@@ -968,32 +955,24 @@ export function SpeakFallGame() {
       setProgress(next);
       saveProgress(next);
       playCoin();
-      showShopToast(
-        `${JELLY_CATEGORY_LABELS[category]} 구매 완료!`,
-      );
+      showShopToast(`${JELLY_CATEGORY_LABELS[category]} 구매 완료!`);
     },
     [progress, showShopToast],
   );
 
   const equipJellySet = useCallback(
     (category: JellyCategory) => {
-      const setJellies = SPECIAL_JELLIES.filter(
-        (jelly) => jelly.category === category,
-      );
+      const setJellies = SPECIAL_JELLIES.filter((jelly) => jelly.category === category);
 
       if (setJellies.length === 0) return;
 
       const representative =
-        setJellies.find(
-          (jelly) =>
-            jelly.color === JELLY_REPRESENTATIVE_COLORS[category],
-        ) ?? setJellies[0]!;
+        setJellies.find((jelly) => jelly.color === JELLY_REPRESENTATIVE_COLORS[category]) ??
+        setJellies[0]!;
 
       const owned =
         category === "default" ||
-        setJellies.some((jelly) =>
-          isJellyOwned(progress.ownedJellies, jelly.id),
-        );
+        setJellies.some((jelly) => isJellyOwned(progress.ownedJellies, jelly.id));
 
       if (!testUnlockSkins && !owned) {
         showShopToast("먼저 구매해야 해요");
@@ -1008,9 +987,7 @@ export function SpeakFallGame() {
       setProgress(next);
       saveProgress(next);
       playClick();
-      showShopToast(
-        `${JELLY_CATEGORY_LABELS[category]}를 장착했어요`,
-      );
+      showShopToast(`${JELLY_CATEGORY_LABELS[category]}를 장착했어요`);
     },
     [progress, showShopToast, testUnlockSkins],
   );
@@ -1056,13 +1033,11 @@ export function SpeakFallGame() {
     },
     [level, playArchiveWords, track],
   );
-  
+
   const makeFaller = useCallback(
     (item: WordItem): Faller => {
       const jelly =
-        equippedJellySet[
-          jellySequenceRef.current % equippedJellySet.length
-        ] ?? equippedJelly;
+        equippedJellySet[jellySequenceRef.current % equippedJellySet.length] ?? equippedJelly;
 
       jellySequenceRef.current += 1;
 
@@ -1089,21 +1064,6 @@ export function SpeakFallGame() {
     setNextWord(q[0] ?? null);
     return next;
   }, []);
-
-  const addPenaltyWords = useCallback(
-    (count: number) => {
-      const currentSize = wordQueueRef.current.length;
-      const canAdd = Math.max(0, MAX_WORDS_PER_LEVEL - currentSize);
-      const addCount = Math.min(count, canAdd);
-      if (addCount <= 0) return;
-
-      const extras = makeLevelWords(addCount);
-      wordQueueRef.current.push(...extras);
-      setWordsRemaining((n) => Math.min(n + addCount, MAX_WORDS_PER_LEVEL));
-      setNextWord(wordQueueRef.current[0] ?? null);
-    },
-    [makeLevelWords],
-  );
 
   /** 라운드 종료 — 결과 계산 후 진행도 저장. */
   const finishRound = useCallback((cleared: boolean) => {
@@ -1151,8 +1111,19 @@ export function SpeakFallGame() {
   const lastFinalRef = useRef("");
   /** Android가 final을 보내지 않을 때 마지막 interim을 발화 종료로 확정하는 타이머 */
   const utteranceTimerRef = useRef<number | null>(null);
+  /** mismatch 안내 후 ready로 돌아가는 UI 타이머 */
+  const speechUiFeedbackTimerRef = useRef<number | null>(null);
+  const speechUiGenerationRef = useRef(0);
   const pendingTranscriptRef = useRef("");
   const utteranceHandledRef = useRef(false);
+  const ttsPlayingRef = useRef(false);
+
+  const clearSpeechUiFeedbackTimer = useCallback(() => {
+    if (speechUiFeedbackTimerRef.current !== null) {
+      window.clearTimeout(speechUiFeedbackTimerRef.current);
+      speechUiFeedbackTimerRef.current = null;
+    }
+  }, []);
 
   /**
    * 모든 시도 전에 음성 인식 결과를 완전히 초기화합니다.
@@ -1163,13 +1134,15 @@ export function SpeakFallGame() {
       window.clearTimeout(utteranceTimerRef.current);
       utteranceTimerRef.current = null;
     }
+    clearSpeechUiFeedbackTimer();
+    speechUiGenerationRef.current += 1;
     setHeard("");
     lastFinalRef.current = "";
     pendingTranscriptRef.current = "";
     utteranceHandledRef.current = false;
     muteUntilRef.current = Date.now() + 200;
     speechRef.current?.reset();
-  }, []);
+  }, [clearSpeechUiFeedbackTimer]);
 
   /** Move on to the next friend after a short beat. */
 
@@ -1184,6 +1157,8 @@ export function SpeakFallGame() {
           return;
         }
         setFeedbackTranscript("");
+        setSpeechRetryPrompt(false);
+        setSpeechUiState("ready");
         resetSpeech();
         recentRef.current.push(upcoming.word);
         if (recentRef.current.length > 6) recentRef.current.shift();
@@ -1202,6 +1177,8 @@ export function SpeakFallGame() {
       }
       utteranceHandledRef.current = true;
       pendingTranscriptRef.current = "";
+      setSpeechUiState("success");
+      setSpeechRetryPrompt(false);
       setHeard("");
       setFeedbackTranscript("");
       playRescue();
@@ -1214,7 +1191,7 @@ export function SpeakFallGame() {
       window.setTimeout(() => setPlusOne((p) => (p === target.id ? null : p)), 900);
       setActive((cur) => (cur && cur.id === target.id ? { ...cur, state: "saved" } : cur));
       setRescued((r) => r + 1);
-      setLevelRescued((r) => r + 1);
+      setLevelProcessed((count) => count + 1);
       setAttempts((a) => a + 1);
       clearedRef.current.add(target.word);
       if (!roundWordsRef.current.some((w) => w.word === target.word)) {
@@ -1251,18 +1228,17 @@ export function SpeakFallGame() {
       setFlash("hit");
       window.setTimeout(() => setFlash(null), 220);
 
-      // 레벨업 조건: 20명 구조 또는 큐가 비었을 때
-      const willLevelUp =
-        levelRescued + 1 >= RESCUES_PER_LEVEL_UP || wordQueueRef.current.length === 0;
+      // 정답 여부와 관계없이 준비된 30개 단어를 모두 처리하면 라운드를 마칩니다.
+      const willLevelUp = wordQueueRef.current.length === 0;
       queueNext(willLevelUp ? 1600 : 700);
       if (willLevelUp) {
         window.setTimeout(() => levelUp(), 1500);
       }
     },
-    [queueNext, showToast, levelRescued, levelUp, spawnParticles],
+    [queueNext, showToast, levelUp, spawnParticles],
   );
 
-  /** Misrecognition: slow down, then offer a Pass button after 3 misses. */
+  /** 오답도 현재 단어를 처리한 것으로 확정하고 다음 단어로 넘어갑니다. */
   const miss = useCallback(() => {
     const cur = activeRef.current;
     setCombo(0);
@@ -1272,45 +1248,57 @@ export function SpeakFallGame() {
     // 다음 시도가 이전 발음과 합쳐지지 않도록 인식 결과를 완전히 초기화합니다.
     resetSpeech();
     if (!cur || cur.state !== "falling") return;
-
-    const nextMissCount = cur.missCount + 1;
-    // 여러 번 틀려도 멈추지 않도록 최소 낙하 속도를 보장합니다.
-    const slow = (s: number, f: number) => Math.max(s * f, MIN_FALL_SPEED);
-
-    if (nextMissCount === 1) {
-      // 첫 실패: 속도 늦추고 한 번 더 기회
-      setActive((a) =>
-        a && a.id === cur.id ? { ...a, missCount: 1, retried: true, speed: slow(a.speed, 0.7) } : a,
-      );
-      showToast("한 번 더 말해보세요");
-      return;
-    }
-
-    if (nextMissCount === 2) {
-      // 두 번째 실패: 조금 더 늦추기
-      setActive((a) =>
-        a && a.id === cur.id ? { ...a, missCount: 2, speed: slow(a.speed, 0.85) } : a,
-      );
-      showToast("다시 한 번!");
-      return;
-    }
-
-    // 세 번째 실패부터 Pass 버튼 노출
-    setActive((a) =>
-      a && a.id === cur.id ? { ...a, missCount: nextMissCount, speed: slow(a.speed, 0.95) } : a,
+    setActive((activeWord) =>
+      activeWord && activeWord.id === cur.id ? { ...activeWord, state: "crying" } : activeWord,
     );
-    showToast("Pass 버튼으로 넘어갈 수 있어요");
+    setAttempts((count) => count + 1);
+    setLevelProcessed((count) => count + 1);
+    setWordsRemaining((count) => Math.max(0, count - 1));
+    showToast("다음 단어로 넘어가요");
   }, [showToast, resetSpeech]);
 
-  /** Pass the current word: 같은 단어는 다시 나오지 않고 패널티 단어만 추가됩니다. */
+  const scheduleNextAfterMismatch = useCallback(
+    (targetId: number) => {
+      clearSpeechUiFeedbackTimer();
+      const generation = speechUiGenerationRef.current;
+      speechUiFeedbackTimerRef.current = window.setTimeout(() => {
+        speechUiFeedbackTimerRef.current = null;
+        const current = activeRef.current;
+        if (
+          phaseRef.current !== "playing" ||
+          !current ||
+          current.id !== targetId ||
+          current.state !== "crying" ||
+          speechUiGenerationRef.current !== generation
+        ) {
+          return;
+        }
+        setFeedbackTranscript("");
+        setHeard("");
+        setSpeechRetryPrompt(false);
+        setSpeechUiState("ready");
+        queueNext(0);
+      }, SPEECH_MISMATCH_FEEDBACK_MS);
+    },
+    [clearSpeechUiFeedbackTimer, queueNext],
+  );
+
+  /** Pass도 현재 단어를 처리한 것으로 계산하고 다음 단어로 이동합니다. */
   const passCurrent = useCallback(() => {
     const cur = activeRef.current;
     if (!cur || cur.state !== "falling") return;
+    setSpeechRetryPrompt(false);
+    setSpeechUiState("ready");
     resetSpeech();
-    addPenaltyWords(EXTRA_WORDS_ON_MISS);
+    setActive((activeWord) =>
+      activeWord && activeWord.id === cur.id ? { ...activeWord, state: "crying" } : activeWord,
+    );
+    setAttempts((count) => count + 1);
+    setLevelProcessed((count) => count + 1);
+    setWordsRemaining((count) => Math.max(0, count - 1));
     showToast("다음 친구를 구해요");
     queueNext(600);
-  }, [addPenaltyWords, showToast, queueNext, resetSpeech]);
+  }, [showToast, queueNext, resetSpeech]);
 
   const handleTranscript = useCallback(
     (result: SpeechResult) => {
@@ -1321,15 +1309,17 @@ export function SpeakFallGame() {
       const cur = activeRef.current;
       const text = transcript.trim();
       if (!text) return;
+      // 이미 정답/오답/Pass로 처리된 단어에 도착한 잔여 콜백은 UI를 변경하지 않습니다.
+      if (!cur || cur.state !== "falling") return;
       if (utteranceHandledRef.current) return;
+      clearSpeechUiFeedbackTimer();
       pendingTranscriptRef.current = text;
+      setSpeechUiState("listening");
       setFeedbackTranscript("");
       setHeard(text);
       setVoiceLevel(1);
       if (voiceTimer.current) window.clearTimeout(voiceTimer.current);
       voiceTimer.current = window.setTimeout(() => setVoiceLevel(0), 700);
-      if (!cur || cur.state !== "falling") return;
-
       const evaluation = evaluatePronunciation({
         target: cur,
         result,
@@ -1352,6 +1342,11 @@ export function SpeakFallGame() {
                   : "legacy-normal",
             accepted: evaluation.accepted,
             reason: evaluation.reason,
+            outcome: evaluation.accepted
+              ? "accepted"
+              : evaluation.reason === "no-match"
+                ? "evaluator-no-match"
+                : "evaluator-rejected",
             bestCandidate: evaluation.bestCandidate,
             timestamp: result.timestamp,
           })}`,
@@ -1372,13 +1367,30 @@ export function SpeakFallGame() {
         if (lastFinalRef.current === text) return;
         lastFinalRef.current = text;
         utteranceHandledRef.current = true;
-        setFeedbackTranscript(text);
+        // miss()가 STT 세션을 초기화한 뒤 UI 피드백을 고정해야
+        // 재시작 콜백이 mismatch 상태를 덮어쓰지 않습니다.
         miss();
+        setFeedbackTranscript(text);
+        setSpeechRetryPrompt(true);
+        setSpeechUiState("mismatch");
+        if (result.engine === "android-speech") {
+          console.info(
+            `[STT UI] ${JSON.stringify({
+              outcome: "mismatch-displayed",
+              source: "final",
+              target: cur.word,
+              transcript: text,
+              evaluationReason: evaluation.reason,
+              timestamp: Date.now(),
+            })}`,
+          );
+        }
+        scheduleNextAfterMismatch(cur.id);
         return;
       }
 
-      // Android가 final을 보내지 않더라도 마지막 결과 이후 600ms가 지나면
-      // 한 번의 발화가 끝난 것으로 보고 반드시 오답 피드백을 제공합니다.
+      // Android가 final을 보내지 않으면 마지막 partial 이후 발화 종료를 확정합니다.
+      // 1음절은 후속 후보가 안정화될 시간을 주기 위해 850ms, 나머지는 600ms입니다.
       if (utteranceTimerRef.current !== null) {
         window.clearTimeout(utteranceTimerRef.current);
       }
@@ -1396,28 +1408,90 @@ export function SpeakFallGame() {
           return;
         }
         const pending = pendingTranscriptRef.current.trim();
-        if (!pending) return;
+        if (!pending) {
+          console.info(
+            `[STT UI] ${JSON.stringify({
+              outcome: "no-transcript",
+              source: "utterance-timeout",
+              target: current.word,
+              timestamp: Date.now(),
+            })}`,
+          );
+          return;
+        }
         utteranceHandledRef.current = true;
-        setFeedbackTranscript(pending);
         miss();
-      }, 600);
+        setFeedbackTranscript(pending);
+        setSpeechRetryPrompt(true);
+        setSpeechUiState("mismatch");
+        console.info(
+          `[STT UI] ${JSON.stringify({
+            outcome: "mismatch-displayed",
+            source: "utterance-timeout",
+            target: current.word,
+            transcript: pending,
+            evaluationReason: evaluation.reason,
+            timestamp: Date.now(),
+          })}`,
+        );
+        scheduleNextAfterMismatch(current.id);
+      }, getUtteranceEndTimeoutMs(cur));
     },
-    [miss, rescue],
+    [clearSpeechUiFeedbackTimer, miss, rescue, scheduleNextAfterMismatch],
   );
 
   const speech = useSpeechRecognition(handleTranscript);
   const speechRef = useRef(speech);
   speechRef.current = speech;
+  const speechTargetId = active?.id;
+  const speechTargetState = active?.state;
+
+  /** transcript가 없으면 재시작하지 않고 현재 STT 세션에서 계속 대기합니다. */
+  useEffect(() => {
+    if (phase !== "playing" || speechTargetId == null || speechTargetState !== "falling") {
+      if (phase !== "playing") setSpeechUiState("ready");
+      return;
+    }
+
+    if (speech.error) {
+      setSpeechUiState("error");
+      return;
+    }
+
+    if (!speech.supported) {
+      setSpeechUiState("error");
+      return;
+    }
+
+    if (ttsPlayingRef.current) return;
+
+    if (speechUiState === "error") {
+      setSpeechUiState("ready");
+      return;
+    }
+
+    if (
+      speechUiState === "checking" ||
+      speechUiState === "success" ||
+      speechUiState === "mismatch" ||
+      speechUiState === "no-speech"
+    ) {
+      return;
+    }
+  }, [phase, speech.error, speech.supported, speechTargetId, speechTargetState, speechUiState]);
 
   /** 목표 단어를 원어민 TTS로 재생하고 재생이 끝나면 음성 인식을 다시 시작합니다. */
   const playTargetPronunciation = useCallback(() => {
     const target = activeRef.current;
     if (!target || target.state !== "falling") return;
 
+    ttsPlayingRef.current = true;
+    setSpeechUiState("ready");
     speechRef.current.stop();
 
     const resumeRecognition = () => {
       window.setTimeout(() => {
+        ttsPlayingRef.current = false;
         if (phaseRef.current === "playing") speechRef.current.start();
       }, 250);
     };
@@ -1550,6 +1624,7 @@ export function SpeakFallGame() {
       setCombo(0);
       setBestCombo(0);
       setHeard("");
+      setSpeechRetryPrompt(false);
       setToast(null);
       setResult(null);
       setActive(null);
@@ -1559,7 +1634,7 @@ export function SpeakFallGame() {
       setLevel(startLevel);
       setTrack(startTrack);
       trackRef.current = startTrack;
-      setLevelRescued(0);
+      setLevelProcessed(0);
       setWordsRemaining(WORDS_PER_LEVEL);
       setHp(MAX_HP);
       clearedRef.current.clear();
@@ -1642,19 +1717,17 @@ export function SpeakFallGame() {
             missGuard.current = cur.id;
             setCombo(0);
             setAttempts((a) => a + 1);
+            setLevelProcessed((count) => count + 1);
+            setWordsRemaining((count) => Math.max(0, count - 1));
             setFlash("miss");
             playMiss();
             window.setTimeout(() => setFlash(null), 220);
 
-            // 하트 1개 감소 — 0이 되면 라운드 종료
+            // 하트는 결과 별점에 반영하되, 30개 단어 처리가 끝나기 전에는 종료하지 않습니다.
             const next = Math.max(0, statsRef.current.hp - 1);
             statsRef.current.hp = next;
             setHp(next);
-            if (next === 0) {
-              window.setTimeout(() => stopGame(), 900);
-            } else {
-              window.setTimeout(() => queueNext(0), 650);
-            }
+            window.setTimeout(() => queueNext(0), 650);
           }
           return { ...cur, y: 1, state: "crying" };
         }
@@ -1667,21 +1740,64 @@ export function SpeakFallGame() {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [phase, queueNext, stopGame]);
+  }, [phase, queueNext]);
 
   useEffect(() => {
     return () => {
+      clearSpeechUiFeedbackTimer();
       speechRef.current.stop();
       setBackgroundMusic(null);
     };
-  }, []);
+  }, [clearSpeechUiFeedbackTimer]);
 
-  const activeJelly = active
-    ? getSpecialJelly(active.jellyId)
-    : equippedJelly;
+  const activeJelly = active ? getSpecialJelly(active.jellyId) : equippedJelly;
 
   const near = active?.state === "falling" && active.y > 0.72;
   const accuracy = attempts ? Math.round((rescued / attempts) * 100) : 0;
+  const speechUiMessage = getSpeechUiMessage(speechUiState, {
+    target: active?.word,
+    transcript: feedbackTranscript || heard,
+    error: speech.error || (!speech.supported ? "음성 인식을 지원하지 않아요" : null),
+    retry: speechRetryPrompt,
+  });
+  const speechUiTone: Record<SpeechUiState, { background: string; icon: string; ring: string }> = {
+    ready: {
+      background: "bg-primary/10",
+      icon: "text-primary",
+      ring: "border-primary/35",
+    },
+    listening: {
+      background: "bg-destructive/15",
+      icon: "text-destructive",
+      ring: "border-destructive/60",
+    },
+    checking: {
+      background: "bg-amber-100",
+      icon: "text-amber-600",
+      ring: "border-amber-400/70",
+    },
+    success: {
+      background: "bg-emerald-100",
+      icon: "text-emerald-600",
+      ring: "border-emerald-400/70",
+    },
+    mismatch: {
+      background: "bg-orange-100",
+      icon: "text-orange-600",
+      ring: "border-orange-400/70",
+    },
+    "no-speech": {
+      background: "bg-violet-100",
+      icon: "text-violet-600",
+      ring: "border-violet-400/70",
+    },
+    error: {
+      background: "bg-red-200",
+      icon: "text-red-800",
+      ring: "border-red-700/70",
+    },
+  };
+  const currentSpeechUiTone = speechUiTone[speechUiState];
   const title = useMemo(() => getTitle(progress), [progress]);
   const totalStars = useMemo(
     () =>
@@ -1873,7 +1989,7 @@ export function SpeakFallGame() {
             <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-foreground/10">
               <div
                 className="h-full rounded-full bg-primary transition-all duration-300"
-                style={{ width: `${(levelRescued / RESCUES_PER_LEVEL_UP) * 100}%` }}
+                style={{ width: `${(levelProcessed / WORDS_PER_LEVEL) * 100}%` }}
               />
             </div>
           </div>
@@ -1913,7 +2029,7 @@ export function SpeakFallGame() {
                 {/* "야호! +1" 팝업 on rescue */}
                 {plusOne === active.id && (
                   <span
-                    className="ribbon-title animate-score-pop pointer-events-none absolute left-1/2 top-1/2 z-20 whitespace-nowrap text-xl text-emerald-500"
+                    className="ribbon-title animate-score-pop pointer-events-none absolute left-1/2 top-1/2 z-[100] whitespace-nowrap text-xl text-emerald-500"
                     aria-hidden
                   >
                     {plusOneMsg} +1
@@ -2047,33 +2163,24 @@ export function SpeakFallGame() {
             {phase === "playing" && (
               <div className="flex items-center gap-3 rounded-3xl bg-card/95 px-4 py-2.5 shadow-soft backdrop-blur-sm">
                 <span
-                  className={`relative grid size-11 shrink-0 place-items-center rounded-full transition-colors ${
-                    speech.listening ? "bg-destructive/15" : "bg-primary/10"
-                  }`}
-                  aria-label={speech.listening ? "음성 인식 중" : "음성 입력 대기 중"}
+                  className={`relative grid size-11 shrink-0 place-items-center rounded-full transition-colors ${currentSpeechUiTone.background}`}
+                  aria-label={speechUiMessage}
                 >
-                  {speech.listening && (
-                    <span className="absolute inset-0 animate-ping rounded-full border-2 border-destructive/60" />
+                  {speechUiState === "listening" && (
+                    <span
+                      className={`absolute inset-0 animate-ping rounded-full border-2 ${currentSpeechUiTone.ring}`}
+                    />
                   )}
-                  <Mic
-                    className={`size-5 transition-colors ${
-                      speech.listening ? "text-destructive" : "text-muted-foreground"
-                    }`}
-                  />
+                  <Mic className={`size-5 transition-colors ${currentSpeechUiTone.icon}`} />
                 </span>
 
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-display text-base text-[#173f78]">
-                    {!speech.supported ? (
-                      "이 브라우저는 음성 인식을 지원하지 않아요"
-                    ) : active?.state === "falling" ? (
-                      <>
-                        <b className="text-primary">{active.word}</b>
-                        <span> 을(를) 말해보세요!</span>
-                      </>
-                    ) : (
-                      "다음 친구를 준비하는 중…"
-                    )}
+                  <p className="whitespace-pre-line font-display text-base leading-tight text-[#173f78]">
+                    {speechUiState === "success" || speechUiState === "mismatch"
+                      ? speechUiMessage
+                      : active?.state === "falling"
+                        ? speechUiMessage
+                        : "다음 친구를 준비하는 중…"}
                   </p>
                   {(feedbackTranscript || heard) && speech.supported && (
                     <div
@@ -2087,10 +2194,9 @@ export function SpeakFallGame() {
                         "앗! 다시 또박또박 말해볼까요?"
                       ) : (
                         <>
-                          <p className="truncate">
-                            “{feedbackTranscript || heard}”으로 들었어요
-                            {feedbackTranscript && " · 다시 말해보세요"}
-                          </p>
+                          {speechUiState !== "mismatch" && (
+                            <p className="truncate">“{feedbackTranscript || heard}”으로 들었어요</p>
+                          )}
                           {active?.state === "falling" && (
                             <p className="mt-0.5 truncate font-ui">
                               목표 <b className="text-primary">{active.ipa}</b>
@@ -2106,7 +2212,14 @@ export function SpeakFallGame() {
                       )}
                     </div>
                   )}
-                  <Soundwave active={speech.speaking || voiceLevel > 0} />
+                  <Soundwave
+                    active={
+                      speechUiState === "listening" ||
+                      speechUiState === "checking" ||
+                      speech.speaking ||
+                      voiceLevel > 0
+                    }
+                  />
                 </div>
                 <button
                   type="button"
@@ -2228,7 +2341,10 @@ export function SpeakFallGame() {
           style={phase === "idle" ? { backgroundImage: `url(${startBackground})` } : undefined}
         >
           {phase === "idle" && (
-            <div className="start-wind-layer pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
+            <div
+              className="start-wind-layer pointer-events-none absolute inset-0 z-[1] overflow-hidden"
+              aria-hidden
+            >
               {[
                 ["left-[2%] top-[7%] w-36", "0s", "6.2s", "34vw", "23vh", "22deg"],
                 ["right-[2%] top-[9%] w-40", "-1.6s", "6.8s", "-34vw", "21vh", "-22deg"],
@@ -2250,17 +2366,18 @@ export function SpeakFallGame() {
             </div>
           )}
           {phase === "idle" && (
-            <div 
+            <div
               onPointerDown={() => {
-              if (musicEnabled) {
-                resumeAudio();
+                if (musicEnabled) {
+                  resumeAudio();
                 }
               }}
               className="relative z-10 flex h-[760px] w-[430px] shrink-0 flex-col px-3"
               style={{
                 transform: `scale(${startScreenScale})`,
                 transformOrigin: "center center",
-              }}>
+              }}
+            >
               <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center">
                 <div className="flex h-full min-h-0 w-full flex-col items-center">
                   {/* title block */}
@@ -2311,7 +2428,7 @@ export function SpeakFallGame() {
                     <div className="flex w-full flex-col items-center gap-2">
                       <p className="flex items-center gap-2 font-display text-xl text-[#173f78] short-screen:text-lx">
                         <Star className="size-4 fill-[#ffc93c] text-[#ffc93c]" />
-                        발음 모드 골라주세요!
+                        발음 모드를 골라주세요!
                         <Star className="size-4 fill-[#ffc93c] text-[#ffc93c]" />
                       </p>
                       <div className="grid w-[84%] grid-cols-2 gap-3 short-screen:w-[78%] short-screen:gap-2.5">
@@ -2365,7 +2482,10 @@ export function SpeakFallGame() {
                         })}
                       </div>
                     </div>
-                    <div className="flex w-[82%] items-center justify-center rounded-full border border-white/80 bg-white/90 px-3 py-1 shadow-sm short-screen:py-0.5" hidden>
+                    <div
+                      className="flex w-[82%] items-center justify-center rounded-full border border-white/80 bg-white/90 px-3 py-1 shadow-sm short-screen:py-0.5"
+                      hidden
+                    >
                       <span className="font-ui text-[0.72rem] font-semibold text-[#47658d] short-screen:text-[0.65rem]">
                         💡 두 모드 모두 친구들을 구출할 수 있어요!
                       </span>
@@ -2391,7 +2511,7 @@ export function SpeakFallGame() {
                     </button>
                   </div>
                 </div>
-              </div>            
+              </div>
               {/* 홈 하단 설정, 제작자 및 버전 */}
               <footer className="safe-bottom relative z-40 mt-auto grid shrink-0 translate-y-2 grid-cols-[1fr_auto_1fr] items-center px-4 pb-0 pt-1 font-ui text-[10px] text-[#173f78]/45">
                 <span aria-hidden />
@@ -3039,7 +3159,7 @@ export function SpeakFallGame() {
                   <ShopJellyGridPreview
                     jellies={SPECIAL_JELLIES.filter(
                       (jelly) => jelly.category === shopJellyCategory,
-                    )}                    
+                    )}
                     title={JELLY_CATEGORY_LABELS[shopJellyCategory]}
                   />
                 ) : (
@@ -3052,10 +3172,7 @@ export function SpeakFallGame() {
                 )}
               </div>
 
-              <div
-                key={shopTab}
-                className="flex-1 space-y-3 overflow-y-auto px-1"
-              >
+              <div key={shopTab} className="flex-1 space-y-3 overflow-y-auto px-1">
                 {shopTab === "parachute"
                   ? SKINS.map((skin) => {
                       const actuallyOwned = isSkinOwned(progress.ownedSkins, skin.id);
@@ -3148,11 +3265,9 @@ export function SpeakFallGame() {
 
                       const owned = testUnlockSkins || actuallyOwned;
 
-                      const equipped =
-                        equippedJelly.category === category;
+                      const equipped = equippedJelly.category === category;
 
-                      const canBuy =
-                        progress.coins >= representative.price;
+                      const canBuy = progress.coins >= representative.price;
 
                       const activatePreview = () => {
                         setShopJellyCategory(category);
@@ -3161,7 +3276,7 @@ export function SpeakFallGame() {
                       return (
                         <section
                           key={category}
-                           onClick={() => {
+                          onClick={() => {
                             playClick();
                             setShopJellyCategory(category);
                             setShopJellyPreviewId(representative.id);
@@ -3192,7 +3307,7 @@ export function SpeakFallGame() {
                           </div>
 
                           <div className="grid grid-cols-8 gap-1.5">
-                            {categoryJellies.map((jelly) => {                              
+                            {categoryJellies.map((jelly) => {
                               return (
                                 <div
                                   key={jelly.id}
@@ -3398,10 +3513,7 @@ export function SpeakFallGame() {
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e5f4ff] text-[#287ee7] shadow-inner">
                 <Volume2 className="h-7 w-7" />
               </div>
-              <h2
-                id="sound-settings-title"
-                className="mt-2 text-[24px] font-black text-[#17477f]"
-              >
+              <h2 id="sound-settings-title" className="mt-2 text-[24px] font-black text-[#17477f]">
                 사운드 설정
               </h2>
               <button
@@ -3414,10 +3526,7 @@ export function SpeakFallGame() {
                   setBackgroundMusicEnabled(next);
                   setSoundEffectsEnabled(next);
                   try {
-                    window.localStorage.setItem(
-                      MUSIC_ENABLED_STORAGE_KEY,
-                      String(next),
-                    );
+                    window.localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, String(next));
                   } catch {
                     // Storage can be unavailable in restricted webviews.
                   }
@@ -3438,9 +3547,7 @@ export function SpeakFallGame() {
                 ) : (
                   <Volume2 className="h-4 w-4" />
                 )}
-                {musicEnabled && sfxEnabled && pronunciationEnabled
-                  ? "전체 끄기"
-                  : "전체 켜기"}
+                {musicEnabled && sfxEnabled && pronunciationEnabled ? "전체 끄기" : "전체 켜기"}
               </button>
             </div>
 
@@ -3460,18 +3567,13 @@ export function SpeakFallGame() {
                       setMusicEnabled(next);
                       setBackgroundMusicEnabled(next);
                       try {
-                        window.localStorage.setItem(
-                          MUSIC_ENABLED_STORAGE_KEY,
-                          String(next),
-                        );
+                        window.localStorage.setItem(MUSIC_ENABLED_STORAGE_KEY, String(next));
                       } catch {
                         // Storage can be unavailable in restricted webviews.
                       }
                     }}
                     className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
-                      musicEnabled
-                        ? "bg-[#3d8ef0] text-white"
-                        : "bg-[#dfe8f0] text-[#7890aa]"
+                      musicEnabled ? "bg-[#3d8ef0] text-white" : "bg-[#dfe8f0] text-[#7890aa]"
                     }`}
                     aria-pressed={musicEnabled}
                   >
@@ -3491,9 +3593,7 @@ export function SpeakFallGame() {
                     step="0.01"
                     value={musicVolume}
                     disabled={!musicEnabled}
-                    onChange={(event) =>
-                      setMusicVolume(Number(event.target.value))
-                    }
+                    onChange={(event) => setMusicVolume(Number(event.target.value))}
                     aria-label="배경 음악 볼륨"
                     className="h-2 min-w-0 flex-1 cursor-pointer accent-[#3d8ef0] disabled:cursor-not-allowed"
                   />
@@ -3521,9 +3621,7 @@ export function SpeakFallGame() {
                       }
                     }}
                     className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
-                      sfxEnabled
-                        ? "bg-[#ffb52e] text-white"
-                        : "bg-[#dfe8f0] text-[#7890aa]"
+                      sfxEnabled ? "bg-[#ffb52e] text-white" : "bg-[#dfe8f0] text-[#7890aa]"
                     }`}
                     aria-pressed={sfxEnabled}
                   >
@@ -3543,9 +3641,7 @@ export function SpeakFallGame() {
                     step="0.01"
                     value={sfxVolume}
                     disabled={!sfxEnabled}
-                    onChange={(event) =>
-                      setSfxVolume(Number(event.target.value))
-                    }
+                    onChange={(event) => setSfxVolume(Number(event.target.value))}
                     aria-label="효과음 볼륨"
                     className="h-2 min-w-0 flex-1 cursor-pointer accent-[#ffb52e] disabled:cursor-not-allowed"
                   />
@@ -3563,9 +3659,7 @@ export function SpeakFallGame() {
                   </div>
                   <button
                     type="button"
-                    onClick={() =>
-                      setPronunciationEnabled((current) => !current)
-                    }
+                    onClick={() => setPronunciationEnabled((current) => !current)}
                     className={`min-w-16 rounded-full px-4 py-2 text-sm font-black transition ${
                       pronunciationEnabled
                         ? "bg-[#42bd87] text-white"
@@ -3589,9 +3683,7 @@ export function SpeakFallGame() {
                     step="0.01"
                     value={pronunciationVolume}
                     disabled={!pronunciationEnabled}
-                    onChange={(event) =>
-                      setPronunciationVolume(Number(event.target.value))
-                    }
+                    onChange={(event) => setPronunciationVolume(Number(event.target.value))}
                     aria-label="영어 발음 볼륨"
                     className="h-2 min-w-0 flex-1 cursor-pointer accent-[#42bd87] disabled:cursor-not-allowed"
                   />
@@ -3656,8 +3748,7 @@ export function SpeakFallGame() {
 
             <p className="mx-auto mt-2 max-w-xs font-ui text-sm leading-5 text-[#3f6699]">
               현재 발음 듣기가 꺼져 있어요.
-              <br />
-              이 단어의 발음을 들을까요?
+              <br />이 단어의 발음을 들을까요?
             </p>
 
             <div className="mt-5 flex flex-col gap-2.5">
@@ -3796,18 +3887,10 @@ function DefaultJellyVisual({
   );
 }
 
-function ShopJellyGridPreview({
-  jellies,
-  title,
-}: {
-  jellies: SpecialJelly[];
-  title: string;
-}) {
+function ShopJellyGridPreview({ jellies, title }: { jellies: SpecialJelly[]; title: string }) {
   return (
     <div className="w-full px-4 py-3 short-screen:py-2">
-      <p className="mb-2 text-center font-display text-sm text-[#173f78]">
-        {title}
-      </p>
+      <p className="mb-2 text-center font-display text-sm text-[#173f78]">{title}</p>
 
       <div className="grid grid-cols-4 gap-2">
         {jellies.slice(0, 8).map((jelly) => (
@@ -3816,17 +3899,9 @@ function ShopJellyGridPreview({
             className="flex aspect-square min-w-0 items-center justify-center overflow-hidden rounded-xl bg-[#eaf3ff] p-0.5 ring-1 ring-white"
           >
             {getJellyThumbnail(jelly) ? (
-              <img
-                src={getJellyThumbnail(jelly)}
-                alt=""
-                className="size-full object-contain"
-              />
+              <img src={getJellyThumbnail(jelly)} alt="" className="size-full object-contain" />
             ) : (
-              <DefaultJellyVisual
-                className="size-12"
-                hue={jelly.hue}
-                rainbow={jelly.rainbow}
-              />
+              <DefaultJellyVisual className="size-12" hue={jelly.hue} rainbow={jelly.rainbow} />
             )}
           </div>
         ))}

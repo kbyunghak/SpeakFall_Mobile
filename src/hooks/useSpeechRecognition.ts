@@ -11,21 +11,38 @@ type SpeechRecognitionLike = {
   start: () => void;
   stop: () => void;
   abort: () => void;
-  onresult: ((e: any) => void) | null;
-  onerror: ((e: any) => void) | null;
+  onresult: ((e: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((e: SpeechRecognitionErrorLike) => void) | null;
   onend: (() => void) | null;
+};
+
+type SpeechRecognitionAlternativeLike = { transcript?: string; confidence?: number };
+type SpeechRecognitionResultLike = {
+  readonly length: number;
+  readonly isFinal: boolean;
+  readonly [index: number]: SpeechRecognitionAlternativeLike | undefined;
+};
+type SpeechRecognitionEventLike = {
+  resultIndex: number;
+  results: { readonly length: number; readonly [index: number]: SpeechRecognitionResultLike };
+};
+type SpeechRecognitionErrorLike = { error?: string };
+type SpeechRecognitionWindow = typeof window & {
+  SpeechRecognition?: new () => SpeechRecognitionLike;
+  webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  Capacitor?: { isNativePlatform?: () => boolean };
 };
 
 function getCtor(): (new () => SpeechRecognitionLike) | null {
   if (typeof window === "undefined") return null;
-  const w = window as any;
+  const w = window as SpeechRecognitionWindow;
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
 /** Capacitor(Android/iOS) 네이티브 런타임인지 확인 */
 function isNativeRuntime() {
   if (typeof window === "undefined") return false;
-  const cap = (window as any).Capacitor;
+  const cap = (window as SpeechRecognitionWindow).Capacitor;
   return !!cap?.isNativePlatform?.();
 }
 
@@ -46,6 +63,7 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
   const nativeStateListenerRef = useRef<PluginListenerHandle | null>(null);
   const nativeRestartTimerRef = useRef<number | null>(null);
   const nativeListenRef = useRef<() => Promise<void>>(async () => {});
+  const nativeSessionHadTranscriptRef = useRef(false);
   const speakingTimerRef = useRef<number | null>(null);
   const isNative = useRef(false);
 
@@ -79,25 +97,28 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
           nativePartialListenerRef.current = await SpeechRecognition.addListener(
             "partialResults",
             (data: { matches?: string[] }) => {
-              const matches = (data?.matches?.filter(Boolean) ?? []).slice(0, 5);
+              const allMatches = data?.matches?.filter(Boolean) ?? [];
+              const matches = allMatches.slice(0, 5);
               const primaryMatch = matches[0];
               if (!primaryMatch) return;
+              const timestamp = Date.now();
+              nativeSessionHadTranscriptRef.current = true;
               console.info(
                 `[STT Debug] ${JSON.stringify({
                   engine: "android-speech",
-                  matches,
-                  count: matches.length,
+                  matches: allMatches,
+                  count: allMatches.length,
                   top: primaryMatch,
                   alternatives: matches.slice(1, 5),
                   isFinal: false,
-                  timestamp: Date.now(),
+                  timestamp,
                 })}`,
               );
               markSpeaking();
               cbRef.current({
                 transcript: primaryMatch,
                 alternatives: matches.slice(1, 5).map((transcript) => ({ transcript })),
-                timestamp: Date.now(),
+                timestamp,
                 isFinal: false,
                 engine: "android-speech",
               });
@@ -107,12 +128,23 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
             "listeningState",
             (data: { status: "started" | "stopped" }) => {
               if (data.status === "started") {
+                nativeSessionHadTranscriptRef.current = false;
                 setListening(true);
                 return;
               }
 
               setListening(false);
               setSpeaking(false);
+              if (!nativeSessionHadTranscriptRef.current) {
+                console.info(
+                  `[STT Debug] ${JSON.stringify({
+                    engine: "android-speech",
+                    outcome: "no-transcript",
+                    matches: [],
+                    timestamp: Date.now(),
+                  })}`,
+                );
+              }
               if (!wantRef.current) return;
               if (nativeRestartTimerRef.current !== null) {
                 window.clearTimeout(nativeRestartTimerRef.current);
@@ -161,7 +193,7 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 5;
-    rec.onresult = (e: any) => {
+    rec.onresult = (e: SpeechRecognitionEventLike) => {
       markSpeaking();
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i];
@@ -184,7 +216,7 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
         }
       }
     };
-    rec.onerror = (e: any) => {
+    rec.onerror = (e: SpeechRecognitionErrorLike) => {
       if (e.error === "not-allowed" || e.error === "service-not-allowed") {
         setError("마이크 권한이 필요합니다.");
         wantRef.current = false;

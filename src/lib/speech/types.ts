@@ -1,5 +1,9 @@
 export type SpeechEngineId = "android-speech" | "web-speech" | "whisper" | "azure-pronunciation";
 
+/** 게임 화면에서 사용자에게 표시하는 음성 처리 상태입니다. */
+export type SpeechUiState =
+  "ready" | "listening" | "checking" | "success" | "mismatch" | "no-speech" | "error";
+
 export type SpeechAlternative = {
   transcript: string;
   confidence?: number;
