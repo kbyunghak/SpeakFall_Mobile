@@ -194,11 +194,17 @@
   --animate-tear: tear 0.7s ease-in forwards;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #27aef2;
+}
+
 body {
   font-family: var(--font-ui);
-  /* 모바일 안전영역 대응 */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  margin: 0;
+  padding: 0;
 }
 
 /* PWA / Capacitor 상태바/홈 인디케이터 대응 유틸리티 */
@@ -379,8 +385,101 @@ button {
   50% { transform: scale(1.06); }
 }
 
+@keyframes title-logo-breathe {
+  0%, 100% { transform: scale(0.99); }
+  50% { transform: scale(1.025); }
+}
+
+.title-breathe {
+  animation: title-logo-breathe 4.2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes title-star-twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.82) rotate(-6deg); }
+  50% { opacity: 0.95; transform: scale(1.16) rotate(5deg); }
+}
+
+.title-star-twinkle {
+  animation: title-star-twinkle 2.7s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgb(255 224 77 / 65%));
+  transform-origin: center;
+}
+
+@keyframes start-wind-flow {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(var(--wind-angle)) scaleX(1.35);
+  }
+  16% { opacity: 0.26; }
+  68% { opacity: 0.16; }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--wind-drift-x), var(--wind-drift-y), 0)
+      rotate(var(--wind-angle)) scaleX(0.28) scaleY(0.55);
+  }
+}
+
+.start-wind-streak {
+  animation-name: start-wind-flow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border-top: 2px solid rgb(255 255 255 / 55%);
+  border-radius: 50%;
+  filter: blur(0.35px) drop-shadow(0 0 4px rgb(182 232 255 / 45%));
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+.start-wind-streak::after {
+  content: "";
+  position: absolute;
+  left: 24%;
+  right: 8%;
+  top: 5px;
+  border-top: 1px solid rgb(255 255 255 / 36%);
+  border-radius: 50%;
+}
+
+@keyframes loading-jelly-breathe {
+  0%, 100% { transform: translateY(0) scale(0.985); }
+  50% { transform: translateY(-8px) scale(1.025); }
+}
+
+.loading-jelly-breathe {
+  animation: loading-jelly-breathe 3.6s ease-in-out infinite;
+  transform-origin: 50% 62%;
+  will-change: transform;
+}
+
+@keyframes loading-progress-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.loading-progress-star {
+  animation: loading-progress-pulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes loading-twinkle {
+  0%, 100% { opacity: 0.24; transform: scale(0.9); }
+  50% { opacity: 0.74; transform: scale(1.12); }
+}
+
+.loading-twinkle {
+  animation: loading-twinkle 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgb(255 255 255 / 55%));
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .title-breathe {
+  .title-breathe,
+  .title-star-twinkle,
+  .start-wind-streak,
+  .loading-jelly-breathe,
+  .loading-progress-star,
+  .loading-twinkle {
     animation: none !important;
   }
 }

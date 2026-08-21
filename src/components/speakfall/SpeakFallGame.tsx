@@ -6,7 +6,6 @@ import {
   Check,
   ChevronDown,
   Coins,
-  Flame,
   Heart,
   Lock,
   Languages,
@@ -17,12 +16,10 @@ import {
   Play,
   RotateCcw,
   ShoppingBag,
-  Sprout,
   Sparkles,
   Star,
   Volume2,
   VolumeX,
-  Zap,
 } from "lucide-react";
 
 import {
@@ -34,7 +31,6 @@ import {
   findTranscriptIpa,
   getWordsByLevel,
   getPronunciationFocus,
-  STRICTNESS,
   type Strictness,
   type WordItem,
 } from "@/lib/speakfall/words";
@@ -113,9 +109,13 @@ import {
   type MicStatus,
 } from "@/lib/speakfall/mic";
 
+import startBackground from "@/assets/background.png";
 import titleLockup from "@/assets/title-lockup.png";
 import parachuteJelly from "@/assets/parachute-jelly.png";
 import speakButton from "@/assets/speak-button.png";
+import naturalPracticeIcon from "@/assets/practice-modes/natural.png";
+import strictPracticeIcon from "@/assets/practice-modes/strict.png";
+import titleRibbon from "@/assets/title-ribbon.png";
 import {
   DEFAULT_JELLY_ID,
   JELLY_CATEGORY_LABELS,
@@ -221,6 +221,7 @@ type Faller = WordItem & {
 };
 
 type Phase =
+  | "loading"
   | "idle"
   | "island"
   | "map"
@@ -325,37 +326,25 @@ function ParachuteJelly({ className }: { className?: string }) {
   );
 }
 
-/** 난이도별 아이콘 — 새싹(쉬움) / 번개(보통) / 불꽃(어려움). */
-function DifficultyIcon({
-  level,
-  selected,
-}: {
-  level: "easy" | "normal" | "hard";
-  selected: boolean;
-}) {
-  const tone = selected
-    ? "text-white"
-    : level === "easy"
-      ? "text-[#3fae6a]"
-      : level === "normal"
-        ? "text-[#f0a323]"
-        : "text-[#ef5b46]";
-  const Icon = level === "easy" ? Sprout : level === "normal" ? Zap : Flame;
-  return (
-    <span
-      className={`flex size-11 items-center justify-center rounded-full transition-colors ${
-        selected ? "bg-white/15" : "bg-[#eaf3ff]"
-      }`}
-    >
-      <Icon
-        className={`size-6 ${tone}`}
-        strokeWidth={2.4}
-        fill={level === "easy" ? "none" : "currentColor"}
-        fillOpacity={level === "easy" ? 0 : 0.18}
-      />
-    </span>
-  );
-}
+const PRACTICE_MODES = [
+  {
+    strictness: "easy",
+    icon: naturalPracticeIcon,
+    label: "자연스럽게",
+    description: "자연스러운 발음을\n폭넓게 인정해요",
+  },
+  {
+    strictness: "hard",
+    icon: strictPracticeIcon,
+    label: "정확하게",
+    description: "발음 차이를\n더 세밀하게 확인해요",
+  },
+] as const satisfies ReadonlyArray<{
+  strictness: Strictness;
+  icon: string;
+  label: string;
+  description: string;
+}>;
 
 /** 음성 입력 대기/수신 상태를 보여주는 동적 음파 바. */
 function Soundwave({ active }: { active: boolean }) {
@@ -376,65 +365,6 @@ function Soundwave({ active }: { active: boolean }) {
         />
       ))}
     </div>
-  );
-}
-
-/** Simple puffy cloud made of a few overlapping circles. */
-function Puff({
-  x,
-  y,
-  s = 1,
-  opacity = 1,
-}: {
-  x: number;
-  y: number;
-  s?: number;
-  opacity?: number;
-}) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} opacity={opacity}>
-      <g fill="#ffffff">
-        <circle cx="-42" cy="6" r="28" />
-        <circle cx="-8" cy="-10" r="36" />
-        <circle cx="34" cy="-2" r="32" />
-        <circle cx="62" cy="14" r="22" />
-        <rect x="-58" y="4" width="128" height="28" rx="14" />
-      </g>
-      <g fill="#ffffff" opacity="0.7">
-        <circle cx="-6" cy="-26" r="18" />
-        <circle cx="26" cy="-20" r="16" />
-      </g>
-    </g>
-  );
-}
-
-function SkyClouds() {
-  return (
-    <svg
-      viewBox="0 0 390 780"
-      preserveAspectRatio="xMidYMid slice"
-      className="pointer-events-none absolute inset-0 z-0 size-full drop-shadow-[0_12px_14px_rgba(12,58,124,0.12)]"
-      aria-hidden="true"
-    >
-      <g style={{ animation: "cloud-float 18s ease-in-out infinite" }}>
-        <Puff x={46} y={96} s={0.78} opacity={0.95} />
-      </g>
-      <g style={{ animation: "cloud-float 24s ease-in-out infinite reverse" }}>
-        <Puff x={340} y={188} s={0.72} opacity={0.8} />
-      </g>
-      <g style={{ animation: "cloud-float 30s ease-in-out infinite" }}>
-        <Puff x={30} y={424} s={0.88} opacity={0.7} />
-      </g>
-      <g style={{ animation: "cloud-float 26s ease-in-out infinite reverse" }}>
-        <Puff x={358} y={524} s={0.82} opacity={0.85} />
-      </g>
-      {/* horizon cloud bank */}
-      <g opacity="0.95">
-        <Puff x={80} y={742} s={1.35} />
-        <Puff x={300} y={756} s={1.5} />
-        <Puff x={195} y={778} s={1.7} />
-      </g>
-    </svg>
   );
 }
 
@@ -520,7 +450,10 @@ function ShopJellySinglePreview({ jelly, equipped }: { jelly: SpecialJelly; equi
 }
 
 export function SpeakFallGame() {
-  const [phase, setPhase] = useState<Phase>("idle");
+  const appShellRef = useRef<HTMLDivElement>(null);
+  const [phase, setPhase] = useState<Phase>("loading");
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [startScreenScale, setStartScreenScale] = useState(1);
   const [countdown, setCountdown] = useState(3);
   const [active, setActive] = useState<Faller | null>(null);
   const [nextWord, setNextWord] = useState<WordItem | null>(null);
@@ -535,7 +468,7 @@ export function SpeakFallGame() {
   const [feedbackTranscript, setFeedbackTranscript] = useState("");
   const [flash, setFlash] = useState<"hit" | "miss" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [strictness, setStrictness] = useState<Strictness>("normal");
+  const [strictness, setStrictness] = useState<Strictness>("easy");
   const [permissionDenied, setPermissionDenied] = useState(false);
   /** 마이크 권한 상태 (앱 실행 시 1회 확인) */
   const [micStatus, setMicStatus] = useState<MicStatus>("unknown");
@@ -598,7 +531,7 @@ export function SpeakFallGame() {
   const jellySequenceRef = useRef(0);
   const elapsed = useRef(0);
   const phaseRef = useRef<Phase>("idle");
-  const strictRef = useRef<Strictness>("normal");
+  const strictRef = useRef<Strictness>("easy");
   const gapRef = useRef(0);
   const voiceTimer = useRef<number | null>(null);
   const wordQueueRef = useRef<WordItem[]>([]);
@@ -627,6 +560,83 @@ export function SpeakFallGame() {
   useEffect(() => {
     setProgress(loadProgress());
   }, []);
+
+  /** 시작 화면 전체를 430×760 디자인 캔버스 비율로 확대·축소합니다. */
+  useEffect(() => {
+    if (phase !== "idle") return;
+
+    const shell = appShellRef.current;
+    if (!shell) return;
+
+    const updateScale = () => {
+      const { width, height } = shell.getBoundingClientRect();
+      const nextScale = Math.min(width / 430, height / 760);
+      setStartScreenScale(Math.max(0.5, nextScale));
+    };
+
+    updateScale();
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateScale);
+    observer?.observe(shell);
+    window.addEventListener("resize", updateScale);
+    window.addEventListener("orientationchange", updateScale);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateScale);
+      window.removeEventListener("orientationchange", updateScale);
+    };
+  }, [phase]);
+
+  /** 앱 진입 시 로딩 화면을 먼저 보여준 뒤 시작 화면으로 전환합니다. */
+  useEffect(() => {
+    if (phase !== "loading") return;
+
+    const startedAt = performance.now();
+    // 현재 초기화는 로컬 데이터 중심이므로 짧은 브랜드 연출만 제공합니다.
+    const duration = 1200;
+    let frame = 0;
+    let transitionTimer: number | null = null;
+
+    const cancelScheduledWork = () => {
+      window.cancelAnimationFrame(frame);
+      if (transitionTimer !== null) {
+        window.clearTimeout(transitionTimer);
+        transitionTimer = null;
+      }
+    };
+
+    const update = (now: number) => {
+      const ratio = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - ratio, 3);
+      setLoadingProgress(Math.round(eased * 100));
+
+      if (ratio < 1) {
+        frame = window.requestAnimationFrame(update);
+        return;
+      }
+
+      transitionTimer = window.setTimeout(() => setPhase("idle"), 100);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        cancelScheduledWork();
+        return;
+      }
+
+      // 백그라운드에서 돌아온 사용자를 다시 기다리게 하지 않습니다.
+      setLoadingProgress(100);
+      setPhase("idle");
+    };
+
+    frame = window.requestAnimationFrame(update);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      cancelScheduledWork();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [phase]);
 
   /** 저장값이 없으면 BGM을 기본 ON으로, 이후에는 사용자의 마지막 선택을 복원합니다. */
   useEffect(() => {
@@ -1712,7 +1722,8 @@ export function SpeakFallGame() {
 
   return (
     <div
-      className={`relative mx-auto flex h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md min-[600px]:w-[90vw] min-[600px]:max-w-[1200px] touch-pan-y flex-col overflow-hidden overscroll-none text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
+      ref={appShellRef}
+      className={`relative mx-auto flex h-[100dvh] w-full max-w-md min-[600px]:w-[90vw] min-[600px]:max-w-[1200px] touch-pan-y flex-col overflow-hidden overscroll-none pt-[env(safe-area-inset-top)] text-foreground ${near ? "bg-sky-alert" : "bg-sky-glow"} transition-colors duration-500`}
     >
       {/* drifting clouds */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
@@ -1738,6 +1749,63 @@ export function SpeakFallGame() {
         }`}
         aria-hidden
       />
+
+      {phase === "loading" && (
+        <section
+          className="absolute inset-0 z-40 overflow-hidden bg-[#27aef2] bg-cover bg-center text-center"
+          style={{ backgroundImage: `url(${startBackground})` }}
+          aria-label="앱을 불러오는 중"
+        >
+          <div className="absolute inset-x-5 top-[calc(19%+30px)] flex flex-col items-center short-screen:top-[calc(15%+30px)]">
+            <img
+              src={parachuteJelly}
+              alt="낙하산을 타고 친구들을 만나러 가는 젤리"
+              className="loading-jelly-breathe h-[46dvh] max-h-[440px] min-h-[300px] w-[min(82%,430px)] object-contain drop-shadow-[0_18px_24px_rgba(8,77,150,0.25)] short-screen:h-[43dvh] short-screen:min-h-[250px]"
+            />
+            <p className="mt-5 font-display text-xl text-[#155ca9] drop-shadow-[0_2px_0_rgba(255,255,255,0.65)] short-screen:mt-3 short-screen:text-lg">
+              친구들을 만나러 가는 중…
+            </p>
+          </div>
+
+          <div className="pointer-events-none absolute inset-0" aria-hidden>
+            {[
+              ["left-[13%] top-[18%]", "0s"],
+              ["right-[17%] top-[28%]", "-0.45s"],
+              ["left-[21%] top-[61%]", "-0.9s"],
+              ["right-[12%] top-[68%]", "-1.35s"],
+            ].map(([position, delay], index) => (
+              <Star
+                key={index}
+                className={`loading-twinkle absolute size-3 fill-white text-white ${position}`}
+                style={{ animationDelay: delay }}
+              />
+            ))}
+          </div>
+
+          <div className="absolute inset-x-5 bottom-[15%] flex flex-col items-center text-[#123f7c] short-screen:bottom-[10%]">
+            <div
+              className="relative h-7 w-full max-w-[360px] rounded-full border-[5px] border-white bg-[#dbeaf3] p-[2px] shadow-[0_7px_14px_rgba(17,76,132,0.28),inset_0_2px_4px_rgba(20,84,140,0.2)]"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={loadingProgress}
+            >
+              <div
+                className="h-full rounded-full bg-[linear-gradient(180deg,#3bbcff_0%,#087ee9_100%)] transition-[width] duration-100"
+                style={{ width: `${loadingProgress}%` }}
+              />
+              <span className="absolute inset-x-[22px] top-1/2 h-0" aria-hidden>
+                <span
+                  className="absolute left-0 top-0 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center transition-[left] duration-100"
+                  style={{ left: `${Math.max(0, Math.min(100, loadingProgress))}%` }}
+                >
+                  <Star className="loading-progress-star size-11 fill-[#ffd72f] text-white drop-shadow-[0_3px_3px_rgba(13,83,154,0.35)]" />
+                </span>
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
 
       {inPlay && (
         <>
@@ -2150,21 +2218,36 @@ export function SpeakFallGame() {
         </div>
       )}
 
-      {!inPlay && (
+      {!inPlay && phase !== "loading" && (
         <div
-          className={`absolute inset-0 z-20 isolate flex flex-col items-center px-4 text-center ${
-            phase === "idle" ? "bg-sky-start" : "bg-sky-glow/90"
+          className={`absolute inset-0 z-20 isolate flex flex-col items-center text-center ${
+            phase === "idle"
+              ? "justify-center bg-[#27aef2] bg-cover bg-center px-0"
+              : "bg-sky-glow/90 px-4"
           }`}
+          style={phase === "idle" ? { backgroundImage: `url(${startBackground})` } : undefined}
         >
-          {phase === "idle" && <SkyClouds />}
           {phase === "idle" && (
-            <img
-              src={parachuteJelly}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute right-0 top-18 z-20 w-28 drop-shadow-[0_16px_18px_rgba(12,58,124,0.32)] short-screen:top-14 short-screen:w-20"
-              style={{ animation: "float-y 4.5s ease-in-out infinite" }}
-            />
+            <div className="start-wind-layer pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
+              {[
+                ["left-[2%] top-[7%] w-36", "0s", "6.2s", "34vw", "23vh", "22deg"],
+                ["right-[2%] top-[9%] w-40", "-1.6s", "6.8s", "-34vw", "21vh", "-22deg"],
+                ["left-[1%] bottom-[8%] w-40", "-3.1s", "6.5s", "35vw", "-43vh", "-24deg"],
+                ["right-[1%] bottom-[10%] w-36", "-4.5s", "6.1s", "-35vw", "-41vh", "24deg"],
+              ].map(([position, delay, duration, driftX, driftY, angle], index) => (
+                <span
+                  key={index}
+                  className={`start-wind-streak absolute h-5 ${position}`}
+                  style={{
+                    animationDelay: delay,
+                    animationDuration: duration,
+                    ["--wind-drift-x" as string]: driftX,
+                    ["--wind-drift-y" as string]: driftY,
+                    ["--wind-angle" as string]: angle,
+                  }}
+                />
+              ))}
+            </div>
           )}
           {phase === "idle" && (
             <div 
@@ -2173,152 +2256,135 @@ export function SpeakFallGame() {
                 resumeAudio();
                 }
               }}
-              className="relative z-10 flex h-full w-full max-w-none flex-col px-3 min-[600px]:px-6">
-              <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-2">
-                <div className="flex w-full flex-col items-center -mt-[40px]">
-                  {/* floating jelly on cloud */}
-                  <div
-                    className="pointer-events-none absolute left-3 top-3 z-20 w-16 drop-shadow-[0_10px_12px_rgba(12,58,124,0.22)] short-screen:left-2 short-screen:top-2 short-screen:w-12"
-                    style={{ animation: "float-y 6s ease-in-out infinite" }}
-                    aria-hidden
-                  >
-                    <svg viewBox="0 0 80 56" fill="none" className="w-full">
-                      <g>
-                        <circle cx="22" cy="34" r="16" fill="#ffffff" />
-                        <circle cx="40" cy="24" r="20" fill="#ffffff" />
-                        <circle cx="60" cy="32" r="17" fill="#ffffff" />
-                        <rect x="18" y="32" width="46" height="18" rx="9" fill="#ffffff" />
-                      </g>
-                    </svg>
-                    <svg
-                      viewBox="0 0 44 44"
-                      fill="none"
-                      className="absolute -top-2 left-1/2 w-10 -translate-x-1/2 short-screen:w-8"
-                    >
-                      <rect x="10" y="14" width="24" height="20" rx="10" fill="url(#cjBody)" />
-                      <ellipse cx="6" cy="22" rx="4" ry="6" fill="#8fd95f" />
-                      <ellipse cx="38" cy="22" rx="4" ry="6" fill="#8fd95f" />
-                      <ellipse cx="11" cy="33" rx="3" ry="5" fill="#8fd95f" />
-                      <ellipse cx="33" cy="33" rx="3" ry="5" fill="#8fd95f" />
-                      <circle cx="17" cy="21" r="2.2" fill="#22364f" />
-                      <circle cx="27" cy="21" r="2.2" fill="#22364f" />
-                      <circle cx="17.7" cy="20.2" r="0.8" fill="#ffffff" />
-                      <circle cx="27.7" cy="20.2" r="0.8" fill="#ffffff" />
-                      <path
-                        d="M18 26c2 1.5 5 1.5 7 0"
-                        stroke="#22364f"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
+              className="relative z-10 flex h-[760px] w-[430px] shrink-0 flex-col px-3"
+              style={{
+                transform: `scale(${startScreenScale})`,
+                transformOrigin: "center center",
+              }}>
+              <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center">
+                <div className="flex h-full min-h-0 w-full flex-col items-center">
+                  {/* title block */}
+                  <div className="relative flex min-h-0 w-full flex-[9_1_0%] items-center justify-center overflow-visible px-2 pt-2 short-screen:pt-1">
+                    {[
+                      ["left-[1%] top-[10%]", "0s"],
+                      ["right-[2%] top-[15%]", "-0.7s"],
+                      ["left-[3%] bottom-[13%]", "-1.35s"],
+                      ["right-[1%] bottom-[9%]", "-2s"],
+                    ].map(([position, delay], index) => (
+                      <Star
+                        key={index}
+                        className={`title-star-twinkle pointer-events-none absolute z-0 size-4 fill-[#ffd735] text-[#ffb719] ${position}`}
+                        style={{ animationDelay: delay }}
+                        aria-hidden
                       />
-                      <defs>
-                        <linearGradient id="cjBody" x1="10" y1="14" x2="10" y2="34">
-                          <stop offset="0%" stopColor="#9ede6d" />
-                          <stop offset="100%" stopColor="#5fbf47" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
+                    ))}
+                    <div className="relative w-[96%] max-w-[430px] short-screen:w-[88%] short-screen:max-w-[350px]">
+                      <img
+                        src={titleLockup}
+                        alt="말해봐!영단어 구조대"
+                        className="relative z-10 mx-auto w-full -translate-y-7 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)]"
+                      />
+                      <div className="pointer-events-none absolute right-[-17%] top-[35%] z-20 w-[40%] short-screen:right-[-17%] short-screen:top-[40%] short-screen:w-[38%]">
+                        <img
+                          src={parachuteJelly}
+                          alt=""
+                          className="w-full drop-shadow-[0_10px_10px_rgba(12,58,124,0.24)]"
+                          aria-hidden
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* title block */}
-                  <div className="relative mb-2 w-full shrink-0 overflow-visible px-5 pt-3 tall-screen:mb-4 tall-screen:pt-6 short-screen:mb-1 short-screen:pt-2 short-screen:px-3">
-                    {/* decorative stars */}
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="pointer-events-none absolute left-4 top-0 z-20 size-7 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:left-3 short-screen:top-0 short-screen:size-5"
-                      style={{ animation: "float-y 3.5s ease-in-out infinite" }}
-                      aria-hidden
-                    >
-                      <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
-                    </svg>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="pointer-events-none absolute right-6 top-2 z-20 size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:right-5 short-screen:top-1 short-screen:size-4"
-                      style={{ animation: "float-y 4s ease-in-out infinite 0.3s" }}
-                      aria-hidden
-                    >
-                      <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
-                    </svg>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="pointer-events-none absolute left-8 top-[4.5rem] z-20 size-5 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:left-7 short-screen:top-16 short-screen:size-4"
-                      style={{ animation: "float-y 3.2s ease-in-out infinite 0.6s" }}
-                      aria-hidden
-                    >
-                      <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
-                    </svg>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="pointer-events-none absolute right-4 top-[5rem] z-20 size-6 fill-[#ffc93c] drop-shadow-[0_2px_2px_rgba(12,58,124,0.2)] short-screen:right-3 short-screen:top-[4.5rem] short-screen:size-4"
-                      style={{ animation: "float-y 3.8s ease-in-out infinite 0.9s" }}
-                      aria-hidden
-                    >
-                      <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
-                    </svg>
-
+                  {/* title subtitle ribbon */}
+                  <div className="relative z-0 -mt-5 mb-4 flex w-full shrink-0 justify-center short-screen:-mt-8 short-screen:mb-4">
                     <img
-                      src={titleLockup}
-                      alt="말해봐!영단어 구조대"
-                      className="relative z-10 mx-auto w-[116%] max-w-96 md:max-w-xl -translate-x-4 drop-shadow-[0_16px_20px_rgba(12,58,124,0.28)] short-screen:w-[108%] short-screen:max-w-60"
+                      src={titleRibbon}
+                      alt="영단어를 말하고 친구들을 구출해요!"
+                      className="w-[92%] max-w-[395px] object-contain drop-shadow-[0_6px_8px_rgba(12,58,124,0.20)] short-screen:w-[82%]"
+                      draggable={false}
                     />
                   </div>
 
                   {/* game settings group */}
-                  <div className="mt-0 flex w-full flex-1 flex-col items-center justify-start gap-4 short-screen:gap-3">
-                    {/* top banner */}
-                    <div className="flex w-full items-center justify-center rounded-full bg-white/95 px-4 py-2.5 shadow-[0_10px_24px_-10px_rgba(23,63,120,0.35)] backdrop-blur-sm short-screen:py-2">
-                      <p className="font-display text-base leading-tight text-[#2a74d8] short-screen:text-sm">
-                        영단어를 말하고 떨어지는 친구들 구하세요!
-                      </p>
-                    </div>
-
-                    {/* difficulty cards */}
-                    <div className="flex w-full flex-col items-center gap-3">
-                      <p className="flex items-center gap-2 font-display text-lg text-[#173f78] short-screen:text-base">
+                  <div className="flex min-h-0 w-full flex-[7_1_0%] flex-col items-center justify-start gap-2 short-screen:gap-1.5">
+                    {/* practice mode cards */}
+                    <div className="flex w-full flex-col items-center gap-2">
+                      <p className="flex items-center gap-2 font-display text-xl text-[#173f78] short-screen:text-lx">
                         <Star className="size-4 fill-[#ffc93c] text-[#ffc93c]" />
-                        음성 인식 난이도
+                        발음 모드 골라주세요!
                         <Star className="size-4 fill-[#ffc93c] text-[#ffc93c]" />
                       </p>
-                      <div className="grid w-full grid-cols-3 gap-2.5">
-                        {(Object.keys(STRICTNESS) as Strictness[]).map((key) => {
-                          const selected = strictness === key;
+                      <div className="grid w-[84%] grid-cols-2 gap-3 short-screen:w-[78%] short-screen:gap-2.5">
+                        {PRACTICE_MODES.map((mode) => {
+                          const selected = strictness === mode.strictness;
+                          const natural = mode.strictness === "easy";
                           return (
                             <button
-                              key={key}
+                              key={mode.strictness}
                               onClick={() => {
                                 resumeAudio();
                                 playClick();
-                                setStrictness(key);
+                                setStrictness(mode.strictness);
                               }}
-                              className={`flex aspect-square min-h-[94px] flex-col items-center justify-center gap-1.5 rounded-2xl border-2 px-2 py-3 text-center transition-all active:scale-[0.90] short-screen:min-h-[83px] ${
+                              className={`relative flex aspect-[1.05] w-full flex-col items-center justify-center gap-1 rounded-2xl border-2 p-2 text-center transition-all active:scale-[0.96] ${
                                 selected
-                                  ? "border-dashed border-white/70 bg-[#173f78] text-white shadow-[0_8px_0_#0f2a5e,0_14px_24px_-8px_rgba(13,45,94,0.45)]"
-                                  : "border-transparent bg-white/95 text-[#173f78] shadow-[0_4px_0_#c9dff8,0_10px_20px_-8px_rgba(23,63,120,0.3)]"
+                                  ? natural
+                                    ? "border-[#76bd45] bg-[#f5ffe9]/95 text-[#358418] shadow-[0_5px_0_#b9dd91,0_12px_22px_-10px_rgba(65,142,31,0.4)]"
+                                    : "border-[#0B5ED7] bg-[#e4efff]/95 text-[#073B91] shadow-[0_5px_0_#619FEA,0_12px_22px_-10px_rgba(11,94,215,0.55)]"
+                                  : "border-white/75 bg-white/90 text-[#173f78] shadow-[0_4px_0_#c9dff8,0_10px_20px_-8px_rgba(23,63,120,0.3)]"
                               }`}
                             >
-                              <DifficultyIcon level={key} selected={selected} />
-                              <span className="font-display text-base leading-tight short-screen:text-sm">
-                                {STRICTNESS[key].label}
+                              {selected && (
+                                <span
+                                  className={`absolute right-[6%] top-[6%] grid size-[clamp(1.45rem,6vw,1.85rem)] place-items-center rounded-full text-white shadow-sm ${
+                                    natural ? "bg-[#64b53b]" : "bg-[#287ee7]"
+                                  }`}
+                                  aria-hidden
+                                >
+                                  <Check className="size-[58%] stroke-[3.5]" />
+                                </span>
+                              )}
+                              <img
+                                src={mode.icon}
+                                alt=""
+                                className="aspect-square w-[63%] rounded-full object-cover shadow-[0_5px_12px_-5px_rgba(23,63,120,0.35)]"
+                                aria-hidden
+                              />
+                              <span className="font-display text-[clamp(1.1rem,4.8vw,1.4rem)] leading-tight">
+                                {mode.label}
+                              </span>
+                              <span
+                                className={`whitespace-pre-line font-ui text-[clamp(0.58rem,2.25vw,0.7rem)] font-semibold leading-[1.25] ${
+                                  natural ? "text-[#286d22]" : "text-[#174f96]"
+                                }`}
+                              >
+                                {mode.description}
                               </span>
                             </button>
                           );
                         })}
                       </div>
                     </div>
-
-                    {/* hint bar */}
-                    <div className="flex w-full items-center justify-center gap-2 rounded-full bg-white/80 px-4 py-2.5 font-ui text-sm text-[#173f78]/70 shadow-[0_6px_16px_-8px_rgba(23,63,120,0.25)] backdrop-blur-sm short-screen:text-xs">
-                      <Mic className="size-4 text-[#3d8ef0]" />
-                      {STRICTNESS[strictness].hint}
+                    <div className="flex w-[82%] items-center justify-center rounded-full border border-white/80 bg-white/90 px-3 py-1 shadow-sm short-screen:py-0.5" hidden>
+                      <span className="font-ui text-[0.72rem] font-semibold text-[#47658d] short-screen:text-[0.65rem]">
+                        💡 두 모드 모두 친구들을 구출할 수 있어요!
+                      </span>
                     </div>
 
-                    {/* start button below hint bar */}
+                    {/* start button below practice mode cards */}
                     <button
                       onClick={() => {
                         resumeAudio();
                         playClick();
                         setPhase("island");
                       }}
-                      className="relative z-10 flex w-full items-center justify-center gap-3 rounded-full bg-[#3d8ef0] py-5 font-display text-2xl text-white shadow-[0_8px_0_#2a6fd0,0_18px_30px_-8px_rgba(14,70,150,0.45)] transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-1 active:scale-[0.98] short-screen:py-4 short-screen:text-xl"
+                      className="relative z-10 mt-2 flex w-[86%] items-center justify-center gap-3 rounded-full
+                      bg-gradient-to-b from-[#3699ff] to-[#1379ea]
+                      py-4 font-display text-2xl text-white
+                      shadow-[0_7px_0_#075fc5,0_16px_28px_-8px_rgba(14,70,150,0.45)]
+                      transition-all duration-200 ease-out
+                      hover:-translate-y-0.5
+                      active:translate-y-1 active:scale-[0.98]"
                     >
                       <Play className="size-7 fill-white short-screen:size-6" />
                       모험 시작
@@ -2326,32 +2392,8 @@ export function SpeakFallGame() {
                   </div>
                 </div>
               </div>            
-              {/* 테스트 빌드에서는 화면 높이와 관계없이 항상 노출 */}
-              <div className="relative z-30 mb-1 flex shrink-0 items-center justify-center gap-2 self-center">
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white/85 px-4 py-2 font-ui text-xs text-[#173f78]/70 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)]">
-                  <input
-                    type="checkbox"
-                    checked={testUnlockSkins}
-                    onChange={(event) => {
-                      setTestUnlockSkins(event.target.checked);
-                    }}
-                    className="size-4 accent-[#e84d8a]"
-                  />
-                  <span>스킨 해금 for 테스트버젼</span>
-                </label>
-
-                <button
-                  type="button"
-                  onClick={() => setSoundSettingsOpen(true)}
-                  aria-label="사운드 설정 열기"
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/85 shadow-[0_5px_14px_-9px_rgba(23,63,120,0.4)] active:scale-95"
-                >
-                  <Volume2 className="size-4 text-[#173f78]" />
-                </button>
-              </div>
-
-              {/* 홈 하단 제작자 및 버전 */}
-              <footer className="safe-bottom relative z-40 grid shrink-0 grid-cols-[1fr_auto_1fr] items-center px-4 pb-2 pt-1 font-ui text-[10px] text-[#173f78]/45">
+              {/* 홈 하단 설정, 제작자 및 버전 */}
+              <footer className="safe-bottom relative z-40 mt-auto grid shrink-0 translate-y-2 grid-cols-[1fr_auto_1fr] items-center px-4 pb-0 pt-1 font-ui text-[10px] text-[#173f78]/45">
                 <span aria-hidden />
                 <span className="text-center tracking-wide">Design by JOYgle Studio</span>
                 <span className="justify-self-end whitespace-nowrap">Ver: {APP_VERSION}</span>
@@ -3351,7 +3393,7 @@ export function SpeakFallGame() {
           aria-modal="true"
           aria-labelledby="sound-settings-title"
         >
-          <div className="w-full max-w-[390px] rounded-[32px] border-2 border-white/90 bg-gradient-to-b from-white to-[#eef9ff] p-5 shadow-[0_18px_50px_rgba(18,74,125,0.28)]">
+          <div className="max-h-[calc(100dvh-2.5rem)] w-full max-w-[390px] overflow-y-auto rounded-[32px] border-2 border-white/90 bg-gradient-to-b from-white to-[#eef9ff] p-5 shadow-[0_18px_50px_rgba(18,74,125,0.28)]">
             <div className="flex flex-col items-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e5f4ff] text-[#287ee7] shadow-inner">
                 <Volume2 className="h-7 w-7" />
@@ -3554,6 +3596,27 @@ export function SpeakFallGame() {
                     className="h-2 min-w-0 flex-1 cursor-pointer accent-[#42bd87] disabled:cursor-not-allowed"
                   />
                   <Volume2 className="h-5 w-5 shrink-0 text-[#35a876]" />
+                </div>
+              </section>
+
+              <section className="rounded-[22px] border border-dashed border-[#efb5cf] bg-[#fff7fb]/95 p-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-left">
+                    <p className="font-extrabold text-[#17477f]">테스트 설정</p>
+                    <p className="mt-0.5 font-ui text-xs text-[#6f86a0]">
+                      상점의 모든 스킨을 임시로 체험해요.
+                    </p>
+                  </div>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={testUnlockSkins}
+                      onChange={(event) => setTestUnlockSkins(event.target.checked)}
+                      className="peer sr-only"
+                    />
+                    <span className="h-8 w-14 rounded-full bg-[#dfe8f0] transition-colors after:absolute after:left-1 after:top-1 after:size-6 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:bg-[#e84d8a] peer-checked:after:translate-x-6" />
+                    <span className="sr-only">테스트용 스킨 전체 해금</span>
+                  </label>
                 </div>
               </section>
             </div>
