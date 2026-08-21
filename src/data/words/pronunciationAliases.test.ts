@@ -26,6 +26,14 @@ describe("pronunciation aliases", () => {
     expect(pig?.homophones ?? []).not.toContain("pick");
   });
 
+  test("office와 town에는 검증 전 Alias를 추가하지 않는다", () => {
+    const targets = WORDS.filter(({ word }) => ["office", "town"].includes(normalize(word)));
+    expect(targets.length).toBeGreaterThan(0);
+    for (const target of targets) {
+      expect(target.naturalAliases ?? []).toEqual([]);
+    }
+  });
+
   test("허용 목록은 정규화 후에도 유효하고 서로 중복되지 않는다", () => {
     const violations: string[] = [];
     for (const item of WORDS) {

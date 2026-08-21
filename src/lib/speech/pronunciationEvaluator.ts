@@ -3,6 +3,7 @@ import { similarity, type Strictness } from "@/lib/speakfall/words";
 import { getMinimalPairConflict } from "./minimalPairs";
 import { getCentralHomophones } from "./homophones";
 import { normalizeSpeechText } from "./normalization";
+import { isSafeSimilarityCandidate } from "./safeSimilarity";
 import type { SpeechResult } from "./types";
 
 export type PronunciationReason =
@@ -125,18 +126,30 @@ export function evaluatePronunciation({
   const scored = candidates.map((candidate) => ({
     candidate,
     score: similarity(target.word, candidate),
+    safe: isSafeSimilarityCandidate(target.word, candidate),
   }));
-  const best = scored.reduce((current, item) => (item.score > current.score ? item : current), {
-    candidate: topCandidate,
-    score: 0,
-  });
+  const bestOverall = scored.reduce(
+    (current, item) => (item.score > current.score ? item : current),
+    {
+      candidate: topCandidate,
+      score: 0,
+      safe: false,
+    },
+  );
+  const bestSafe = scored
+    .filter(({ safe }) => safe)
+    .reduce((current, item) => (item.score > current.score ? item : current), {
+      candidate: "",
+      score: 0,
+      safe: true,
+    });
   const threshold = Math.max(0.55, 0.75 - trackLeniency);
-  const accepted = best.score >= threshold;
+  const accepted = bestSafe.score >= threshold;
   return {
     ...base,
     accepted,
-    score: best.score,
-    bestCandidate: best.candidate,
+    score: accepted ? bestSafe.score : bestOverall.score,
+    bestCandidate: accepted ? bestSafe.candidate : bestOverall.candidate,
     reason: accepted ? "similar" : "no-match",
   };
 }

@@ -117,13 +117,35 @@ describe("evaluatePronunciation 자연스럽게", () => {
     });
   });
 
-  test("안전한 문자열 유사도를 성공 처리한다", () => {
+  test("삭제가 아닌 안전한 문자열 유사도를 성공 처리한다", () => {
     const evaluation = evaluatePronunciation({
       target: word("walk"),
-      result: result("wal"),
+      result: result("wolk"),
       strictness: "easy",
     });
     expect(evaluation).toMatchObject({ accepted: true, reason: "similar" });
+  });
+
+  test("museum의 suffix deletion은 similarity로 성공시키지 않는다", () => {
+    const evaluation = evaluatePronunciation({
+      target: word("museum"),
+      result: result("museu"),
+      strictness: "easy",
+    });
+    expect(evaluation).toMatchObject({ accepted: false, reason: "no-match" });
+  });
+
+  test("삭제 후보보다 안전한 Alternative가 있으면 해당 후보로 성공한다", () => {
+    const evaluation = evaluatePronunciation({
+      target: word("walk"),
+      result: result("wal", ["wolk"]),
+      strictness: "easy",
+    });
+    expect(evaluation).toMatchObject({
+      accepted: true,
+      reason: "similar",
+      bestCandidate: "wolk",
+    });
   });
 
   test("관련 없는 발음은 no-match로 실패한다", () => {
