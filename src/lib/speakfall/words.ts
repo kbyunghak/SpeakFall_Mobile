@@ -19,7 +19,7 @@ export const STRICTNESS: Record<Strictness, { label: string; hint: string; thres
 /** 기본 레벨당 단어 수 */
 export const WORDS_PER_LEVEL = 30;
 /** 레벨업에 필요한 구조 횟수 */
-export const RESCUES_PER_LEVEL_UP = 20;
+export const RESCUES_PER_LEVEL_UP = WORDS_PER_LEVEL;
 /** 틀릴 때 추가되는 단어 수 */
 export const EXTRA_WORDS_ON_MISS = 1;
 /** 라이프 감소 시 추가되는 단어 수 */

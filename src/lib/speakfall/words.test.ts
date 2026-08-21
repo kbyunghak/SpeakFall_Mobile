@@ -1,5 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { createLevelWordQueue, mergeLevelWords } from "./words";
+import {
+  createLevelWordQueue,
+  mergeLevelWords,
+  RESCUES_PER_LEVEL_UP,
+  WORDS_PER_LEVEL,
+} from "./words";
+
+test("화면의 기본 단어 수와 레벨 종료 구조 수가 같다", () => {
+  expect(WORDS_PER_LEVEL).toBe(30);
+  expect(RESCUES_PER_LEVEL_UP).toBe(WORDS_PER_LEVEL);
+});
 
 describe("mergeLevelWords", () => {
   test("현재 레벨의 Archive 단어만 기본 단어에 합친다", () => {
