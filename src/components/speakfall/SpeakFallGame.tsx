@@ -520,6 +520,7 @@ export function SpeakFallGame() {
   const [hiddenLabUnlocked, setHiddenLabUnlocked] = useState(false);
   const [rewardingTrack, setRewardingTrack] = useState<TrackType | null>(null);
   const [rewardingCoins, setRewardingCoins] = useState(false);
+  const [rewardingContinue, setRewardingContinue] = useState(false);
   const [archiveManifest, setArchiveManifest] = useState<ArchiveManifest | null>(null);
   const [archiveWords, setArchiveWords] = useState<ArchiveWord[]>([]);
   const [archiveBusy, setArchiveBusy] = useState(false);
@@ -550,6 +551,8 @@ export function SpeakFallGame() {
   const levelRef = useRef(1);
   const trackRef = useRef<TrackType>("basic");
   const progressRef = useRef<Progress>(emptyProgress());
+  /** 광고 이어하기 전 실패 결과의 중복 정산을 막기 위한 라운드 시작 진행도 */
+  const roundStartProgressRef = useRef<Progress>(emptyProgress());
   const hazardBeepAt = useRef(0);
   activeRef.current = active;
   phaseRef.current = phase;
@@ -1186,6 +1189,51 @@ export function SpeakFallGame() {
     [makeFaller, popNext, levelUp, resetSpeech],
   );
 
+  /** 보상형 광고를 끝까지 본 뒤 남은 문제부터 하트를 모두 복구해 이어갑니다. */
+  const continueRoundWithAd = useCallback(async () => {
+    if (rewardingContinue || !result || result.cleared) return;
+    setRewardingContinue(true);
+    try {
+      const rewarded = await showRewardedUnlockAd();
+      if (!rewarded) {
+        showShopToast("광고 보상을 받지 못했어요. Android 앱에서 다시 시도해주세요.");
+        return;
+      }
+
+      const restoredProgress = roundStartProgressRef.current;
+      progressRef.current = restoredProgress;
+      setProgress(restoredProgress);
+      saveProgress(restoredProgress);
+
+      statsRef.current = { ...statsRef.current, hp: MAX_HP };
+      setHp(MAX_HP);
+      setResult(null);
+      setFeedbackTranscript("");
+      setSpeechRetryPrompt(false);
+      setSpeechUiState("ready");
+      missGuard.current = null;
+      resetSpeech();
+
+      const upcoming = popNext();
+      if (!upcoming) {
+        levelUp();
+        return;
+      }
+      recentRef.current.push(upcoming.word);
+      if (recentRef.current.length > 6) recentRef.current.shift();
+      phaseRef.current = "playing";
+      setPhase("playing");
+      setActive(makeFaller(upcoming));
+      if (speechRef.current.supported) speechRef.current.start();
+    } catch (cause) {
+      const detail = cause instanceof Error ? cause.message : String(cause);
+      console.warn("Rewarded continue ad failed", detail);
+      showShopToast("광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setRewardingContinue(false);
+    }
+  }, [levelUp, makeFaller, popNext, resetSpeech, result, rewardingContinue, showShopToast]);
+
   /** Correct answer: parachute opens, star earned. */
   const rescue = useCallback(
     (target: Faller) => {
@@ -1633,6 +1681,7 @@ export function SpeakFallGame() {
 
   const beginRound = useCallback(
     (startLevel = 1, startTrack: TrackType = "basic") => {
+      roundStartProgressRef.current = progressRef.current;
       idRef.current = 0;
       jellySequenceRef.current = 0;
       elapsed.current = 0;
@@ -3465,28 +3514,72 @@ export function SpeakFallGame() {
                 </section>
               )}
 
-              <div className="mt-5 flex gap-3">
-                <button
-                  onClick={() => {
-                    resumeAudio();
-                    playClick();
-                    setPhase("map");
-                  }}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-white/95 py-4 font-display text-lg text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)] active:scale-[0.98]"
-                >
-                  <MapIcon className="size-5" /> 지도로
-                </button>
-                <button
-                  onClick={() => {
-                    resumeAudio();
-                    playClick();
-                    beginRound(result.level, result.track);
-                  }}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#3d8ef0] py-4 font-display text-lg text-white shadow-[0_6px_0_#2a6fd0] active:translate-y-0.5"
-                >
-                  <RotateCcw className="size-5" /> 다시 하기
-                </button>
-              </div>
+              {!result.cleared ? (
+                <div className="mt-5 flex flex-col gap-3">
+                  <button
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      beginRound(result.level, result.track);
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#3d8ef0] py-4 font-display text-lg text-white shadow-[0_6px_0_#2a6fd0] active:translate-y-0.5"
+                  >
+                    <RotateCcw className="size-5" /> 다시 하기
+                  </button>
+                  <button
+                    disabled={rewardingContinue}
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      requestRewardedAd(
+                        {
+                          title: "이어서 하기",
+                          description: "보상형 광고를 보고 이어서 하시겠어요?",
+                          reward: "하트 모두 회복",
+                        },
+                        continueRoundWithAd,
+                      );
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-[#ffc93c] py-4 font-display text-lg text-[#173f78] shadow-[0_6px_0_#e0a417] active:translate-y-0.5 disabled:opacity-60"
+                  >
+                    <Play className="size-5 fill-current" />
+                    {rewardingContinue ? "광고 준비 중..." : "이어서 하기 (광고)"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      setPhase("map");
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-white/95 py-4 font-display text-lg text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)] active:scale-[0.98]"
+                  >
+                    <MapIcon className="size-5" /> 지도 보기
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      setPhase("map");
+                    }}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-full bg-white/95 py-4 font-display text-lg text-[#173f78] shadow-[0_6px_16px_-8px_rgba(23,63,120,0.5)] active:scale-[0.98]"
+                  >
+                    <MapIcon className="size-5" /> 지도 보기
+                  </button>
+                  <button
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
+                      beginRound(result.level, result.track);
+                    }}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#3d8ef0] py-4 font-display text-lg text-white shadow-[0_6px_0_#2a6fd0] active:translate-y-0.5"
+                  >
+                    <RotateCcw className="size-5" /> 다시 하기
+                  </button>
+                </div>
+              )}
               {result.cleared && result.level < TOTAL_LEVELS && (
                 <button
                   onClick={() => {
