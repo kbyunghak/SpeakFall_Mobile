@@ -16,10 +16,6 @@ dist-ssr
 .nitro
 *.local
 
-# Lovable local project metadata
-# Existing tracked files remain in Git until they are explicitly removed later.
-.lovable/
-
 # Android / Gradle generated files
 .gradle/
 **/.gradle/

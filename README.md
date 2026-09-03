@@ -14,8 +14,6 @@ SpeakFall (말해봐!영단어 구조대) turns English pronunciation practice i
 
 A public production demo is not currently documented. The project can be run locally as a web application or packaged as an Android application with Capacitor.
 
-The project is connected to [Lovable](https://lovable.dev/projects/d755d12c-b330-40c7-838d-8112ce3deb2f) for synchronized development.
-
 ### Screenshots
 
 <p align="center">
@@ -289,8 +287,6 @@ The self-test covers:
 ## CI/CD
 
 No repository CI workflow is present in the current project snapshot. Before release, add a workflow that installs the frozen Bun lockfile and runs lint and production builds for pull requests and the release branch.
-
-Changes pushed to the connected branch synchronize with Lovable. Avoid force-pushing, rebasing, amending, or squashing commits that have already been published because rewriting history can remove Lovable project history.
 
 ## Documentation
 

@@ -11,7 +11,7 @@ npm run build:android      # MOBILE=1 vite build && cap sync android
 ```
 
 - `MOBILE=1` 로 빌드하면 서버 없이 동작하는 정적 SPA 셸(`dist/client/index.html`)이 만들어집니다.
-- 웹(Lovable) 배포용 기본 `npm run build` 는 기존 SSR 방식 그대로입니다.
+- 웹 배포용 기본 `npm run build`는 SSR 방식으로 동작합니다.
 
 ## 2. 서명 키 생성 (최초 1회)
 
@@ -100,6 +100,7 @@ Android Studio를 쓰면 `npx cap open android` → Build > Generate Signed Bund
 직접 실행 항목: 마이크 권한 요청, 마이크 입력 신호(2초간 실제 발음 측정).
 
 제출 전 체크 순서
+
 1. 앱 첫 실행 시 마이크 안내 시트 노출 확인
 2. `/selftest` 자동 검사에 FAIL 없음
 3. 권한 요청 → 입력 신호 테스트 통과(피크 감지)
