@@ -68,7 +68,9 @@ export function evaluatePronunciation({
   const minimalPairConflict = getMinimalPairConflict(target.word, topCandidate) ?? undefined;
   const base = {
     engine: result.engine,
-    pronunciationScore: result.pronunciation?.overallScore,
+    ...(typeof result.pronunciation?.overallScore === "number"
+      ? { pronunciationScore: result.pronunciation.overallScore }
+      : {}),
   };
 
   const acceptedResult = (
@@ -88,7 +90,9 @@ export function evaluatePronunciation({
     score: similarity(target.word, topCandidate),
     bestCandidate: topCandidate,
     reason,
-    ...(reason === "minimal-pair-conflict" ? { minimalPairConflict } : {}),
+    ...(reason === "minimal-pair-conflict" && minimalPairConflict
+      ? { minimalPairConflict }
+      : {}),
   });
 
   if (topCandidate === targetForm) return acceptedResult(0, "top-exact");

@@ -10,7 +10,7 @@ import {
 import bundledArchiveManifest from "../../../public/archive/manifest.json";
 
 const CACHE_PREFIX = "speakfall.archive.v1";
-const configuredBase = String(import.meta.env.VITE_ARCHIVE_BASE_URL ?? "/archive");
+const configuredBase = String(import.meta.env["VITE_ARCHIVE_BASE_URL"] ?? "/archive");
 const ARCHIVE_BASE_URL = configuredBase.replace(/\/$/, "");
 const cacheKey = (track: TrackType, setId: number) => `${CACHE_PREFIX}.${track}.${setId}`;
 

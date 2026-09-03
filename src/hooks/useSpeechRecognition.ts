@@ -197,18 +197,24 @@ export function useSpeechRecognition(onResult: (r: SpeechResult) => void) {
       markSpeaking();
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i];
+        if (!res) continue;
         const primaryResult = res[0];
         if (primaryResult) {
-          const alternatives = Array.from({ length: res.length }, (_, index) => ({
-            transcript: String(res[index]?.transcript ?? ""),
-            confidence:
-              typeof res[index]?.confidence === "number" ? res[index].confidence : undefined,
-          })).filter(({ transcript }) => Boolean(transcript));
+          const alternatives = Array.from({ length: res.length }, (_, index) => {
+            const alternative = res[index];
+            return {
+              transcript: String(alternative?.transcript ?? ""),
+              ...(typeof alternative?.confidence === "number"
+                ? { confidence: alternative.confidence }
+                : {}),
+            };
+          }).filter(({ transcript }) => Boolean(transcript));
           cbRef.current({
             transcript: primaryResult.transcript as string,
             alternatives: alternatives.slice(1),
-            confidence:
-              typeof primaryResult.confidence === "number" ? primaryResult.confidence : undefined,
+            ...(typeof primaryResult.confidence === "number"
+              ? { confidence: primaryResult.confidence }
+              : {}),
             timestamp: Date.now(),
             isFinal: res.isFinal,
             engine: "web-speech",

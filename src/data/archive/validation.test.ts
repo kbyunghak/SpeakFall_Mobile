@@ -21,7 +21,7 @@ test("Archive Manifest의 여섯 트랙을 검증한다", () => {
       pro: [],
     },
   });
-  expect(manifest.tracks.basic[0].setId).toBe(1);
+  expect(manifest.tracks.basic[0]!.setId).toBe(1);
 });
 
 describe("Archive Set 검증", () => {
@@ -39,7 +39,7 @@ describe("Archive Set 검증", () => {
       "basic",
       descriptor,
     );
-    expect(set.words[0].word).toBe("apple");
+    expect(set.words[0]!.word).toBe("apple");
   });
 
   test("중복 단어를 거부한다", () => {
