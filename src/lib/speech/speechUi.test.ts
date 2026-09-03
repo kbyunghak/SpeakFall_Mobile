@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { getSpeechUiMessage, SPEECH_MISMATCH_FEEDBACK_MS } from "./speechUi";
+import {
+  getSpeechUiMessage,
+  SPEECH_CHECKING_FEEDBACK_MS,
+  SPEECH_MISMATCH_FEEDBACK_MS,
+} from "./speechUi";
 import type { SpeechUiState } from "./types";
 
 describe("speech UI state", () => {
@@ -31,4 +35,29 @@ describe("speech UI state", () => {
     expect(SPEECH_MISMATCH_FEEDBACK_MS).toBeGreaterThanOrEqual(700);
     expect(SPEECH_MISMATCH_FEEDBACK_MS).toBeLessThanOrEqual(900);
   });
+
+  test("checking 상태를 200ms 표시한다", () => {
+    expect(SPEECH_CHECKING_FEEDBACK_MS).toBe(200);
+  });
+
+  test("세 번째 실패에는 다음 친구 안내를 표시한다", () => {
+    expect(
+      getSpeechUiMessage("mismatch", {
+        target: "face",
+        transcript: "fax",
+        terminalMismatch: true,
+      }),
+    ).toBe("아쉬워요!\n다음 친구를 구해봐요");
+  });
+
+  test("1~2회 오답에서는 같은 단어 재시도 문구를 유지한다", () => {
+    expect(
+      getSpeechUiMessage("mismatch", {
+        target: "face",
+        transcript: "fax",
+        terminalMismatch: false,
+      }),
+    ).toBe("“fax”로 들었어요\n“face” 다시 말해보세요");
+  });
+
 });

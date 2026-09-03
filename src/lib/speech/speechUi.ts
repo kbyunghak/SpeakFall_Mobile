@@ -1,17 +1,25 @@
 import type { SpeechUiState } from "./types";
 
 export const SPEECH_MISMATCH_FEEDBACK_MS = 800;
+export const SPEECH_CHECKING_FEEDBACK_MS = 200;
 
 type SpeechUiMessageOptions = {
   target?: string;
   transcript?: string;
   error?: string | null;
   retry?: boolean;
+  terminalMismatch?: boolean;
 };
 
 export function getSpeechUiMessage(
   state: SpeechUiState,
-  { target = "", transcript = "", error = null, retry = false }: SpeechUiMessageOptions = {},
+  {
+    target = "",
+    transcript = "",
+    error = null,
+    retry = false,
+    terminalMismatch = false,
+  }: SpeechUiMessageOptions = {},
 ): string {
   switch (state) {
     case "ready":
@@ -23,6 +31,7 @@ export function getSpeechUiMessage(
     case "success":
       return "성공! 친구를 구했어요";
     case "mismatch":
+      if (terminalMismatch) return "아쉬워요!\n다음 친구를 구해봐요";
       return transcript
         ? `“${transcript}”로 들었어요\n“${target}” 다시 말해보세요`
         : target
