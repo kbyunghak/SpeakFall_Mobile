@@ -18,14 +18,9 @@ export const STRICTNESS: Record<Strictness, { label: string; hint: string; thres
 
 /** 기본 레벨당 단어 수 */
 export const WORDS_PER_LEVEL = 30;
-/** 레벨업에 필요한 구조 횟수 */
-export const RESCUES_PER_LEVEL_UP = WORDS_PER_LEVEL;
-/** 틀릴 때 추가되는 단어 수 */
-export const EXTRA_WORDS_ON_MISS = 1;
-/** 라이프 감소 시 추가되는 단어 수 */
-export const EXTRA_WORDS_ON_LIFE_LOST = 3;
-/** 레벨당 최대 단어 수 상한 */
-export const MAX_WORDS_PER_LEVEL = 40;
+/** 일반 모드에서 한 레벨을 완료하기 위해 처리하는 단어 수 */
+export const PROCESSED_WORDS_PER_LEVEL = WORDS_PER_LEVEL;
+
 
 /** 하트가 모두 소진되면 남은 단어 수와 관계없이 즉시 라운드를 종료합니다. */
 export function shouldEndRoundForHp(hp: number): boolean {

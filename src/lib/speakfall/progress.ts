@@ -230,11 +230,14 @@ export function getTitle(p: Progress): { label: string; emoji: string } {
 }
 
 /** 남은 하트 수 기준 별 등급 */
-export function starsForResult(cleared: boolean, hp: number, maxHp: number): number {
+export function starsForResult(cleared: boolean, rescued: number): number {
   if (!cleared) return 0;
-  if (hp >= maxHp) return 3;
-  if (hp >= Math.ceil(maxHp / 2)) return 2;
-  return 1;
+
+  if (rescued >= 27) return 3;
+  if (rescued >= 23) return 2;
+  if (rescued >= 18) return 1;
+
+  return 0;
 }
 
 /** 구조한 친구 + 별점으로 코인 계산 */
@@ -253,6 +256,7 @@ export type RoundResult = {
   accuracy: number;
   bestCombo: number;
   words: WordItem[];
+  missedWords: WordItem[];
 };
 
 /** 라운드 결과를 진행도에 반영한 새 진행도를 반환합니다. */
