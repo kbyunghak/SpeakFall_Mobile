@@ -45,13 +45,9 @@ describe("mergeLevelWords", () => {
       },
     ]);
 
-    expect(
-      merged.some(({ word }) => word === "archive-only"),
-    ).toBe(true);
+    expect(merged.some(({ word }) => word === "archive-only")).toBe(true);
 
-    expect(
-      merged.some(({ word }) => word === "other-level"),
-    ).toBe(false);
+    expect(merged.some(({ word }) => word === "other-level")).toBe(false);
   });
 
   test("대소문자가 다른 중복 단어는 기본 단어를 우선한다", () => {
@@ -68,9 +64,7 @@ describe("mergeLevelWords", () => {
 
     expect(merged).toHaveLength(base.length);
 
-    expect(
-      merged.find(({ word }) => word === original.word)?.meaning,
-    ).toBe(original.meaning);
+    expect(merged.find(({ word }) => word === original.word)?.meaning).toBe(original.meaning);
   });
 });
 
@@ -83,18 +77,11 @@ describe("createLevelWordQueue", () => {
       level: 1 as const,
     }));
 
-    const queue = createLevelWordQueue(
-      1,
-      "basic",
-      additions,
-      30,
-    );
+    const queue = createLevelWordQueue(1, "basic", additions, 30);
 
     expect(queue).toHaveLength(30);
 
-    expect(
-      new Set(queue.map(({ word }) => word.toLowerCase())).size,
-    ).toBe(30);
+    expect(new Set(queue.map(({ word }) => word.toLowerCase())).size).toBe(30);
   });
 
   test("이미 사용하거나 대기 중인 단어는 제외한다", () => {
@@ -107,17 +94,9 @@ describe("createLevelWordQueue", () => {
       },
     ];
 
-    const queue = createLevelWordQueue(
-      1,
-      "basic",
-      additions,
-      200,
-      ["archive-only"],
-    );
+    const queue = createLevelWordQueue(1, "basic", additions, 200, ["archive-only"]);
 
-    expect(
-      queue.some(({ word }) => word === "archive-only"),
-    ).toBe(false);
+    expect(queue.some(({ word }) => word === "archive-only")).toBe(false);
   });
 
   test("exclude는 대소문자를 무시한다", () => {
@@ -130,29 +109,14 @@ describe("createLevelWordQueue", () => {
       },
     ];
 
-    const queue = createLevelWordQueue(
-      1,
-      "basic",
-      additions,
-      200,
-      ["archive-only"],
-    );
+    const queue = createLevelWordQueue(1, "basic", additions, 200, ["archive-only"]);
 
-    expect(
-      queue.some(
-        ({ word }) =>
-          word.toLowerCase() === "archive-only",
-      ),
-    ).toBe(false);
+    expect(queue.some(({ word }) => word.toLowerCase() === "archive-only")).toBe(false);
   });
 
   test("요청 개수가 0 이하이면 빈 큐를 반환한다", () => {
-    expect(
-      createLevelWordQueue(1, "basic", [], 0),
-    ).toEqual([]);
+    expect(createLevelWordQueue(1, "basic", [], 0)).toEqual([]);
 
-    expect(
-      createLevelWordQueue(1, "basic", [], -5),
-    ).toEqual([]);
+    expect(createLevelWordQueue(1, "basic", [], -5)).toEqual([]);
   });
 });

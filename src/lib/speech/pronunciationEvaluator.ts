@@ -90,9 +90,7 @@ export function evaluatePronunciation({
     score: similarity(target.word, topCandidate),
     bestCandidate: topCandidate,
     reason,
-    ...(reason === "minimal-pair-conflict" && minimalPairConflict
-      ? { minimalPairConflict }
-      : {}),
+    ...(reason === "minimal-pair-conflict" && minimalPairConflict ? { minimalPairConflict } : {}),
   });
 
   if (topCandidate === targetForm) return acceptedResult(0, "top-exact");

@@ -59,5 +59,4 @@ describe("speech UI state", () => {
       }),
     ).toBe("“fax”로 들었어요\n“face” 다시 말해보세요");
   });
-
 });

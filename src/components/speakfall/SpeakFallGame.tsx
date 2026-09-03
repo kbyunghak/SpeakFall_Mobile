@@ -1261,7 +1261,7 @@ export function SpeakFallGame() {
   /** Move on to the next friend after a short beat. */
 
   const queueNext = useCallback(
-     (delay: number) => {
+    (delay: number) => {
       gapRef.current = delay;
 
       window.setTimeout(() => {
@@ -1295,13 +1295,7 @@ export function SpeakFallGame() {
         setActive(makeFaller(upcoming));
       }, delay);
     },
-    [
-      gameMode,
-      makeFaller,
-      popNext,
-      levelUp,
-      resetSpeech,
-    ],
+    [gameMode, makeFaller, popNext, levelUp, resetSpeech],
   );
 
   /** 보상형 광고를 끝까지 본 뒤 남은 문제부터 하트를 모두 복구해 이어갑니다. */
@@ -1350,7 +1344,8 @@ export function SpeakFallGame() {
   }, [levelUp, makeFaller, popNext, resetSpeech, result, rewardingContinue, showShopToast]);
 
   /** Correct answer: parachute opens, star earned. */
-  const rescue = useCallback((target: Faller) => {
+  const rescue = useCallback(
+    (target: Faller) => {
       if (missGuard.current === target.id) return;
       missGuard.current = target.id;
       if (utteranceTimerRef.current !== null) {
@@ -1539,11 +1534,7 @@ export function SpeakFallGame() {
     (target: Faller, transcript: string) => {
       const current = activeRef.current;
 
-      if (
-        !current ||
-        current.id !== target.id ||
-        current.state !== "falling"
-      ) {
+      if (!current || current.id !== target.id || current.state !== "falling") {
         return;
       }
 
@@ -1590,12 +1581,7 @@ export function SpeakFallGame() {
 
       scheduleRetryAfterMismatch(current.id, nextMissCount);
     },
-    [
-      failCurrentWord,
-      resetSpeech,
-      scheduleNextAfterTerminalMismatch,
-      scheduleRetryAfterMismatch,
-    ],
+    [failCurrentWord, resetSpeech, scheduleNextAfterTerminalMismatch, scheduleRetryAfterMismatch],
   );
 
   const finalizePronunciation = useCallback(
@@ -2009,11 +1995,7 @@ export function SpeakFallGame() {
       hp: MAX_HP,
     };
 
-    setPhase(
-      micStatus === "granted" || micStatus === "unsupported"
-        ? "countdown"
-        : "permission",
-    );
+    setPhase(micStatus === "granted" || micStatus === "unsupported" ? "countdown" : "permission");
   }, [micStatus]);
 
   const finishPhrasalChallenge = useCallback(() => {
@@ -2021,12 +2003,7 @@ export function SpeakFallGame() {
 
     playGameOver();
 
-    const {
-      score: s,
-      rescued: r,
-      attempts: a,
-      bestCombo: bc,
-    } = statsRef.current;
+    const { score: s, rescued: r, attempts: a, bestCombo: bc } = statsRef.current;
 
     const challengeResult: PhrasalChallengeResult = {
       score: s,
@@ -2043,25 +2020,24 @@ export function SpeakFallGame() {
     speechRef.current.stop();
 
     console.info("[Phrasal Challenge Result]", challengeResult);
-
   }, []);
 
-const stopWordGame = useCallback(() => {
-  finishRound(false);
-}, [finishRound]);
+  const stopWordGame = useCallback(() => {
+    finishRound(false);
+  }, [finishRound]);
 
-const stopPhrasalChallenge = useCallback(() => {
-  finishPhrasalChallenge();
-}, [finishPhrasalChallenge]);
+  const stopPhrasalChallenge = useCallback(() => {
+    finishPhrasalChallenge();
+  }, [finishPhrasalChallenge]);
 
-const stopGame = useCallback(() => {
-  if (gameMode === "phrasal") {
-    stopPhrasalChallenge();
-    return;
-  }
+  const stopGame = useCallback(() => {
+    if (gameMode === "phrasal") {
+      stopPhrasalChallenge();
+      return;
+    }
 
-  stopWordGame();
-}, [gameMode, stopPhrasalChallenge, stopWordGame]);
+    stopWordGame();
+  }, [gameMode, stopPhrasalChallenge, stopWordGame]);
 
   /** 바닥 도달은 재시도 횟수와 무관하게 하트를 차감하고 현재 단어를 종료합니다. */
   const handleGroundMiss = useCallback(
@@ -2099,15 +2075,12 @@ const stopGame = useCallback(() => {
     [addMissedWord, clearSpeechCheckingTimer, clearSpeechUiFeedbackTimer, queueNext, stopGame],
   );
 
-
   /** Countdown 3·2·1 — initialize queue here so level is known. */
   useEffect(() => {
     if (phase !== "countdown") return;
     setCountdown(3);
     wordQueueRef.current =
-      gameMode === "phrasal"
-        ? makePhrasalVerbQueue()
-        : makeLevelWords(WORDS_PER_LEVEL);
+      gameMode === "phrasal" ? makePhrasalVerbQueue() : makeLevelWords(WORDS_PER_LEVEL);
     setNextWord(wordQueueRef.current[0] ?? null);
     playTick();
 
@@ -3172,42 +3145,42 @@ const stopGame = useCallback(() => {
                     </button>
                   );
                 })}
-               <section className="mt-6 border-t border-dashed border-[#173f78]/20 pt-5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    resumeAudio();
-                    playClick();
+                <section className="mt-6 border-t border-dashed border-[#173f78]/20 pt-5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resumeAudio();
+                      playClick();
 
-                    requestRewardedAd(
-                      {
-                        title: "구동사 챌린지에 참여할까요?",
-                        description: "보상형 광고를 끝까지 보면 챌린지를 시작할 수 있어요.",
-                        reward: "구동사 챌린지 참여",
-                      },
-                      () => {
-                        startPhrasalChallenge();
-                      },
-                    );
-                  }}
-                  className="flex w-full items-center gap-4 rounded-[1.5rem] bg-gradient-to-br from-[#e2dcff] to-[#b8a6ff] px-4 py-4 text-left shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] transition active:scale-[0.98]"
-                >
-                  <span className="text-4xl leading-none">♾️</span>
+                      requestRewardedAd(
+                        {
+                          title: "구동사 챌린지에 참여할까요?",
+                          description: "보상형 광고를 끝까지 보면 챌린지를 시작할 수 있어요.",
+                          reward: "구동사 챌린지 참여",
+                        },
+                        () => {
+                          startPhrasalChallenge();
+                        },
+                      );
+                    }}
+                    className="flex w-full items-center gap-4 rounded-[1.5rem] bg-gradient-to-br from-[#e2dcff] to-[#b8a6ff] px-4 py-4 text-left shadow-[0_10px_22px_-14px_rgba(23,63,120,0.7)] transition active:scale-[0.98]"
+                  >
+                    <span className="text-4xl leading-none">♾️</span>
 
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-display text-xl text-[#173f78]">
-                      구동사 챌린지
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-xl text-[#173f78]">
+                        구동사 챌린지
+                      </span>
+
+                      <span className="mt-0.5 block font-ui text-xs font-semibold text-[#7557c7]">
+                        광고를 보고 구동사 챌린지 참여하기
+                      </span>
                     </span>
-
-                    <span className="mt-0.5 block font-ui text-xs font-semibold text-[#7557c7]">
-                      광고를 보고 구동사 챌린지 참여하기
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/30 text-[#7557c7]">
+                      <Lock className="size-4" />
                     </span>
-                  </span>
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/30 text-[#7557c7]">
-                    <Lock className="size-4" />
-                  </span>
-                </button>
-              </section>
+                  </button>
+                </section>
                 <section className="mt-6 border-t border-dashed border-[#173f78]/20 pt-5">
                   <p className="mb-2 text-center font-ui text-xs text-[#173f78]/55">
                     발음 인식 검수 도구
@@ -3873,22 +3846,15 @@ const stopGame = useCallback(() => {
           {phase === "over" && gameMode === "phrasal" && phrasalResult && (
             <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/55 px-4">
               <div className="w-full max-w-sm rounded-[28px] bg-white p-6 text-center shadow-2xl">
-
                 <div className="text-4xl">♾️</div>
 
-                <h2 className="mt-2 font-display text-2xl text-[#173f78]">
-                  구동사 챌린지 종료!
-                </h2>
+                <h2 className="mt-2 font-display text-2xl text-[#173f78]">구동사 챌린지 종료!</h2>
 
-                <p className="mt-1 font-ui text-sm text-[#173f78]/60">
-                  하트가 모두 소진되었어요.
-                </p>
+                <p className="mt-1 font-ui text-sm text-[#173f78]/60">하트가 모두 소진되었어요.</p>
 
                 {/* 점수 */}
                 <div className="mt-6 rounded-2xl bg-[#eeeaff] px-4 py-5">
-                  <div className="font-ui text-xs font-bold text-[#7557c7]">
-                    SCORE
-                  </div>
+                  <div className="font-ui text-xs font-bold text-[#7557c7]">SCORE</div>
 
                   <div className="mt-1 font-display text-4xl text-[#173f78]">
                     {phrasalResult.score.toLocaleString()}
@@ -3901,36 +3867,28 @@ const stopGame = useCallback(() => {
                     <div className="font-display text-2xl text-[#3f9851]">
                       {phrasalResult.rescued}
                     </div>
-                    <div className="mt-1 font-ui text-xs text-[#3f9851]">
-                      성공
-                    </div>
+                    <div className="mt-1 font-ui text-xs text-[#3f9851]">성공</div>
                   </div>
 
                   <div className="rounded-2xl bg-[#fff4df] p-4">
                     <div className="font-display text-2xl text-[#c78220]">
                       {phrasalResult.accuracy}%
                     </div>
-                    <div className="mt-1 font-ui text-xs text-[#c78220]">
-                      정확도
-                    </div>
+                    <div className="mt-1 font-ui text-xs text-[#c78220]">정확도</div>
                   </div>
 
                   <div className="rounded-2xl bg-[#edf4ff] p-4">
                     <div className="font-display text-2xl text-[#3d78c5]">
                       {phrasalResult.attempts}
                     </div>
-                    <div className="mt-1 font-ui text-xs text-[#3d78c5]">
-                      시도
-                    </div>
+                    <div className="mt-1 font-ui text-xs text-[#3d78c5]">시도</div>
                   </div>
 
                   <div className="rounded-2xl bg-[#fff0f5] p-4">
                     <div className="font-display text-2xl text-[#d55b88]">
                       {phrasalResult.bestCombo}
                     </div>
-                    <div className="mt-1 font-ui text-xs text-[#d55b88]">
-                      최고 콤보
-                    </div>
+                    <div className="mt-1 font-ui text-xs text-[#d55b88]">최고 콤보</div>
                   </div>
                 </div>
                 <div className="mt-5 grid grid-cols-2 gap-3">
@@ -4044,9 +4002,7 @@ const stopGame = useCallback(() => {
                             key={w.word}
                             className="flex items-baseline justify-between gap-2 rounded-xl bg-[#e6f1ff] px-3 py-1.5"
                           >
-                            <span className="font-display text-base text-[#173f78]">
-                              {w.word}
-                            </span>
+                            <span className="font-display text-base text-[#173f78]">{w.word}</span>
 
                             <span className="font-ui text-xs text-[#173f78]/70">
                               {w.ipa} · {w.meaning}
@@ -4084,9 +4040,7 @@ const stopGame = useCallback(() => {
                             key={w.word}
                             className="flex items-baseline justify-between gap-2 rounded-xl bg-[#fff0dd] px-3 py-1.5"
                           >
-                            <span className="font-display text-base text-[#9a4d00]">
-                              {w.word}
-                            </span>
+                            <span className="font-display text-base text-[#9a4d00]">{w.word}</span>
 
                             <span className="font-ui text-xs text-[#9a4d00]/70">
                               {w.ipa} · {w.meaning}
@@ -4135,9 +4089,7 @@ const stopGame = useCallback(() => {
                       className="size-6 object-contain"
                     />
 
-                    <span>
-                      {rewardingContinue ? "광고 준비 중..." : "이어서 하기"}
-                    </span>
+                    <span>{rewardingContinue ? "광고 준비 중..." : "이어서 하기"}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -4521,7 +4473,8 @@ const stopGame = useCallback(() => {
             </h2>
             <p className="mx-auto mt-2 max-w-xs font-ui text-sm leading-5 text-[#3f6699]">
               더 안정적이고 새로운 SpeakFall을 이용하려면
-              <br />앱을 다시 시작해 업데이트를 완료해주세요.
+              <br />
+              앱을 다시 시작해 업데이트를 완료해주세요.
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button

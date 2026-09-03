@@ -502,7 +502,11 @@ export const PHRASAL_VERBS: PhrasalVerbItem[] = [
   { word: "freak out", ipa: "/frˈik ˈaʊt/", meaning: "몹시 놀라다; 흥분하다" },
   { word: "grow apart", ipa: "/ɡrˈoʊ ʌpˈɑrt/", meaning: "사이가 멀어지다" },
   { word: "grow into", ipa: "/ɡrˈoʊ ˈɪntu/", meaning: "점차 ~이 되다" },
-  { word: "grow out of", ipa: "/ɡrˈoʊ ˈaʊt ˈʌv/", meaning: "자라서 ~이 맞지 않게 되다; 습관을 버리다" },
+  {
+    word: "grow out of",
+    ipa: "/ɡrˈoʊ ˈaʊt ˈʌv/",
+    meaning: "자라서 ~이 맞지 않게 되다; 습관을 버리다",
+  },
   { word: "grow up", ipa: "/ɡrˈoʊ ˈʌp/", meaning: "자라다" },
   { word: "hand over", ipa: "/hˈænd ˈoʊvɝ/", meaning: "넘겨주다" },
   { word: "hang around", ipa: "/hˈæŋ ɝˈaʊnd/", meaning: "근처에서 시간을 보내다" },

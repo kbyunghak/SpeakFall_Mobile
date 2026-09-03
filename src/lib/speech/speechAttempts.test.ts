@@ -1,8 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  MAX_PRONUNCIATION_ATTEMPTS,
-  registerPronunciationMismatch,
-} from "./speechAttempts";
+import { MAX_PRONUNCIATION_ATTEMPTS, registerPronunciationMismatch } from "./speechAttempts";
 
 describe("pronunciation attempts", () => {
   test("첫 번째와 두 번째 오답은 같은 단어를 재시도한다", () => {

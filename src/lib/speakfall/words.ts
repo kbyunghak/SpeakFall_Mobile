@@ -21,7 +21,6 @@ export const WORDS_PER_LEVEL = 30;
 /** 일반 모드에서 한 레벨을 완료하기 위해 처리하는 단어 수 */
 export const PROCESSED_WORDS_PER_LEVEL = WORDS_PER_LEVEL;
 
-
 /** 하트가 모두 소진되면 남은 단어 수와 관계없이 즉시 라운드를 종료합니다. */
 export function shouldEndRoundForHp(hp: number): boolean {
   return hp <= 0;
