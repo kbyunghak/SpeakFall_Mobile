@@ -1,6 +1,13 @@
 import { Capacitor } from "@capacitor/core";
 
 const ANDROID_TEST_REWARDED_ID = "ca-app-pub-3940256099942544/5224354917";
+
+const ANDROID_PRODUCTION_REWARDED_ID = "ca-app-pub-3958027813411601/1402664234";
+
+const IS_DEV = import.meta.env.DEV;
+
+const REWARDED_ID = IS_DEV ? ANDROID_TEST_REWARDED_ID : ANDROID_PRODUCTION_REWARDED_ID;
+
 let initializePromise: Promise<void> | null = null;
 
 async function initializeAdMob() {
@@ -8,7 +15,7 @@ async function initializeAdMob() {
     initializePromise = import("@capacitor-community/admob").then(
       async ({ AdMob, MaxAdContentRating }) => {
         await AdMob.initialize({
-          initializeForTesting: true,
+          initializeForTesting: IS_DEV,
           tagForChildDirectedTreatment: true,
           tagForUnderAgeOfConsent: true,
           maxAdContentRating: MaxAdContentRating.General,
@@ -16,14 +23,13 @@ async function initializeAdMob() {
       },
     );
   }
+
   return initializePromise;
 }
 
-/** 테스트 보상형 광고를 끝까지 시청해 보상을 받은 경우에만 true를 반환합니다. */
 export async function showRewardedUnlockAd(): Promise<boolean> {
-  // 로컬 웹 개발에서는 광고를 모의 성공 처리
   if (!Capacitor.isNativePlatform()) {
-    if (import.meta.env.DEV) {
+    if (IS_DEV) {
       console.info("[DEV] Rewarded ad simulated on web");
       await new Promise((resolve) => setTimeout(resolve, 500));
       return true;
@@ -41,14 +47,14 @@ export async function showRewardedUnlockAd(): Promise<boolean> {
   const { AdMob } = await import("@capacitor-community/admob");
 
   await AdMob.prepareRewardVideoAd({
-    adId: ANDROID_TEST_REWARDED_ID,
-    isTesting: true,
+    adId: REWARDED_ID,
+    isTesting: IS_DEV,
     npa: true,
     immersiveMode: true,
   });
 
   const reward = await AdMob.showRewardVideoAd({
-    adId: ANDROID_TEST_REWARDED_ID,
+    adId: REWARDED_ID,
   });
 
   return reward.amount > 0;
